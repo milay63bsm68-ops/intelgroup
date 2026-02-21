@@ -154,13 +154,18 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771713031062,
-    "lastMessageAt": 1771713078631,
-    "lastMessage": "🎤 mi: Voice note",
+    "lastMessageAt": 1771713964522,
+    "lastMessage": "Harmayoh joined",
     "totalEarnings": 0,
     "members": {
       "7979664801": {
         "name": "mi",
         "joinedAt": 1771713031062
+      },
+      "6940101627": {
+        "name": "Harmayoh",
+        "username": "@harmayoh",
+        "joinedAt": 1771713964522
       }
     },
     "messages": [
@@ -188,6 +193,12 @@ window.GROUPS_DATA = {
         "duration": "0:04",
         "audioUrl": "/api/audio/64049d3557bcad86",
         "timestamp": 1771713078631
+      },
+      {
+        "id": "2b87844fc4656274",
+        "type": "system",
+        "text": "Harmayoh joined the group",
+        "timestamp": 1771713964522
       }
     ]
   }
