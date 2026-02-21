@@ -8,8 +8,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771711526569,
-    "lastMessageAt": 1771712843159,
-    "lastMessage": "mi joined",
+    "lastMessageAt": 1771717550852,
+    "lastMessage": "mi: Ok done and dusted",
     "totalEarnings": 2500,
     "members": {
       "6940101627": {
@@ -87,6 +87,14 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "mi joined the group",
         "timestamp": 1771712843159
+      },
+      {
+        "id": "63428652362f762b",
+        "type": "text",
+        "senderId": "7979664801",
+        "senderName": "mi",
+        "text": "Ok done and dusted",
+        "timestamp": 1771717550852
       }
     ]
   },
