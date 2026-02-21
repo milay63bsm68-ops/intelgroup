@@ -63,14 +63,6 @@ window.GROUPS_DATA = {
         "timestamp": 1771711692471
       },
       {
-        "id": "b9850f9833037127",
-        "type": "text",
-        "senderId": "7497799470",
-        "senderName": "m",
-        "text": "https://i.ibb.co/7JMZ1vMC/IMG-20260220-WA0229-2.jpg",
-        "timestamp": 1771711702581
-      },
-      {
         "id": "a753a0d4069d5b25",
         "type": "text",
         "senderId": "7497799470",
