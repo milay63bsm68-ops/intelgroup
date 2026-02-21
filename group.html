@@ -874,7 +874,7 @@ async function generateCode() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Failed");
     document.getElementById("genCodeMsg").innerHTML =
-      '<span style="color:#4db6ac">✅ Code sent! Open your Telegram app — check messages from the bot, then enter the code above.</span>';
+      '<span style="color:#4db6ac">✅ Code sent! Open <a href="https://t.me/intelpremiumbot" target="_blank" style="color:#64b5f6;font-weight:700;">@intelpremiumbot</a> on Telegram to see your code, then enter it above.</span>';
     btn.textContent = "✅ Code Sent";
   } catch(e) {
     document.getElementById("genCodeMsg").innerHTML = `<span style="color:#ef5350">❌ ${e.message}</span>`;
