@@ -10,7 +10,7 @@ window.GROUPS_DATA = {
     "createdAt": 1771711526569,
     "lastMessageAt": 1771712843159,
     "lastMessage": "mi joined",
-    "totalEarnings": 0,
+    "totalEarnings": 2500,
     "members": {
       "6940101627": {
         "name": "Harmayoh",
