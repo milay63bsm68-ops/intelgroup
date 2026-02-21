@@ -7,22 +7,100 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#17212b;--surface:#1e2c3a;--surface2:#242f3d;--accent:#5288c1;--accent2:#64b5f6;--text:#e8e8e8;--subtext:#8a9ba8;--border:#2b3a4a;--green:#4db6ac;}
+:root{
+  --bg:#17212b;--surface:#1e2c3a;--surface2:#242f3d;
+  --accent:#5288c1;--accent2:#64b5f6;--text:#e8e8e8;
+  --subtext:#8a9ba8;--border:#2b3a4a;--green:#4db6ac;
+  --red:#ef5350;
+}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;min-height:100vh;}
+
+/* HEADER */
 .header{background:var(--surface);padding:14px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
-.back-btn{background:none;border:none;color:var(--accent2);font-size:22px;cursor:pointer;}
+.back-btn{background:none;border:none;color:var(--accent2);font-size:22px;cursor:pointer;line-height:1;}
 .header-title{font-size:17px;font-weight:700;}
+
+/* FORM */
 .form{padding:20px 16px;max-width:480px;margin:0 auto;}
 .sec-label{font-size:11px;color:var(--subtext);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;margin-top:20px;}
-.av-center{display:flex;justify-content:center;margin-bottom:20px;}
-.av-pick{width:80px;height:80px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:32px;color:white;cursor:pointer;position:relative;overflow:hidden;border:3px solid var(--border);}
-.av-pick img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
-.av-edit{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.55);font-size:12px;text-align:center;padding:4px;color:white;}
-.av-pick input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+
+/* ── AVATAR PREVIEW ── */
+.av-center{display:flex;justify-content:center;margin-bottom:4px;}
+.av-preview{
+  width:90px;height:90px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;font-weight:700;color:white;
+  border:3px solid var(--border);overflow:hidden;
+  transition:border-color 0.2s;position:relative;
+  background:var(--accent);
+  user-select:none;
+}
+.av-preview img{width:100%;height:100%;object-fit:cover;}
+.av-preview .av-badge{
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(0,0,0,0.55);font-size:11px;
+  text-align:center;padding:3px 0;color:#fff;
+}
+
+/* ── TAB SWITCHER ── */
+.av-tabs{display:flex;gap:6px;margin:12px 0 14px;}
+.av-tab{
+  flex:1;padding:8px 0;border:none;border-radius:10px;
+  font-size:13px;font-weight:600;cursor:pointer;
+  background:var(--surface2);color:var(--subtext);
+  border:1px solid var(--border);transition:all 0.18s;
+}
+.av-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+/* ── EMOJI AVATAR PICKER ── */
+#panelEmoji{display:block;}
+.emoji-grid{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:14px;padding:12px;
+}
+.emoji-opt{
+  aspect-ratio:1;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:26px;cursor:pointer;
+  border:2px solid transparent;transition:all 0.15s;
+  position:relative;
+}
+.emoji-opt:hover{transform:scale(1.12);}
+.emoji-opt.selected{border-color:var(--accent2);box-shadow:0 0 0 2px var(--accent);}
+
+/* color row */
+.color-strip{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center;}
+.color-dot{
+  width:30px;height:30px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:all 0.15s;
+}
+.color-dot:hover{transform:scale(1.15);}
+.color-dot.selected{border-color:#fff;box-shadow:0 0 0 2px var(--accent);}
+
+/* ── IMAGE URL PANEL ── */
+#panelUrl{display:none;}
+.url-hint{font-size:12px;color:var(--subtext);margin-bottom:8px;line-height:1.5;}
+.url-row{display:flex;gap:8px;}
+.url-row .inp{flex:1;}
+.btn-load{
+  padding:0 14px;border:none;border-radius:12px;
+  background:var(--accent);color:#fff;font-size:13px;
+  font-weight:700;cursor:pointer;white-space:nowrap;
+  flex-shrink:0;
+}
+.btn-load:disabled{opacity:0.45;}
+.url-status{font-size:12px;margin-top:6px;min-height:18px;}
+.url-status.ok{color:var(--green);}
+.url-status.err{color:var(--red);}
+.url-status.loading{color:#f59e0b;}
+
+/* ── INPUTS ── */
 .inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);font-size:15px;outline:none;transition:border-color 0.2s;}
 .inp:focus{border-color:var(--accent2);}
 textarea.inp{resize:none;height:90px;font-family:inherit;}
 .char-count{text-align:right;font-size:11px;color:var(--subtext);margin-top:4px;}
+
+/* ── TOGGLES ── */
 .toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
 .toggle-info{flex:1;margin-right:12px;}
 .toggle-label{font-size:14px;font-weight:600;}
@@ -33,11 +111,15 @@ textarea.inp{resize:none;height:90px;font-family:inherit;}
 .sw input:checked~.sw-track{background:var(--accent);}
 .sw-thumb{position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform 0.2s;pointer-events:none;}
 .sw input:checked~.sw-track .sw-thumb{transform:translateX(20px);}
-.btn-create{width:100%;padding:15px;margin-top:24px;border:none;border-radius:14px;background:var(--accent);color:white;font-size:16px;font-weight:700;cursor:pointer;}
+
+/* ── BUTTON ── */
+.btn-create{width:100%;padding:15px;margin-top:24px;border:none;border-radius:14px;background:var(--accent);color:white;font-size:16px;font-weight:700;cursor:pointer;transition:transform 0.1s,opacity 0.2s;}
 .btn-create:active{transform:scale(0.98);}
 .btn-create:disabled{opacity:0.4;}
+
+/* ── MSG ── */
 .msg{padding:12px 14px;border-radius:12px;font-size:13px;margin-top:12px;}
-.error{background:#3d1515;border:1px solid #ef5350;color:#fca5a5;}
+.error{background:#3d1515;border:1px solid var(--red);color:#fca5a5;}
 .success{background:#1a3a2a;border:1px solid var(--green);color:#86efac;}
 .loading{background:#2a2a15;border:1px solid #f59e0b;color:#fcd34d;}
 </style>
@@ -47,69 +129,251 @@ textarea.inp{resize:none;height:90px;font-family:inherit;}
   <button class="back-btn" onclick="history.back()">←</button>
   <div class="header-title">New Group</div>
 </div>
+
 <div class="form">
+
+  <!-- AVATAR PREVIEW -->
   <div class="av-center">
-    <div class="av-pick" id="avPick">
-      <span id="avLetter">G</span>
-      <div class="av-edit">📷</div>
-      <input type="file" accept="image/*" onchange="handleAv(this)">
+    <div class="av-preview" id="avPreview">
+      <span id="avContent">G</span>
     </div>
   </div>
+
+  <!-- TAB SWITCHER -->
+  <div class="av-tabs">
+    <button class="av-tab active" onclick="switchTab('emoji',this)">🎨 Choose Avatar</button>
+    <button class="av-tab" onclick="switchTab('url',this)">🔗 Image URL</button>
+  </div>
+
+  <!-- PANEL: EMOJI PICKER -->
+  <div id="panelEmoji">
+    <div class="emoji-grid" id="emojiGrid"></div>
+    <div class="color-strip" id="colorStrip"></div>
+  </div>
+
+  <!-- PANEL: IMAGE URL -->
+  <div id="panelUrl">
+    <div class="url-hint">
+      Paste a direct image URL (e.g. from Imgur, PostImg, etc.).<br>
+      The image will be hosted automatically and used as your group avatar.
+    </div>
+    <div class="url-row">
+      <input class="inp" id="imgUrlInput" placeholder="https://i.imgur.com/example.jpg" type="url">
+      <button class="btn-load" id="loadUrlBtn" onclick="loadImageUrl()">Load</button>
+    </div>
+    <div class="url-status" id="urlStatus"></div>
+  </div>
+
+  <!-- GROUP NAME -->
   <div class="sec-label">Group Name *</div>
-  <input class="inp" id="gName" maxlength="64" placeholder="Enter group name…" oninput="updateLetter();document.getElementById('nc').textContent=this.value.length">
+  <input class="inp" id="gName" maxlength="64" placeholder="Enter group name…"
+    oninput="onNameInput(this.value);document.getElementById('nc').textContent=this.value.length">
   <div class="char-count"><span id="nc">0</span>/64</div>
+
+  <!-- DESCRIPTION -->
   <div class="sec-label">Description</div>
-  <textarea class="inp" id="gDesc" maxlength="255" placeholder="What is this group about?" oninput="document.getElementById('dc').textContent=this.value.length"></textarea>
+  <textarea class="inp" id="gDesc" maxlength="255" placeholder="What is this group about?"
+    oninput="document.getElementById('dc').textContent=this.value.length"></textarea>
   <div class="char-count"><span id="dc">0</span>/255</div>
+
+  <!-- SETTINGS -->
   <div class="sec-label">Settings</div>
   <div class="toggle-row">
-    <div class="toggle-info"><div class="toggle-label">🔒 Private Group</div><div class="toggle-sub">Only people with the link can join</div></div>
+    <div class="toggle-info">
+      <div class="toggle-label">🔒 Private Group</div>
+      <div class="toggle-sub">Only people with the link can join</div>
+    </div>
     <label class="sw"><input type="checkbox" id="isPrivate"><div class="sw-track"><div class="sw-thumb"></div></div></label>
   </div>
   <div class="toggle-row">
-    <div class="toggle-info"><div class="toggle-label">⭐ Premium Only</div><div class="toggle-sub">Only premium users can join</div></div>
+    <div class="toggle-info">
+      <div class="toggle-label">⭐ Premium Only</div>
+      <div class="toggle-sub">Only premium users can join</div>
+    </div>
     <label class="sw"><input type="checkbox" id="isPremiumOnly"><div class="sw-track"><div class="sw-thumb"></div></div></label>
   </div>
+
   <button class="btn-create" id="createBtn" onclick="createGroup()">✅ Create Group</button>
   <div id="msgBox"></div>
 </div>
+
 <script>
+/* ════════════════════════════════════
+   TELEGRAM INIT
+════════════════════════════════════ */
 const tg = window.Telegram?.WebApp;
 tg?.ready();
-const user = tg?.initDataUnsafe?.user;
+const user       = tg?.initDataUnsafe?.user;
 const telegramId = user ? String(user.id) : null;
-const name = user?.first_name || "Guest";
-let avatarBase64 = null;
+const userName   = user?.first_name || "Guest";
 
-function updateLetter() {
-  const v = document.getElementById("gName").value;
-  if (!avatarBase64) document.getElementById("avLetter").textContent = v.charAt(0).toUpperCase() || "G";
+/* ════════════════════════════════════
+   AVATAR STATE
+════════════════════════════════════ */
+const EMOJIS = [
+  "😀","😎","🤩","🥳","🦁","🐯","🐻","🦊","🐼","🦄",
+  "🌟","🔥","💎","🚀","⚡","🌈","🎮","🎯","🏆","💡",
+  "🎵","🎸","🌺","🍀","🌙","❄️","🌊","🎭","🦋","🦅"
+];
+const COLORS = [
+  "#5288c1","#4db6ac","#ef5350","#f59e0b","#9c27b0",
+  "#e91e63","#00bcd4","#8bc34a","#ff5722","#607d8b",
+  "#795548","#3f51b5","#009688","#ffc107","#673ab7"
+];
+
+let selectedEmoji = "😀";
+let selectedColor = COLORS[0];
+let avatarImageUrl = null; // final hosted URL (string) or null
+
+function buildEmojiGrid() {
+  const grid = document.getElementById("emojiGrid");
+  grid.innerHTML = "";
+  EMOJIS.forEach((em, i) => {
+    const el = document.createElement("div");
+    el.className = "emoji-opt" + (i === 0 ? " selected" : "");
+    el.textContent = em;
+    el.style.background = COLORS[i % COLORS.length];
+    el.onclick = () => {
+      document.querySelectorAll(".emoji-opt").forEach(e => e.classList.remove("selected"));
+      el.classList.add("selected");
+      selectedEmoji = em;
+      avatarImageUrl = null;
+      renderPreview();
+    };
+    grid.appendChild(el);
+  });
 }
-function handleAv(input) {
-  const file = input.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    avatarBase64 = e.target.result;
-    document.getElementById("avPick").innerHTML = `<img src="${avatarBase64}" alt=""><div class="av-edit">📷</div><input type="file" accept="image/*" onchange="handleAv(this)">`;
-  };
-  reader.readAsDataURL(file);
+
+function buildColorStrip() {
+  const strip = document.getElementById("colorStrip");
+  strip.innerHTML = "";
+  COLORS.forEach((c, i) => {
+    const el = document.createElement("div");
+    el.className = "color-dot" + (i === 0 ? " selected" : "");
+    el.style.background = c;
+    el.title = c;
+    el.onclick = () => {
+      document.querySelectorAll(".color-dot").forEach(d => d.classList.remove("selected"));
+      el.classList.add("selected");
+      selectedColor = c;
+      avatarImageUrl = null;
+      renderPreview();
+    };
+    strip.appendChild(el);
+  });
 }
+
+function renderPreview() {
+  const preview = document.getElementById("avPreview");
+  const content = document.getElementById("avContent");
+  if (avatarImageUrl) {
+    preview.style.background = "transparent";
+    preview.innerHTML = `<img src="${avatarImageUrl}" alt="avatar">`;
+  } else {
+    preview.style.background = selectedColor;
+    preview.innerHTML = `<span id="avContent" style="font-size:36px">${selectedEmoji}</span>`;
+  }
+}
+
+function onNameInput(val) {
+  // only update preview letter if using emoji mode & no image
+  if (!avatarImageUrl) renderPreview();
+}
+
+/* ════════════════════════════════════
+   TABS
+════════════════════════════════════ */
+function switchTab(tab, btn) {
+  document.querySelectorAll(".av-tab").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.getElementById("panelEmoji").style.display = tab === "emoji" ? "block" : "none";
+  document.getElementById("panelUrl").style.display   = tab === "url"   ? "block" : "none";
+}
+
+/* ════════════════════════════════════
+   IMAGE URL LOADER
+   Uses allorigins.win proxy to validate
+   + stores URL directly (no upload needed —
+     GitHub just stores the URL string)
+════════════════════════════════════ */
+async function loadImageUrl() {
+  const input  = document.getElementById("imgUrlInput");
+  const status = document.getElementById("urlStatus");
+  const btn    = document.getElementById("loadUrlBtn");
+  const rawUrl = input.value.trim();
+
+  if (!rawUrl) { setUrlStatus("Please enter a URL","err"); return; }
+
+  setUrlStatus("⏳ Checking image…","loading");
+  btn.disabled = true;
+
+  try {
+    // Test that the URL actually loads as an image
+    await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload  = () => resolve();
+      img.onerror = () => reject(new Error("Could not load image from this URL"));
+      img.src = rawUrl;
+      setTimeout(() => reject(new Error("Timeout loading image")), 8000);
+    });
+
+    // Store the URL directly — no upload needed
+    avatarImageUrl = rawUrl;
+    renderPreview();
+    setUrlStatus("✅ Image loaded!","ok");
+  } catch(e) {
+    setUrlStatus("❌ " + e.message,"err");
+    avatarImageUrl = null;
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function setUrlStatus(msg, cls) {
+  const el = document.getElementById("urlStatus");
+  el.textContent = msg;
+  el.className   = "url-status " + cls;
+}
+
+/* ════════════════════════════════════
+   BUILD AVATAR VALUE FOR API
+   Returns a small JSON string stored on GitHub
+   instead of a huge base64 blob
+════════════════════════════════════ */
+function buildAvatarValue() {
+  if (avatarImageUrl) {
+    // Store as a URL reference — tiny string
+    return JSON.stringify({ type: "url", src: avatarImageUrl });
+  } else {
+    // Store emoji + color — a few bytes only
+    return JSON.stringify({ type: "emoji", emoji: selectedEmoji, color: selectedColor });
+  }
+}
+
+/* ════════════════════════════════════
+   CREATE GROUP
+════════════════════════════════════ */
 async function createGroup() {
   const gName = document.getElementById("gName").value.trim();
   if (!telegramId) return showMsg("❌ Open this from Telegram.","error");
-  if (!gName) return showMsg("❌ Please enter a group name.","error");
+  if (!gName)      return showMsg("❌ Please enter a group name.","error");
+
   showMsg("⏳ Creating…","loading");
   document.getElementById("createBtn").disabled = true;
+
   try {
     const res = await fetch("/api/groups/create", {
-      method:"POST", headers:{"Content-Type":"application/json"},
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        telegramId, ownerName: name,
-        name: gName,
-        description: document.getElementById("gDesc").value.trim(),
-        isPrivate: document.getElementById("isPrivate").checked,
-        isPremiumOnly: document.getElementById("isPremiumOnly").checked,
-        avatar: avatarBase64 || null
+        telegramId,
+        ownerName:    userName,
+        name:         gName,
+        description:  document.getElementById("gDesc").value.trim(),
+        isPrivate:    document.getElementById("isPrivate").checked,
+        isPremiumOnly:document.getElementById("isPremiumOnly").checked,
+        avatar:       buildAvatarValue()   // ← tiny JSON, not base64
       })
     });
     const data = await res.json();
@@ -121,7 +385,17 @@ async function createGroup() {
     document.getElementById("createBtn").disabled = false;
   }
 }
-function showMsg(text,type){ document.getElementById("msgBox").innerHTML = `<div class="msg ${type}">${text}</div>`; }
+
+function showMsg(text, type) {
+  document.getElementById("msgBox").innerHTML = `<div class="msg ${type}">${text}</div>`;
+}
+
+/* ════════════════════════════════════
+   INIT
+════════════════════════════════════ */
+buildEmojiGrid();
+buildColorStrip();
+renderPreview();
 </script>
 </body>
 </html>
