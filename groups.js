@@ -8,7 +8,7 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771711526569,
-    "lastMessageAt": 1771711646615,
+    "lastMessageAt": 1771711651559,
     "lastMessage": "🎤 m: Voice note",
     "totalEarnings": 0,
     "members": {
@@ -53,6 +53,15 @@ window.GROUPS_DATA = {
         "duration": "0:11",
         "audioUrl": "/api/audio/50bbef89439a62ea",
         "timestamp": 1771711646615
+      },
+      {
+        "id": "fee08e1a19f420e2",
+        "type": "voice",
+        "senderId": "7497799470",
+        "senderName": "m",
+        "duration": "0:01",
+        "audioUrl": "/api/audio/fee08e1a19f420e2",
+        "timestamp": 1771711651559
       }
     ]
   }
