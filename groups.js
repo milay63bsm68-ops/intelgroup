@@ -88,8 +88,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771712760494,
-    "lastMessageAt": null,
-    "lastMessage": null,
+    "lastMessageAt": 1771712772765,
+    "lastMessage": "mi: Send hello",
     "totalEarnings": 0,
     "members": {
       "7979664801": {
@@ -97,6 +97,15 @@ window.GROUPS_DATA = {
         "joinedAt": 1771712760494
       }
     },
-    "messages": []
+    "messages": [
+      {
+        "id": "e6442a4c2d4033c1",
+        "type": "text",
+        "senderId": "7979664801",
+        "senderName": "mi",
+        "text": "Send hello",
+        "timestamp": 1771712772765
+      }
+    ]
   }
 }
