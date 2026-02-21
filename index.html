@@ -223,8 +223,8 @@ function renderGroups() {
   list.innerHTML = groups.map(([id,g]) => {
     const isOwner  = g.ownerId === telegramId;
     const isJoined = joinedGroups.includes(id);
-    const color    = avatarColor(g.name||"G");
-    const av       = g.avatar ? `<img src="${g.avatar}" alt="">` : `<span>${(g.name||"G").charAt(0).toUpperCase()}</span>`;
+    const color    = avatarBgColor(g.avatar, g.name);
+    const av       = renderGroupAvatarHtml(g.avatar, g.name, color);
     const mc       = Object.keys(g.members||{}).length;
     const last     = g.lastMessage || "No messages yet";
     const timeStr  = g.lastMessageAt ? formatTime(g.lastMessageAt) : "";
@@ -246,6 +246,43 @@ function formatTime(ts) {
   return d.toLocaleDateString([],{month:"short",day:"numeric"});
 }
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ── Avatar renderer — handles emoji JSON, plain URL, base64, fallback ── */
+function renderGroupAvatarHtml(avatar, name, color) {
+  if (!avatar) {
+    return `<span>${(name||"G").charAt(0).toUpperCase()}</span>`;
+  }
+  if (avatar.startsWith("data:image/")) {
+    return `<img src="${avatar}" alt="">`;
+  }
+  if (avatar.startsWith("{")) {
+    try {
+      const av = JSON.parse(avatar);
+      if (av.type === "emoji") {
+        return `<span style="font-size:24px">${av.emoji}</span>`;
+      }
+      if (av.type === "url") {
+        return `<img src="${esc(av.src)}" alt="" onerror="this.parentElement.innerHTML='<span>G</span>'">`;
+      }
+    } catch(e) {}
+  }
+  if (avatar.startsWith("http")) {
+    return `<img src="${esc(avatar)}" alt="" onerror="this.parentElement.innerHTML='<span>G</span>'">`;
+  }
+  return `<span>${(name||"G").charAt(0).toUpperCase()}</span>`;
+}
+
+/* ── Avatar background color — only used when no image/emoji ── */
+function avatarBgColor(avatar, name) {
+  if (avatar && (avatar.startsWith("http") || avatar.startsWith("data:") || avatar.startsWith("{"))) {
+    // For URL/image: use transparent bg; for emoji JSON: extract color
+    if (avatar.startsWith("{")) {
+      try { const av = JSON.parse(avatar); if (av.color) return av.color; } catch(e) {}
+    }
+    return "transparent";
+  }
+  return avatarColor(name);
+}
 
 // Load balance and groups in parallel
 loadBalance();
