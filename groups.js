@@ -88,7 +88,7 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771712760494,
-    "lastMessageAt": 1771712799459,
+    "lastMessageAt": 1771712823552,
     "lastMessage": "🎤 mi: Voice note",
     "totalEarnings": 0,
     "members": {
@@ -122,6 +122,15 @@ window.GROUPS_DATA = {
         "duration": "0:06",
         "audioUrl": "/api/audio/1a3e13ab0400cb21",
         "timestamp": 1771712799459
+      },
+      {
+        "id": "d949b9584a651f37",
+        "type": "voice",
+        "senderId": "7979664801",
+        "senderName": "mi",
+        "duration": "0:11",
+        "audioUrl": "/api/audio/d949b9584a651f37",
+        "timestamp": 1771712823552
       }
     ]
   }
