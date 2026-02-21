@@ -75,6 +75,34 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .err{background:#3d1515;border:1px solid var(--red);color:#fca5a5;}
 .suc{background:#1a3a2a;border:1px solid var(--green);color:#86efac;}
 .loading-msg{text-align:center;padding:40px 20px;color:var(--subtext);font-size:14px;}
+
+/* ── BUY PREMIUM BANNER ── */
+.premium-banner{
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#2a1f05,#3a2800);
+  border-top:1px solid #f59e0b44;border-bottom:1px solid #f59e0b44;
+  padding:10px 14px;flex-shrink:0;cursor:pointer;
+  transition:opacity 0.15s;
+}
+.premium-banner:active{opacity:0.8;}
+.pb-icon{font-size:22px;flex-shrink:0;}
+.pb-text{flex:1;min-width:0;}
+.pb-title{font-size:13px;font-weight:700;color:#fcd34d;}
+.pb-sub{font-size:11px;color:#b45309;}
+.pb-btn{
+  background:linear-gradient(135deg,#f59e0b,#f97316);
+  color:white;border:none;border-radius:20px;
+  padding:6px 14px;font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+}
+
+/* ── PREMIUM MODAL ── */
+.pm-head{text-align:center;margin-bottom:16px;}
+.pm-icon{font-size:44px;margin-bottom:8px;}
+.pm-price{font-size:22px;font-weight:800;color:#f59e0b;margin:4px 0;}
+.pm-perks{background:var(--surface2);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:2;color:var(--text);}
+.pm-earn{font-size:12px;color:var(--subtext);text-align:center;margin-bottom:14px;}
+.mb-gold{background:linear-gradient(135deg,#f59e0b,#f97316);}
 </style>
 </head>
 <body>
@@ -113,6 +141,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="modal-title">Edit Group</div>
     <input class="modal-inp" id="eName" maxlength="64" placeholder="Group name">
     <textarea class="modal-inp modal-ta" id="eDesc" maxlength="255" placeholder="Description"></textarea>
+    <input class="modal-inp" id="eAvatar" type="url" placeholder="Avatar image URL (optional)">
+    <div id="eAvatarPreview" style="display:flex;justify-content:center;margin:8px 0 4px;"></div>
     <button class="modal-btn mb-save"   onclick="saveEdit()">Save Changes</button>
     <button class="modal-btn mb-danger" onclick="delGroup()">🗑️ Delete Group</button>
     <button class="modal-btn mb-cancel" onclick="closeModal('editModal')">Cancel</button>
@@ -126,6 +156,31 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div id="infoContent" style="font-size:13px;color:var(--subtext);line-height:1.8;"></div>
     <button class="modal-btn mb-cancel" style="margin-top:14px" onclick="closeModal('infoModal')">Close</button>
     <button class="modal-btn mb-danger" id="leaveBtn" onclick="leaveGroup()" style="margin-top:6px;display:none">🚪 Leave Group</button>
+  </div>
+</div>
+
+<!-- PREMIUM PURCHASE MODAL -->
+<div class="modal-bg" id="premiumModal" onclick="closeModal('premiumModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="pm-head">
+      <div class="pm-icon">⭐</div>
+      <div class="modal-title">Get Premium</div>
+      <div class="pm-price">₦5,000</div>
+    </div>
+    <div class="pm-perks">
+      ✅ Unlimited messages<br>
+      ✅ Access all Premium groups<br>
+      ✅ Voice notes priority<br>
+      ✅ Premium badge
+    </div>
+    <div class="pm-earn" id="pmEarnNote"></div>
+    <input class="modal-inp" id="pmPasscode" placeholder="Enter your passcode…" style="margin-bottom:6px;">
+    <div style="font-size:11px;color:var(--subtext);margin-bottom:12px;">
+      Don't have a passcode? <span style="color:var(--accent2);cursor:pointer;" onclick="requestPasscode()">Get one →</span>
+    </div>
+    <div id="pmMsg" style="font-size:13px;margin-bottom:10px;min-height:18px;"></div>
+    <button class="modal-btn mb-gold" onclick="buyPremium()">⭐ Buy Premium – ₦5,000</button>
+    <button class="modal-btn mb-cancel" style="margin-top:6px;" onclick="closeModal('premiumModal')">Cancel</button>
   </div>
 </div>
 
@@ -171,8 +226,7 @@ async function init() {
     isJoined  = joinedGroups.includes(groupId) || isOwner || !!(groupData.members && groupData.members[telegramId]);
 
     const hAv = document.getElementById("hAv");
-    if (groupData.avatar) hAv.innerHTML = `<img src="${groupData.avatar}" alt="">`;
-    else hAv.textContent = (groupData.name||"G").charAt(0).toUpperCase();
+    renderAvatar(groupData.avatar, hAv, groupData.name);
     document.getElementById("hName").textContent = groupData.name || "Group";
     const mc = Object.keys(groupData.members||{}).length;
     document.getElementById("hSub").textContent  = mc + " member" + (mc!==1?"s":"");
@@ -189,6 +243,8 @@ async function init() {
       joinedGroups.push(groupId);
       localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
     }
+    // Show Buy Premium banner for non-premium, non-owner members
+    if (!isPremium && !isOwner) showPremiumBanner();
     loadMsgs();
     pollInterval = setInterval(loadMsgs, 4000);
     updateRateBar();
@@ -399,21 +455,45 @@ function playVoice(url, btn) {
 function openEdit() {
   document.getElementById("eName").value = groupData.name || "";
   document.getElementById("eDesc").value = groupData.description || "";
+  // Pre-fill avatar URL if it's a plain URL (not emoji JSON)
+  const av = groupData.avatar || "";
+  const isUrl = av.startsWith("http");
+  document.getElementById("eAvatar").value = isUrl ? av : "";
+  // Show current avatar preview
+  const prev = document.getElementById("eAvatarPreview");
+  prev.innerHTML = "";
+  const previewEl = document.createElement("div");
+  previewEl.style.cssText = "width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid var(--border);";
+  renderAvatar(groupData.avatar, previewEl, groupData.name);
+  prev.appendChild(previewEl);
+  // Live preview on URL change
+  document.getElementById("eAvatar").oninput = function() {
+    const val = this.value.trim();
+    const el2 = document.createElement("div");
+    el2.style.cssText = "width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid var(--border);";
+    renderAvatar(val || groupData.avatar, el2, groupData.name);
+    prev.innerHTML = "";
+    prev.appendChild(el2);
+  };
   document.getElementById("editModal").classList.add("open");
 }
 async function saveEdit() {
-  const name = document.getElementById("eName").value.trim();
-  const desc = document.getElementById("eDesc").value.trim();
+  const name   = document.getElementById("eName").value.trim();
+  const desc   = document.getElementById("eDesc").value.trim();
+  const avatar = document.getElementById("eAvatar").value.trim() || undefined;
   if (!name) return;
   try {
     const res = await fetch("/api/groups/" + groupId + "/edit", {
       method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ telegramId, name, description:desc })
+      body: JSON.stringify({ telegramId, name, description: desc, avatar })
     });
     if (!res.ok) throw new Error((await res.json()).error);
     closeModal("editModal");
     groupData.name = name; groupData.description = desc;
+    if (avatar !== undefined) groupData.avatar = avatar;
     document.getElementById("hName").textContent = name;
+    // Update header avatar
+    renderAvatar(groupData.avatar, document.getElementById("hAv"), groupData.name);
     showTmp("✅ Group updated","suc");
   } catch(e) { showTmp("❌ "+e.message,"err"); }
 }
@@ -469,6 +549,133 @@ function showTmp(text, type) {
   setTimeout(() => div.remove(), 4000);
 }
 function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ════════════════════════════════════
+   AVATAR RENDERER — handles emoji JSON, URL, or fallback letter
+════════════════════════════════════ */
+function renderAvatar(avatarVal, el, groupName) {
+  el.style.cssText += ";display:flex;align-items:center;justify-content:center;overflow:hidden;";
+  if (!avatarVal) {
+    el.style.background = "#5288c1";
+    el.innerHTML = `<span style="font-size:${Math.round(el.offsetWidth*0.4||16)}px;font-weight:700;color:white">${(groupName||"G").charAt(0).toUpperCase()}</span>`;
+    return;
+  }
+  // Legacy base64
+  if (avatarVal.startsWith("data:image/")) {
+    el.innerHTML = `<img src="${avatarVal}" style="width:100%;height:100%;object-fit:cover;">`;
+    return;
+  }
+  // Emoji JSON: {"type":"emoji","emoji":"🦁","color":"#5288c1"}
+  if (avatarVal.startsWith("{")) {
+    try {
+      const av = JSON.parse(avatarVal);
+      if (av.type === "emoji") {
+        el.style.background = av.color || "#5288c1";
+        el.innerHTML = `<span style="font-size:22px">${av.emoji}</span>`;
+        return;
+      }
+      if (av.type === "url") {
+        el.innerHTML = `<img src="${av.src}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='📷'">`;
+        return;
+      }
+    } catch(e){}
+  }
+  // Plain URL
+  if (avatarVal.startsWith("http")) {
+    el.innerHTML = `<img src="${avatarVal}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='📷'">`;
+    return;
+  }
+  // Fallback
+  el.style.background = "#5288c1";
+  el.innerHTML = `<span style="font-size:16px;font-weight:700;color:white">${(groupName||"G").charAt(0).toUpperCase()}</span>`;
+}
+
+/* ════════════════════════════════════
+   PREMIUM BANNER  — shown to non-premium members inside the group
+   Owner earns ONLY when user buys premium from inside their group
+════════════════════════════════════ */
+function showPremiumBanner() {
+  // Remove any existing banner
+  document.getElementById("premiumBanner")?.remove();
+  const banner = document.createElement("div");
+  banner.id = "premiumBanner";
+  banner.className = "premium-banner";
+  banner.innerHTML = `
+    <div class="pb-icon">⭐</div>
+    <div class="pb-text">
+      <div class="pb-title">Unlock Premium</div>
+      <div class="pb-sub">Remove message limits • Support this group</div>
+    </div>
+    <button class="pb-btn" onclick="openPremiumModal()">₦5,000</button>`;
+  // Insert above input area
+  const inputArea = document.getElementById("inputArea");
+  inputArea.parentNode.insertBefore(banner, inputArea);
+}
+
+function openPremiumModal() {
+  // Tell the modal whose group this is so owner earns the reward
+  document.getElementById("pmPasscode").value = "";
+  document.getElementById("pmMsg").textContent = "";
+  const earnNote = document.getElementById("pmEarnNote");
+  earnNote.textContent = groupData?.ownerName
+    ? `💰 ${groupData.ownerName} (this group's owner) earns ₦2,500 when you buy here.`
+    : "";
+  document.getElementById("premiumModal").classList.add("open");
+}
+
+async function requestPasscode() {
+  if (!telegramId) return;
+  document.getElementById("pmMsg").textContent = "⏳ Sending passcode to your Telegram…";
+  document.getElementById("pmMsg").style.color = "#f59e0b";
+  try {
+    const res  = await fetch("/generate-premium-passcode", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    document.getElementById("pmMsg").textContent = "✅ Check your Telegram for the passcode!";
+    document.getElementById("pmMsg").style.color = "#4db6ac";
+  } catch(e) {
+    document.getElementById("pmMsg").textContent = "❌ " + e.message;
+    document.getElementById("pmMsg").style.color = "#ef5350";
+  }
+}
+
+async function buyPremium() {
+  const passcode = document.getElementById("pmPasscode").value.trim();
+  if (!passcode) {
+    document.getElementById("pmMsg").textContent = "❌ Please enter your passcode.";
+    document.getElementById("pmMsg").style.color = "#ef5350";
+    return;
+  }
+  document.getElementById("pmMsg").textContent = "⏳ Processing…";
+  document.getElementById("pmMsg").style.color = "#f59e0b";
+  try {
+    const res  = await fetch("/api/buy-premium", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        telegramId,
+        name:     userName,
+        username: userUname,
+        passcode,
+        groupId   // ← critical: owner only earns when groupId is sent
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    document.getElementById("pmMsg").textContent = "🎉 " + (data.message || "You are now Premium!");
+    document.getElementById("pmMsg").style.color = "#4db6ac";
+    isPremium = true;
+    // Remove banner, update rate bar
+    document.getElementById("premiumBanner")?.remove();
+    updateRateBar();
+    setTimeout(() => { closeModal("premiumModal"); location.reload(); }, 2000);
+  } catch(e) {
+    document.getElementById("pmMsg").textContent = "❌ " + e.message;
+    document.getElementById("pmMsg").style.color = "#ef5350";
+  }
+}
 
 init();
 </script>
