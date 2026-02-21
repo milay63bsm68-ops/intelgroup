@@ -133,6 +133,19 @@ const uName      = user?.first_name || "Guest";
 const uUsername  = user?.username || "";
 const NEW_RENDER = "";  // same server — leave empty
 
+/* ── Deep link: if opened via share link (startapp=<groupId>), go straight to group ── */
+(function handleStartParam() {
+  const urlParams = new URLSearchParams(location.search);
+  const startParam = urlParams.get("tgWebAppStartParam")
+    || tg?.initDataUnsafe?.start_param
+    || urlParams.get("startapp")
+    || null;
+  if (startParam && /^[A-F0-9]{10}$/i.test(startParam)) {
+    // Looks like a valid groupId — redirect to that group
+    location.href = "group.html?id=" + startParam;
+  }
+})();
+
 document.getElementById("uAv").textContent   = uName.charAt(0).toUpperCase();
 document.getElementById("uName").textContent  = uName + (uUsername ? " (@"+uUsername+")" : "");
 document.getElementById("uSub").textContent   = "ID: " + (telegramId || "N/A");
