@@ -211,11 +211,11 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="pm-earn" id="pmEarnNote"></div>
     <input class="modal-inp" id="pmPasscode" placeholder="Enter your 6-digit code…" style="margin-bottom:6px;letter-spacing:4px;font-size:18px;font-weight:700;text-align:center;">
     <div style="background:#1a2a40;border:1px solid #5288c155;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;line-height:1.9;color:var(--subtext);">
-      Don't have a code yet?<br>
-      <a href="https://t.me/intelpremiumbot" target="_blank"
-         style="color:#64b5f6;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:4px;">
-        👉 Open @intelpremiumbot
-      </a> to generate your code,<br>then come back and enter it above.
+      Don't have a code yet? Generate one instantly:<br>
+      <button id="genCodeBtn" onclick="generateCode()" style="display:block;width:100%;margin-top:8px;padding:9px;border:none;border-radius:10px;background:#1e40af;color:white;font-size:13px;font-weight:700;cursor:pointer;">
+        🔑 Generate My Code
+      </button>
+      <div id="genCodeMsg" style="margin-top:6px;min-height:16px;font-size:12px;"></div>
     </div>
     <div id="pmMsg" style="font-size:13px;margin-bottom:10px;min-height:18px;"></div>
     <button class="modal-btn mb-gold" onclick="buyPremium()">⭐ Buy Premium – ₦5,000</button>
@@ -855,6 +855,32 @@ function openPremiumModal() {
     ? `💰 ${groupData.ownerName} (this group's owner) earns ₦2,500 when you buy here.`
     : "";
   document.getElementById("premiumModal").classList.add("open");
+}
+
+async function generateCode() {
+  if (!telegramId) {
+    document.getElementById("genCodeMsg").innerHTML = '<span style="color:#ef5350">❌ Open from Telegram first.</span>';
+    return;
+  }
+  const btn = document.getElementById("genCodeBtn");
+  btn.disabled = true;
+  btn.textContent = "⏳ Generating…";
+  document.getElementById("genCodeMsg").innerHTML = "";
+  try {
+    const res  = await fetch("/generate-premium-passcode", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed");
+    document.getElementById("genCodeMsg").innerHTML =
+      '<span style="color:#4db6ac">✅ Code sent to your Telegram! Enter it above.</span>';
+    btn.textContent = "✅ Code Sent";
+  } catch(e) {
+    document.getElementById("genCodeMsg").innerHTML = `<span style="color:#ef5350">❌ ${e.message}</span>`;
+    btn.disabled = false;
+    btn.textContent = "🔑 Generate My Code";
+  }
 }
 
 async function buyPremium() {
