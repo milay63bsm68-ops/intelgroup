@@ -154,8 +154,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771713031062,
-    "lastMessageAt": null,
-    "lastMessage": null,
+    "lastMessageAt": 1771713041051,
+    "lastMessage": "mi: Hello hrre",
     "totalEarnings": 0,
     "members": {
       "7979664801": {
@@ -163,6 +163,15 @@ window.GROUPS_DATA = {
         "joinedAt": 1771713031062
       }
     },
-    "messages": []
+    "messages": [
+      {
+        "id": "aad979a55ce4ccfd",
+        "type": "text",
+        "senderId": "7979664801",
+        "senderName": "mi",
+        "text": "Hello hrre",
+        "timestamp": 1771713041051
+      }
+    ]
   }
 }
