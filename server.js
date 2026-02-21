@@ -149,6 +149,40 @@ async function writeGithubFile(filename, content, sha, message) {
   if (!r.ok) throw new Error("GitHub write failed: " + r.status);
 }
 
+/**
+ * Sanitize avatar value before saving to GitHub.
+ * - Accepts: emoji JSON string, URL JSON string, or a plain URL string.
+ * - Rejects:  raw base64 (data:image/…) — strips it to null to keep file small.
+ * - Returns a safe string (or null).
+ */
+function sanitizeAvatar(avatar) {
+  if (!avatar) return null;
+  // Block raw base64 — would bloat groups.js
+  if (typeof avatar === "string" && avatar.startsWith("data:image/")) {
+    console.warn("Avatar base64 rejected — use a URL instead.");
+    return null;
+  }
+  // Already a JSON avatar object string  {"type":"emoji",...}  or  {"type":"url",...}
+  if (typeof avatar === "string" && avatar.startsWith("{")) {
+    try {
+      const parsed = JSON.parse(avatar);
+      if (parsed.type === "url" && typeof parsed.src === "string") {
+        // Just store the URL directly — simpler
+        return parsed.src;
+      }
+      if (parsed.type === "emoji") {
+        // Keep emoji+color JSON as-is
+        return avatar;
+      }
+    } catch { /* fall through */ }
+  }
+  // Plain URL string (http/https)
+  if (typeof avatar === "string" && /^https?:\/\/.+/.test(avatar)) {
+    return avatar;
+  }
+  return null;
+}
+
 async function readGroups() {
   const { content, sha } = await readGithubFile(GROUPS_FILE);
   return {
@@ -370,7 +404,7 @@ app.post("/api/groups/create", async (req, res) => {
       description:   (description || "").slice(0, 255),
       ownerId:       telegramId,
       ownerName,
-      avatar:        avatar || null,
+      avatar:        sanitizeAvatar(avatar),   // ← safe: URL string or emoji JSON only
       isPrivate:     Boolean(isPrivate),
       isPremiumOnly: Boolean(isPremiumOnly),
       createdAt:     Date.now(),
@@ -446,7 +480,7 @@ app.post("/api/groups/:id/edit", async (req, res) => {
       return res.status(403).json({ error: "Only the group owner can edit" });
     if (name)                        group.name          = name.slice(0, 64);
     if (description !== undefined)   group.description   = description.slice(0, 255);
-    if (avatar !== undefined)        group.avatar        = avatar;
+    if (avatar !== undefined)        group.avatar        = sanitizeAvatar(avatar);
     if (isPrivate !== undefined)     group.isPrivate     = Boolean(isPrivate);
     if (isPremiumOnly !== undefined) group.isPremiumOnly = Boolean(isPremiumOnly);
     await saveGroups(groups, sha, `Edit group ${req.params.id}`);
