@@ -154,8 +154,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771713031062,
-    "lastMessageAt": 1771713065778,
-    "lastMessage": "mi: Leeme test voice note",
+    "lastMessageAt": 1771713078631,
+    "lastMessage": "🎤 mi: Voice note",
     "totalEarnings": 0,
     "members": {
       "7979664801": {
@@ -179,6 +179,15 @@ window.GROUPS_DATA = {
         "senderName": "mi",
         "text": "Leeme test voice note",
         "timestamp": 1771713065778
+      },
+      {
+        "id": "64049d3557bcad86",
+        "type": "voice",
+        "senderId": "7979664801",
+        "senderName": "mi",
+        "duration": "0:04",
+        "audioUrl": "/api/audio/64049d3557bcad86",
+        "timestamp": 1771713078631
       }
     ]
   }
