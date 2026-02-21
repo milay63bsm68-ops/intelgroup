@@ -46,15 +46,6 @@ window.GROUPS_DATA = {
         "timestamp": 1771711595318
       },
       {
-        "id": "50bbef89439a62ea",
-        "type": "voice",
-        "senderId": "7497799470",
-        "senderName": "m",
-        "duration": "0:11",
-        "audioUrl": "/api/audio/50bbef89439a62ea",
-        "timestamp": 1771711646615
-      },
-      {
         "id": "ef74cb025f1379b5",
         "type": "text",
         "senderId": "7497799470",
