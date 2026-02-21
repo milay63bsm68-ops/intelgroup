@@ -42,18 +42,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   text-align:center;padding:3px 0;color:#fff;
 }
 
-/* ── TAB SWITCHER ── */
-.av-tabs{display:flex;gap:6px;margin:12px 0 14px;}
-.av-tab{
-  flex:1;padding:8px 0;border:none;border-radius:10px;
-  font-size:13px;font-weight:600;cursor:pointer;
-  background:var(--surface2);color:var(--subtext);
-  border:1px solid var(--border);transition:all 0.18s;
-}
-.av-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
-
 /* ── EMOJI AVATAR PICKER ── */
-#panelEmoji{display:block;}
 .emoji-grid{
   display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
   background:var(--surface2);border:1px solid var(--border);
@@ -77,19 +66,9 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .color-dot:hover{transform:scale(1.15);}
 .color-dot.selected{border-color:#fff;box-shadow:0 0 0 2px var(--accent);}
 
-/* ── IMAGE URL PANEL ── */
-#panelUrl{display:none;}
-.url-hint{font-size:12px;color:var(--subtext);margin-bottom:8px;line-height:1.5;}
-.url-row{display:flex;gap:8px;}
-.url-row .inp{flex:1;}
-.btn-load{
-  padding:0 14px;border:none;border-radius:12px;
-  background:var(--accent);color:#fff;font-size:13px;
-  font-weight:700;cursor:pointer;white-space:nowrap;
-  flex-shrink:0;
-}
-.btn-load:disabled{opacity:0.45;}
-.url-status{font-size:12px;margin-top:6px;min-height:18px;}
+/* ── IMAGE URL INPUT ── */
+.img-url-hint{font-size:11px;color:var(--subtext);margin-top:6px;line-height:1.5;}
+.url-status{font-size:12px;margin-top:5px;min-height:16px;}
 .url-status.ok{color:var(--green);}
 .url-status.err{color:var(--red);}
 .url-status.loading{color:#f59e0b;}
@@ -139,30 +118,18 @@ textarea.inp{resize:none;height:90px;font-family:inherit;}
     </div>
   </div>
 
-  <!-- TAB SWITCHER -->
-  <div class="av-tabs">
-    <button class="av-tab active" onclick="switchTab('emoji',this)">🎨 Choose Avatar</button>
-    <button class="av-tab" onclick="switchTab('url',this)">🔗 Image URL</button>
-  </div>
+  <!-- EMOJI PICKER (always visible) -->
+  <div class="sec-label" style="margin-top:14px;">Choose Avatar</div>
+  <div class="emoji-grid" id="emojiGrid"></div>
+  <div class="color-strip" id="colorStrip"></div>
 
-  <!-- PANEL: EMOJI PICKER -->
-  <div id="panelEmoji">
-    <div class="emoji-grid" id="emojiGrid"></div>
-    <div class="color-strip" id="colorStrip"></div>
-  </div>
-
-  <!-- PANEL: IMAGE URL -->
-  <div id="panelUrl">
-    <div class="url-hint">
-      Paste a direct image URL (e.g. from Imgur, PostImg, etc.).<br>
-      The image will be hosted automatically and used as your group avatar.
-    </div>
-    <div class="url-row">
-      <input class="inp" id="imgUrlInput" placeholder="https://i.imgur.com/example.jpg" type="url">
-      <button class="btn-load" id="loadUrlBtn" onclick="loadImageUrl()">Load</button>
-    </div>
-    <div class="url-status" id="urlStatus"></div>
-  </div>
+  <!-- IMAGE URL (optional override) -->
+  <div class="sec-label">Or Use Image URL (optional)</div>
+  <input class="inp" id="imgUrlInput" type="url"
+    placeholder="https://i.imgur.com/example.jpg"
+    oninput="onUrlInput(this.value)">
+  <div class="url-status" id="urlStatus"></div>
+  <div class="img-url-hint">Paste any direct image link — it will be used as your group avatar instead of the emoji above.</div>
 
   <!-- GROUP NAME -->
   <div class="sec-label">Group Name *</div>
@@ -276,64 +243,44 @@ function renderPreview() {
 }
 
 function onNameInput(val) {
-  // only update preview letter if using emoji mode & no image
   if (!avatarImageUrl) renderPreview();
 }
 
 /* ════════════════════════════════════
-   TABS
+   IMAGE URL — live preview as user types
 ════════════════════════════════════ */
-function switchTab(tab, btn) {
-  document.querySelectorAll(".av-tab").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  document.getElementById("panelEmoji").style.display = tab === "emoji" ? "block" : "none";
-  document.getElementById("panelUrl").style.display   = tab === "url"   ? "block" : "none";
-}
-
-/* ════════════════════════════════════
-   IMAGE URL LOADER
-   Uses allorigins.win proxy to validate
-   + stores URL directly (no upload needed —
-     GitHub just stores the URL string)
-════════════════════════════════════ */
-async function loadImageUrl() {
-  const input  = document.getElementById("imgUrlInput");
-  const status = document.getElementById("urlStatus");
-  const btn    = document.getElementById("loadUrlBtn");
-  const rawUrl = input.value.trim();
-
-  if (!rawUrl) { setUrlStatus("Please enter a URL","err"); return; }
-
-  setUrlStatus("⏳ Checking image…","loading");
-  btn.disabled = true;
-
-  try {
-    // Test that the URL actually loads as an image
-    await new Promise((resolve, reject) => {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload  = () => resolve();
-      img.onerror = () => reject(new Error("Could not load image from this URL"));
-      img.src = rawUrl;
-      setTimeout(() => reject(new Error("Timeout loading image")), 8000);
-    });
-
-    // Store the URL directly — no upload needed
-    avatarImageUrl = rawUrl;
-    renderPreview();
-    setUrlStatus("✅ Image loaded!","ok");
-  } catch(e) {
-    setUrlStatus("❌ " + e.message,"err");
+let urlDebounce = null;
+function onUrlInput(val) {
+  clearTimeout(urlDebounce);
+  const trimmed = val.trim();
+  if (!trimmed) {
+    // cleared — fall back to emoji
     avatarImageUrl = null;
-  } finally {
-    btn.disabled = false;
+    renderPreview();
+    setUrlStatus("", "");
+    return;
   }
+  setUrlStatus("⏳ Loading…", "loading");
+  urlDebounce = setTimeout(() => {
+    const img = new Image();
+    img.onload = () => {
+      avatarImageUrl = trimmed;
+      renderPreview();
+      setUrlStatus("✅ Image loaded!", "ok");
+    };
+    img.onerror = () => {
+      avatarImageUrl = null;
+      renderPreview();
+      setUrlStatus("❌ Could not load image from this URL", "err");
+    };
+    img.src = trimmed;
+  }, 600);
 }
 
 function setUrlStatus(msg, cls) {
   const el = document.getElementById("urlStatus");
   el.textContent = msg;
-  el.className   = "url-status " + cls;
+  el.className = "url-status " + cls;
 }
 
 /* ════════════════════════════════════
