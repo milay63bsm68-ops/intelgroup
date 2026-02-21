@@ -874,7 +874,7 @@ async function generateCode() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Failed");
     document.getElementById("genCodeMsg").innerHTML =
-      '<span style="color:#4db6ac">✅ Code sent to your Telegram! Enter it above.</span>';
+      '<span style="color:#4db6ac">✅ Code sent! Open your Telegram app — check messages from the bot, then enter the code above.</span>';
     btn.textContent = "✅ Code Sent";
   } catch(e) {
     document.getElementById("genCodeMsg").innerHTML = `<span style="color:#ef5350">❌ ${e.message}</span>`;
