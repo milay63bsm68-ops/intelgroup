@@ -86,16 +86,19 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
   <div class="steps-card">
     <div class="steps-title">How it works</div>
-    <div class="step"><div class="step-num">1</div><div class="step-txt">Click Get Premium — ₦5,000 (shown in USD too) will be deducted from your balance</div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-txt">A 6-digit code is sent to your Telegram bot</div></div>
+    <div class="step"><div class="step-num">1</div><div class="step-txt">Click Get Premium — ₦5,000 will be deducted from your balance</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-txt">A 6-digit code is sent to <a href="https://t.me/intelpremiumbot" target="_blank" style="color:#64b5f6;font-weight:700;">@intelpremiumbot</a> — tap to open it</div></div>
     <div class="step"><div class="step-num">3</div><div class="step-txt">Enter the code here — you are instantly upgraded!</div></div>
   </div>
   <button class="btn btn-gold" id="getCodeBtn" onclick="requestCode()">⭐ Get Premium — ₦5,000</button>
   <button class="btn btn-gray" id="depositBtn" onclick="location.href='deposit.html'" style="display:none">💰 Deposit Funds First</button>
   <div class="pc-section" id="pcSection">
-    <div class="msg info">
+    <div class="msg info" style="line-height:2;">
       ✅ Verification code sent to your Telegram bot.<br>
-      <a href="https://t.me/intelligentverificationlinkbot" target="_blank" style="color:#64b5f6">Open @intelligentverificationlinkbot</a>
+      <a href="https://t.me/intelpremiumbot" target="_blank"
+         style="color:#64b5f6;font-weight:700;font-size:14px;">
+        👉 Open @intelpremiumbot to get your code
+      </a>
     </div>
     <input class="inp" id="pcInput" type="number" placeholder="000000" maxlength="6">
     <button class="btn btn-green" style="margin-top:12px" onclick="confirmPremium()">✅ Confirm Purchase</button>
