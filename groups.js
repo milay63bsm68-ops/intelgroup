@@ -78,5 +78,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771711727828
       }
     ]
+  },
+  "23970EC955": {
+    "name": "Harmayo is Testing on another acc",
+    "description": "Am just testing",
+    "ownerId": "7979664801",
+    "ownerName": "mi",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🥳\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771712760494,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7979664801": {
+        "name": "mi",
+        "joinedAt": 1771712760494
+      }
+    },
+    "messages": []
   }
 }
