@@ -1,1 +1,3 @@
-window.PREMIUM_USERS = []
+window.PREMIUM_USERS = [
+  "6940101627"
+]
