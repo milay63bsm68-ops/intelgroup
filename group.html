@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Group Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#17212b;--surface:#1e2c3a;--surface2:#242f3d;--accent:#5288c1;--accent2:#64b5f6;--text:#e8e8e8;--subtext:#8a9ba8;--border:#2b3a4a;--green:#4db6ac;--red:#ef5350;--gold:#ffd700;--out:#2b5278;--in:#1e2c3a;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;display:flex;flex-direction:column;}
+.header{background:var(--surface);padding:10px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.back-btn{background:none;border:none;color:var(--accent2);font-size:22px;cursor:pointer;flex-shrink:0;}
+.h-av{width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;}
+.h-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.h-info{flex:1;min-width:0;}
+.h-name{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.h-sub{font-size:12px;color:var(--subtext);}
+.h-btn{background:none;border:none;color:var(--subtext);font-size:20px;cursor:pointer;padding:4px;}
+#msgs{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch;}
+.sys-msg{text-align:center;font-size:12px;color:var(--subtext);background:rgba(30,44,58,0.7);padding:4px 12px;border-radius:10px;margin:6px auto;max-width:80%;}
+.bw{display:flex;flex-direction:column;max-width:85%;animation:fi 0.15s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.bw.out{align-self:flex-end;align-items:flex-end;}
+.bw.in{align-self:flex-start;align-items:flex-start;}
+.b-sender{font-size:12px;color:var(--accent2);margin-bottom:2px;font-weight:600;padding:0 4px;}
+.bubble{padding:8px 12px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word;}
+.bw.out .bubble{background:var(--out);border-bottom-right-radius:4px;}
+.bw.in .bubble{background:var(--in);border-bottom-left-radius:4px;border:1px solid var(--border);}
+.b-meta{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--subtext);padding:0 4px;margin-top:2px;}
+.bw.out .b-meta{justify-content:flex-end;}
+.del-btn{background:none;border:none;color:var(--subtext);font-size:14px;cursor:pointer;padding:2px 4px;opacity:0;}
+.bw:hover .del-btn{opacity:1;}
+.voice-bub{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:16px;background:var(--in);border:1px solid var(--border);min-width:160px;}
+.bw.out .voice-bub{background:var(--out);border-color:transparent;}
+.play-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:white;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.wave{flex:1;height:24px;display:flex;align-items:center;gap:2px;}
+.wbar{flex:1;background:var(--subtext);border-radius:2px;min-height:3px;max-height:20px;}
+.v-dur{font-size:12px;color:var(--subtext);flex-shrink:0;}
+.rate-bar{background:var(--surface);padding:8px 14px;font-size:12px;color:var(--subtext);display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);flex-shrink:0;}
+.rate-prog{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.rate-fill{height:100%;background:var(--green);border-radius:2px;transition:width 0.3s;}
+.rate-fill.warn{background:#f59e0b;}
+.rate-fill.full{background:var(--red);}
+.rec-bar{background:#3d1515;border-top:1px solid var(--red);padding:8px 14px;font-size:13px;color:#fca5a5;display:none;align-items:center;gap:8px;flex-shrink:0;}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.input-area{background:var(--surface);padding:10px 12px;display:flex;align-items:flex-end;gap:10px;border-top:1px solid var(--border);flex-shrink:0;}
+.msg-inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 14px;color:var(--text);font-size:14px;resize:none;max-height:120px;min-height:40px;font-family:inherit;outline:none;line-height:1.4;}
+.msg-inp:focus{border-color:var(--accent);}
+.send-btn,.voice-btn{width:42px;height:42px;border-radius:50%;border:none;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.send-btn{background:var(--accent);}
+.send-btn:active{transform:scale(0.9);}
+.voice-btn{background:var(--surface2);color:var(--subtext);border:1px solid var(--border);}
+.voice-btn.rec{background:var(--red);color:white;animation:pulse 1s infinite;}
+.overlay{position:absolute;inset:0;background:rgba(23,33,43,0.93);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
+.ov-icon{font-size:52px;margin-bottom:14px;}
+.ov-title{font-size:17px;font-weight:700;margin-bottom:8px;}
+.ov-sub{font-size:13px;color:var(--subtext);margin-bottom:20px;line-height:1.6;}
+.btn-join{padding:12px 28px;border-radius:24px;border:none;background:var(--accent);color:white;font-size:14px;font-weight:700;cursor:pointer;}
+.btn-upgrade{padding:12px 28px;border-radius:24px;border:none;background:linear-gradient(135deg,#f59e0b,#f97316);color:white;font-size:14px;font-weight:700;cursor:pointer;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:100;display:none;align-items:flex-end;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px;animation:su 0.25s ease;}
+@keyframes su{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:16px;text-align:center;}
+.modal-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-size:14px;outline:none;margin-bottom:10px;}
+.modal-ta{resize:none;height:80px;font-family:inherit;}
+.modal-btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;color:white;}
+.mb-save{background:var(--accent);}
+.mb-cancel{background:var(--surface2);color:var(--subtext);}
+.mb-danger{background:var(--red);}
+.tmp-msg{padding:10px 12px;border-radius:10px;font-size:13px;margin:8px;animation:fi 0.2s ease;}
+.err{background:#3d1515;border:1px solid var(--red);color:#fca5a5;}
+.suc{background:#1a3a2a;border:1px solid var(--green);color:#86efac;}
+.loading-msg{text-align:center;padding:40px 20px;color:var(--subtext);font-size:14px;}
+</style>
+</head>
+<body>
+<div class="header">
+  <button class="back-btn" onclick="location.href='index.html'">←</button>
+  <div class="h-av" id="hAv">G</div>
+  <div class="h-info">
+    <div class="h-name" id="hName">Loading…</div>
+    <div class="h-sub"  id="hSub">members</div>
+  </div>
+  <button class="h-btn" id="editBtn" style="display:none" onclick="openEdit()">⚙️</button>
+  <button class="h-btn" onclick="openInfo()">ℹ️</button>
+</div>
+
+<div id="msgs"><div class="loading-msg">Loading messages…</div></div>
+
+<div class="rate-bar" id="rateBar" style="display:none">
+  <span id="rateText">0/5 messages</span>
+  <div class="rate-prog"><div class="rate-fill" id="rateFill" style="width:0%"></div></div>
+  <span id="rateCd"></span>
+</div>
+
+<div class="rec-bar" id="recBar">
+  <div class="rec-dot"></div><span>Recording… tap 🎤 to stop</span>
+</div>
+
+<div class="input-area" id="inputArea">
+  <button class="voice-btn" id="voiceBtn" onclick="toggleRec()">🎤</button>
+  <textarea class="msg-inp" id="msgInp" placeholder="Message…" rows="1" oninput="autoResize(this)"></textarea>
+  <button class="send-btn" onclick="sendMsg()">➤</button>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="editModal" onclick="closeModal('editModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Edit Group</div>
+    <input class="modal-inp" id="eName" maxlength="64" placeholder="Group name">
+    <textarea class="modal-inp modal-ta" id="eDesc" maxlength="255" placeholder="Description"></textarea>
+    <button class="modal-btn mb-save"   onclick="saveEdit()">Save Changes</button>
+    <button class="modal-btn mb-danger" onclick="delGroup()">🗑️ Delete Group</button>
+    <button class="modal-btn mb-cancel" onclick="closeModal('editModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="modal-bg" id="infoModal" onclick="closeModal('infoModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="infoTitle">Group Info</div>
+    <div id="infoContent" style="font-size:13px;color:var(--subtext);line-height:1.8;"></div>
+    <button class="modal-btn mb-cancel" style="margin-top:14px" onclick="closeModal('infoModal')">Close</button>
+    <button class="modal-btn mb-danger" id="leaveBtn" onclick="leaveGroup()" style="margin-top:6px;display:none">🚪 Leave Group</button>
+  </div>
+</div>
+
+<script>
+const tg = window.Telegram?.WebApp;
+tg?.ready(); tg?.expand();
+const user       = tg?.initDataUnsafe?.user;
+const telegramId = user ? String(user.id) : null;
+const userName   = user?.first_name || "Guest";
+const userUname  = user?.username ? "@"+user.username : "";
+
+const params  = new URLSearchParams(location.search);
+const groupId = params.get("id");
+if (!groupId) location.href = "index.html";
+
+let groupData    = null;
+let messages     = [];
+let isOwner      = false;
+let isJoined     = false;
+let isPremium    = false;
+let msgCount     = 0;
+let msgWinStart  = Date.now();
+const MSG_LIMIT  = 5;
+const MSG_WIN    = 5 * 60 * 1000;
+let cdTimer      = null;
+let pollInterval = null;
+let mediaRec     = null;
+let audioChunks  = [];
+let isRecording  = false;
+let joinedGroups = JSON.parse(localStorage.getItem("joinedGroups") || "[]");
+
+async function init() {
+  try {
+    const [gRes, pRes] = await Promise.all([
+      fetch("/api/groups/" + groupId),
+      fetch("/api/premium-list")
+    ]);
+    if (!gRes.ok) { document.getElementById("msgs").innerHTML = '<div class="loading-msg">Group not found.</div>'; return; }
+    groupData = await gRes.json();
+    const pList = await pRes.json();
+    isPremium = telegramId && pList.includes(telegramId);
+    isOwner   = groupData.ownerId === telegramId;
+    isJoined  = joinedGroups.includes(groupId) || isOwner || !!(groupData.members && groupData.members[telegramId]);
+
+    const hAv = document.getElementById("hAv");
+    if (groupData.avatar) hAv.innerHTML = `<img src="${groupData.avatar}" alt="">`;
+    else hAv.textContent = (groupData.name||"G").charAt(0).toUpperCase();
+    document.getElementById("hName").textContent = groupData.name || "Group";
+    const mc = Object.keys(groupData.members||{}).length;
+    document.getElementById("hSub").textContent  = mc + " member" + (mc!==1?"s":"");
+    if (isOwner) document.getElementById("editBtn").style.display = "flex";
+
+    if (!isJoined) { showJoinOverlay(); return; }
+    if (groupData.isPremiumOnly && !isPremium && !isOwner) { showPremiumOverlay(); return; }
+
+    await fetch("/api/groups/" + groupId + "/join", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId, name: userName, username: userUname })
+    });
+    if (!joinedGroups.includes(groupId)) {
+      joinedGroups.push(groupId);
+      localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+    }
+    loadMsgs();
+    pollInterval = setInterval(loadMsgs, 4000);
+    updateRateBar();
+  } catch(e) {
+    document.getElementById("msgs").innerHTML = '<div class="loading-msg">Error loading group.</div>';
+  }
+}
+
+function showJoinOverlay() {
+  document.getElementById("msgs").innerHTML = `
+    <div class="overlay">
+      <div class="ov-icon">👥</div>
+      <div class="ov-title">Join this Group</div>
+      <div class="ov-sub">${esc(groupData.description || "Join to start chatting.")}</div>
+      <button class="btn-join" onclick="doJoin()">Join Group</button>
+    </div>`;
+  document.getElementById("inputArea").style.display = "none";
+  document.getElementById("rateBar").style.display   = "none";
+}
+async function doJoin() {
+  await fetch("/api/groups/" + groupId + "/join", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ telegramId, name: userName, username: userUname })
+  });
+  joinedGroups.push(groupId);
+  localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+  location.reload();
+}
+function showPremiumOverlay() {
+  document.getElementById("msgs").innerHTML = `
+    <div class="overlay">
+      <div class="ov-icon">⭐</div>
+      <div class="ov-title">Premium Members Only</div>
+      <div class="ov-sub">This group is for premium members only. Upgrade to join.</div>
+      <button class="btn-upgrade" onclick="location.href='premium.html?groupId=${groupId}'">⭐ Get Premium – ₦5,000</button>
+    </div>`;
+  document.getElementById("inputArea").style.display = "none";
+  document.getElementById("rateBar").style.display   = "none";
+}
+
+async function loadMsgs() {
+  try {
+    const res  = await fetch("/api/groups/" + groupId + "/messages");
+    const data = await res.json();
+    if (JSON.stringify(data) === JSON.stringify(messages)) return;
+    messages = data;
+    renderMsgs();
+  } catch(e){}
+}
+
+function renderMsgs() {
+  const area    = document.getElementById("msgs");
+  const atBottom = area.scrollHeight - area.scrollTop - area.clientHeight < 80;
+  if (messages.length === 0) { area.innerHTML = '<div class="sys-msg">No messages yet. Say hello! 👋</div>'; return; }
+  area.innerHTML = messages.map(m => renderMsg(m)).join("");
+  if (atBottom) area.scrollTop = area.scrollHeight;
+}
+
+function renderMsg(m) {
+  const isMe   = m.senderId === telegramId;
+  const cls    = isMe ? "out" : "in";
+  const time   = new Date(m.timestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  const canDel = isMe || isOwner;
+  if (m.type === "system") return `<div class="sys-msg">${esc(m.text)}</div>`;
+  if (m.type === "voice") {
+    const bars = Array.from({length:20},(_,i) => {
+      const h = 4 + Math.abs(Math.sin(i*0.7 + m.timestamp*0.001)*16);
+      return `<div class="wbar" style="height:${h}px"></div>`;
+    }).join("");
+    return `<div class="bw ${cls}">
+      ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
+      <div class="voice-bub">
+        <button class="play-btn" onclick="playVoice('${m.audioUrl}',this)">▶</button>
+        <div class="wave">${bars}</div>
+        <span class="v-dur">${m.duration||"0:00"}</span>
+      </div>
+      <div class="b-meta">${time}${canDel?`<button class="del-btn" onclick="delMsg('${m.id}')">🗑</button>`:""}</div>
+    </div>`;
+  }
+  return `<div class="bw ${cls}">
+    ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
+    <div class="bubble">${fmtText(m.text)}</div>
+    <div class="b-meta">${time}${m.edited?"<span>edited</span>":""}${canDel?`<button class="del-btn" onclick="delMsg('${m.id}')">🗑</button>`:""}${isMe?"✓✓":""}</div>
+  </div>`;
+}
+function fmtText(t) {
+  return esc(t).replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" style="color:var(--accent2)">$1</a>');
+}
+
+async function sendMsg() {
+  const inp  = document.getElementById("msgInp");
+  const text = inp.value.trim();
+  if (!text || !telegramId) return;
+  if (!isOwner && !isPremium) {
+    const now = Date.now();
+    if (now - msgWinStart > MSG_WIN) { msgCount = 0; msgWinStart = now; }
+    if (msgCount >= MSG_LIMIT) {
+      const left = Math.ceil((MSG_WIN - (Date.now() - msgWinStart)) / 1000);
+      showTmp(`⏳ Limit reached. Wait ${Math.floor(left/60)}m ${left%60}s or get ⭐ Premium`, "err");
+      return;
+    }
+    msgCount++;
+    updateRateBar();
+  }
+  inp.value = ""; inp.style.height = "40px";
+  try {
+    await fetch("/api/groups/" + groupId + "/messages", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId, senderName: userName, text, type:"text" })
+    });
+    loadMsgs();
+  } catch(e) { showTmp("❌ Failed to send","err"); }
+}
+
+function autoResize(el) { el.style.height="40px"; el.style.height=Math.min(el.scrollHeight,120)+"px"; }
+document.getElementById("msgInp").addEventListener("keypress", e => {
+  if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+});
+
+async function delMsg(msgId) {
+  if (!confirm("Delete this message for everyone?")) return;
+  try {
+    await fetch("/api/groups/" + groupId + "/messages/" + msgId, {
+      method:"DELETE", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId, isOwner })
+    });
+    loadMsgs();
+  } catch(e){}
+}
+
+function updateRateBar() {
+  if (isOwner || isPremium) { document.getElementById("rateBar").style.display="none"; return; }
+  document.getElementById("rateBar").style.display = "flex";
+  const pct  = (msgCount / MSG_LIMIT) * 100;
+  const fill = document.getElementById("rateFill");
+  fill.style.width = pct + "%";
+  fill.className   = "rate-fill" + (pct>=100?" full":pct>=80?" warn":"");
+  document.getElementById("rateText").textContent = msgCount+"/"+MSG_LIMIT+" messages";
+  if (msgCount >= MSG_LIMIT) startCd();
+}
+function startCd() {
+  if (cdTimer) clearInterval(cdTimer);
+  const el  = document.getElementById("rateCd");
+  cdTimer = setInterval(() => {
+    const diff = Math.max(0, msgWinStart + MSG_WIN - Date.now());
+    if (diff <= 0) { el.textContent=""; msgCount=0; msgWinStart=Date.now(); updateRateBar(); clearInterval(cdTimer); return; }
+    const s = Math.ceil(diff/1000);
+    el.textContent = Math.floor(s/60)+"m "+s%60+"s";
+  }, 1000);
+}
+
+async function toggleRec() {
+  if (isRecording) stopRec(); else startRec();
+}
+async function startRec() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    audioChunks  = [];
+    mediaRec     = new MediaRecorder(stream);
+    mediaRec.ondataavailable = e => audioChunks.push(e.data);
+    mediaRec.onstop          = uploadVoice;
+    mediaRec.start();
+    isRecording = true;
+    document.getElementById("voiceBtn").className = "voice-btn rec";
+    document.getElementById("voiceBtn").textContent = "⏹";
+    document.getElementById("recBar").style.display = "flex";
+  } catch(e) { showTmp("❌ Microphone access denied","err"); }
+}
+function stopRec() {
+  if (mediaRec && isRecording) {
+    mediaRec.stop();
+    mediaRec.stream.getTracks().forEach(t=>t.stop());
+    isRecording = false;
+    document.getElementById("voiceBtn").className   = "voice-btn";
+    document.getElementById("voiceBtn").textContent = "🎤";
+    document.getElementById("recBar").style.display = "none";
+  }
+}
+async function uploadVoice() {
+  const blob = new Blob(audioChunks, { type:"audio/webm" });
+  const dur  = await new Promise(res => {
+    const a = new Audio(URL.createObjectURL(blob));
+    a.onloadedmetadata = () => res(a.duration||0);
+    a.onerror = () => res(0);
+  });
+  const fmtDur = s => Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const b64 = e.target.result.split(",")[1];
+    try {
+      await fetch("/api/groups/" + groupId + "/messages", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ telegramId, senderName:userName, type:"voice", audioData:b64, duration:fmtDur(dur) })
+      });
+      loadMsgs();
+    } catch(err) { showTmp("❌ Failed to send voice note","err"); }
+  };
+  reader.readAsDataURL(blob);
+}
+
+function playVoice(url, btn) {
+  const audio = new Audio(url);
+  btn.textContent = "⏸";
+  audio.play();
+  audio.onended = () => { btn.textContent = "▶"; };
+}
+
+function openEdit() {
+  document.getElementById("eName").value = groupData.name || "";
+  document.getElementById("eDesc").value = groupData.description || "";
+  document.getElementById("editModal").classList.add("open");
+}
+async function saveEdit() {
+  const name = document.getElementById("eName").value.trim();
+  const desc = document.getElementById("eDesc").value.trim();
+  if (!name) return;
+  try {
+    const res = await fetch("/api/groups/" + groupId + "/edit", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId, name, description:desc })
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    closeModal("editModal");
+    groupData.name = name; groupData.description = desc;
+    document.getElementById("hName").textContent = name;
+    showTmp("✅ Group updated","suc");
+  } catch(e) { showTmp("❌ "+e.message,"err"); }
+}
+async function delGroup() {
+  if (!confirm("Delete this group permanently?")) return;
+  try {
+    const res = await fetch("/api/groups/" + groupId + "/delete", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId })
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    location.href = "index.html";
+  } catch(e) { showTmp("❌ "+e.message,"err"); }
+}
+
+function openInfo() {
+  if (!groupData) return;
+  const mc = Object.keys(groupData.members||{}).length;
+  document.getElementById("infoTitle").textContent = groupData.name || "Group";
+  document.getElementById("infoContent").innerHTML = `
+    ${groupData.description?`<p style="margin-bottom:12px;color:var(--text)">${esc(groupData.description)}</p>`:""}
+    <div>👥 <b>${mc}</b> member${mc!==1?"s":""}</div>
+    <div>🆔 Group ID: <code>${groupId}</code></div>
+    <div>📅 Created: ${groupData.createdAt?new Date(groupData.createdAt).toLocaleDateString():"N/A"}</div>
+    ${groupData.isPremiumOnly?"<div>⭐ Premium members only</div>":""}
+    ${groupData.isPrivate?"<div>🔒 Private group</div>":"<div>🌐 Public group</div>"}
+    ${isOwner?`<br><div style="font-size:12px;color:var(--subtext)">💰 Total earnings: ₦${(groupData.totalEarnings||0).toLocaleString()}</div>`:""}`;
+  const lb = document.getElementById("leaveBtn");
+  lb.style.display = (!isOwner && isJoined) ? "block" : "none";
+  document.getElementById("infoModal").classList.add("open");
+}
+async function leaveGroup() {
+  if (!confirm("Leave this group?")) return;
+  try {
+    await fetch("/api/groups/" + groupId + "/leave", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId })
+    });
+    joinedGroups = joinedGroups.filter(id => id !== groupId);
+    localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+    location.href = "index.html";
+  } catch(e){}
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+function showTmp(text, type) {
+  const area = document.getElementById("msgs");
+  const div  = document.createElement("div");
+  div.className = "tmp-msg " + type;
+  div.textContent = text;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  setTimeout(() => div.remove(), 4000);
+}
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+init();
+</script>
+</body>
+</html>

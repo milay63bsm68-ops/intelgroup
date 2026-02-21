@@ -1,0 +1,1 @@
+window.PREMIUM_USERS = []

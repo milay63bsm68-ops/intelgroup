@@ -1,0 +1,1 @@
+window.GROUPS_DATA = {}

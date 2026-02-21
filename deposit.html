@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Deposit Funds</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#17212b;--surface:#1e2c3a;--surface2:#242f3d;--accent:#5288c1;--text:#e8e8e8;--subtext:#8a9ba8;--border:#2b3a4a;--green:#4db6ac;--red:#ef5350;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;min-height:100vh;}
+.header{background:var(--surface);padding:14px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+.back-btn{background:none;border:none;color:#64b5f6;font-size:22px;cursor:pointer;}
+.header-title{font-size:17px;font-weight:700;}
+.content{padding:16px;max-width:460px;margin:0 auto;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;}
+.card-title{font-size:15px;font-weight:700;margin-bottom:4px;color:#64b5f6;}
+.bal-val{font-size:22px;font-weight:700;color:var(--green);}
+.bal-usd{font-size:12px;color:var(--subtext);}
+.method-tabs{display:flex;gap:8px;margin-bottom:14px;}
+.mtab{flex:1;padding:10px;border-radius:10px;border:2px solid var(--border);background:var(--surface2);color:var(--subtext);font-size:13px;font-weight:700;cursor:pointer;text-align:center;transition:all 0.2s;}
+.mtab.active{border-color:var(--accent);color:#64b5f6;background:#0a1628;}
+.bank-box{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;}
+.bank-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.bank-row:last-child{margin-bottom:0;}
+.bank-label{color:var(--subtext);font-size:12px;}
+.bank-val{color:white;font-weight:700;font-size:14px;}
+.copy-btn{background:#1e40af;color:white;border:none;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;margin-left:8px;flex-shrink:0;}
+.crypto-addr{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;word-break:break-all;font-family:monospace;font-size:13px;color:#60a5fa;margin-bottom:10px;user-select:all;}
+.note{background:#0a1628;border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:10px 12px;font-size:12px;color:#cbd5e1;line-height:1.6;margin-top:10px;}
+label{font-size:12px;color:var(--subtext);display:block;margin-top:10px;}
+input[type=text],input[type=tel],input[type=number]{width:100%;padding:11px;margin-top:6px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;outline:none;}
+.upload-area{border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;margin-top:10px;transition:border-color 0.2s;position:relative;}
+.upload-area:hover,.upload-area.has-file{border-color:var(--accent);}
+.upload-area input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.upload-icon{font-size:32px;margin-bottom:6px;}
+.upload-txt{font-size:13px;color:var(--subtext);}
+.upload-name{font-size:13px;color:var(--green);margin-top:4px;}
+#previewImg{width:100%;border-radius:10px;margin-top:10px;display:none;max-height:200px;object-fit:contain;background:var(--surface2);}
+.btn-submit{width:100%;padding:14px;margin-top:14px;border:none;border-radius:12px;background:var(--accent);color:white;font-weight:700;font-size:15px;cursor:pointer;}
+.btn-submit:disabled{opacity:0.4;cursor:not-allowed;}
+.msg{padding:10px 12px;border-radius:10px;font-size:13px;margin-top:10px;}
+.error{background:#3d1515;border:1px solid var(--red);color:#fca5a5;}
+.success{background:#1a3a2a;border:1px solid var(--green);color:#86efac;}
+.loading{background:#2a2a15;border:1px solid #f59e0b;color:#fcd34d;}
+</style>
+</head>
+<body>
+<div class="header">
+  <button class="back-btn" onclick="history.back()">←</button>
+  <div class="header-title">💰 Deposit Funds</div>
+</div>
+<div class="content">
+  <div class="card" id="userCard">Loading…</div>
+  <div class="card">
+    <div style="font-size:12px;color:var(--subtext);margin-bottom:4px">Current Balance</div>
+    <div class="bal-val" id="balVal">₦—</div>
+    <div class="bal-usd" id="balUsd">≈ $—</div>
+  </div>
+  <div class="card">
+    <div class="card-title">💰 Make a Deposit</div>
+    <div style="font-size:13px;color:var(--subtext);margin-bottom:14px">Choose payment method</div>
+    <div class="method-tabs">
+      <div class="mtab active" id="tab-bank"   onclick="switchMethod('bank')">🏦 Bank Transfer</div>
+      <div class="mtab"        id="tab-crypto" onclick="switchMethod('crypto')">🪙 Crypto BEP20</div>
+    </div>
+    <div id="section-bank">
+      <div class="bank-box">
+        <div class="bank-row"><div><div class="bank-label">Bank Name</div><div class="bank-val">Opay</div></div></div>
+        <div class="bank-row"><div><div class="bank-label">Account Name</div><div class="bank-val">Olatunji Ayomide Abdulmalik</div></div></div>
+        <div class="bank-row">
+          <div><div class="bank-label">Account Number</div><div class="bank-val">9114301708</div></div>
+          <button class="copy-btn" onclick="copyText('9114301708','Account number')">Copy</button>
+        </div>
+      </div>
+      <div class="note">⚠️ Transfer the exact amount then upload your screenshot below. Balance is credited after admin review.</div>
+    </div>
+    <div id="section-crypto" style="display:none">
+      <div style="font-size:12px;color:var(--subtext);margin-bottom:6px">BNB Smart Chain (BEP20) Address</div>
+      <div class="crypto-addr">0xbBcc409872bC2441400735624638F3D67DAa7C4C</div>
+      <button class="copy-btn" style="width:100%;padding:9px;border-radius:10px;font-size:13px" onclick="copyText('0xbBcc409872bC2441400735624638F3D67DAa7C4C','Crypto address')">📋 Copy Address</button>
+      <div class="note" style="margin-top:10px">⚠️ Send BNB on <b>BEP20 network only</b>. Upload your transaction screenshot below.</div>
+    </div>
+    <label>Amount Depositing (₦)</label>
+    <input type="number" id="amountInput" placeholder="e.g. 5000">
+    <label>Your WhatsApp Number</label>
+    <input type="tel" id="whatsappInput" placeholder="+2348012345678">
+    <label>Payment Screenshot</label>
+    <div class="upload-area" id="uploadArea">
+      <input type="file" accept="image/*" id="fileInput" onchange="handleFile(this)">
+      <div class="upload-icon">📸</div>
+      <div class="upload-txt">Tap to upload screenshot</div>
+      <div class="upload-name" id="fileName"></div>
+    </div>
+    <img id="previewImg" alt="Preview">
+    <button class="btn-submit" id="submitBtn" onclick="submitDeposit()">📤 Submit Deposit Request</button>
+    <div id="msgBox"></div>
+  </div>
+</div>
+<script>
+const tg = window.Telegram?.WebApp;
+tg?.ready(); tg?.expand();
+const user       = tg?.initDataUnsafe?.user;
+const telegramId = user ? String(user.id) : null;
+const name       = user?.first_name || "Guest";
+const username   = user?.username ? "@"+user.username : "";
+let method = "bank";
+let imageBase64 = null;
+let usdRate = 1600;
+
+document.getElementById("userCard").innerHTML = telegramId
+  ? `<b>Name:</b> ${name}<br><b>Username:</b> ${username||"N/A"}<br><b>Telegram ID:</b> ${telegramId}`
+  : "❌ Please open this from Telegram.";
+
+async function loadBalance() {
+  if (!telegramId) return;
+  try {
+    const res  = await fetch("/get-balance", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId })
+    });
+    const data = await res.json();
+    const ngn  = data?.ngn || 0;
+    usdRate    = data?.usdRate || 1600;
+    document.getElementById("balVal").textContent = "₦" + ngn.toLocaleString();
+    document.getElementById("balUsd").textContent = "≈ $" + (ngn/usdRate).toFixed(2);
+  } catch(e) {}
+}
+loadBalance();
+
+function switchMethod(m) {
+  method = m;
+  document.getElementById("tab-bank").classList.toggle("active",   m==="bank");
+  document.getElementById("tab-crypto").classList.toggle("active", m==="crypto");
+  document.getElementById("section-bank").style.display   = m==="bank"   ? "block":"none";
+  document.getElementById("section-crypto").style.display = m==="crypto" ? "block":"none";
+}
+function handleFile(input) {
+  const file = input.files[0]; if(!file) return;
+  document.getElementById("fileName").textContent = "✅ " + file.name;
+  document.getElementById("uploadArea").classList.add("has-file");
+  const reader = new FileReader();
+  reader.onload = e => {
+    imageBase64 = e.target.result.split(",")[1];
+    const p = document.getElementById("previewImg");
+    p.src = e.target.result; p.style.display = "block";
+  };
+  reader.readAsDataURL(file);
+}
+async function submitDeposit() {
+  if (!telegramId) return showMsg("❌ Please open from Telegram.","error");
+  const amount   = document.getElementById("amountInput").value.trim();
+  const whatsapp = document.getElementById("whatsappInput").value.trim();
+  if (!amount || isNaN(amount) || Number(amount)<=0) return showMsg("❌ Enter a valid amount.","error");
+  if (!whatsapp)    return showMsg("❌ Enter your WhatsApp number.","error");
+  if (!imageBase64) return showMsg("❌ Upload your payment screenshot.","error");
+  showMsg("⏳ Submitting…","loading");
+  document.getElementById("submitBtn").disabled = true;
+  try {
+    const res  = await fetch("/deposit", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        telegramId, name, username,
+        method: method==="bank" ? "Bank Transfer (Opay)" : "Crypto BEP20",
+        amount, whatsapp, image: imageBase64
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed");
+    showMsg("✅ Deposit request sent! Admin will review and credit your balance. You will be notified on Telegram.","success");
+  } catch(err) {
+    showMsg("❌ " + err.message,"error");
+    document.getElementById("submitBtn").disabled = false;
+  }
+}
+function showMsg(t,type){ document.getElementById("msgBox").innerHTML = t?`<div class="msg ${type}">${t}</div>`:""; }
+function copyText(text, label) {
+  navigator.clipboard.writeText(text).then(()=>alert(label+" copied!")).catch(()=>{
+    const el = document.createElement("textarea");
+    el.value = text; document.body.appendChild(el); el.select();
+    document.execCommand("copy"); document.body.removeChild(el);
+    alert(label+" copied!");
+  });
+}
+</script>
+</body>
+</html>
