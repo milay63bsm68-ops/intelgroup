@@ -8,8 +8,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771711526569,
-    "lastMessageAt": 1771711692471,
-    "lastMessage": "m: Hi",
+    "lastMessageAt": 1771711702581,
+    "lastMessage": "m: https://i.ibb.co/7JMZ1vMC/IMG-20260220-WA0229-2.jpg",
     "totalEarnings": 0,
     "members": {
       "6940101627": {
@@ -61,6 +61,14 @@ window.GROUPS_DATA = {
         "senderName": "m",
         "text": "Hi",
         "timestamp": 1771711692471
+      },
+      {
+        "id": "b9850f9833037127",
+        "type": "text",
+        "senderId": "7497799470",
+        "senderName": "m",
+        "text": "https://i.ibb.co/7JMZ1vMC/IMG-20260220-WA0229-2.jpg",
+        "timestamp": 1771711702581
       }
     ]
   }
