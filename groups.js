@@ -8,8 +8,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771711526569,
-    "lastMessageAt": 1771711711595,
-    "lastMessage": "m: Testing",
+    "lastMessageAt": 1771711718415,
+    "lastMessage": "m: Later",
     "totalEarnings": 0,
     "members": {
       "6940101627": {
@@ -77,6 +77,14 @@ window.GROUPS_DATA = {
         "senderName": "m",
         "text": "Testing",
         "timestamp": 1771711711595
+      },
+      {
+        "id": "65acc762dd478798",
+        "type": "text",
+        "senderId": "7497799470",
+        "senderName": "m",
+        "text": "Later",
+        "timestamp": 1771711718415
       }
     ]
   }
