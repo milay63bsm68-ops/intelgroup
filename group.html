@@ -118,7 +118,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .pm-perks{background:var(--surface2);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:2;color:var(--text);}
 .pm-earn{font-size:12px;color:var(--subtext);text-align:center;margin-bottom:14px;}
 .mb-gold{background:linear-gradient(135deg,#f59e0b,#f97316);}
-</style>
+
+/* ── SHARE LINK ── */
+.share-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:10px 0;display:flex;align-items:center;gap:8px;}
+.share-url{flex:1;font-size:11px;color:var(--subtext);word-break:break-all;line-height:1.4;}
+.share-copy{background:var(--accent);border:none;border-radius:8px;color:white;font-size:12px;font-weight:700;padding:6px 10px;cursor:pointer;flex-shrink:0;white-space:nowrap;}
+.share-copy:active{opacity:0.8;}
+.mb-share{background:#1a3a2a;color:#4db6ac;border:1px solid #4db6ac44;}</style>
 </head>
 <body>
 <div class="header">
@@ -175,7 +181,15 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-title" id="infoTitle">Group Info</div>
     <div id="infoContent" style="font-size:13px;color:var(--subtext);line-height:1.8;"></div>
-    <button class="modal-btn mb-cancel" style="margin-top:14px" onclick="closeModal('infoModal')">Close</button>
+    <div style="margin-top:12px;">
+      <div style="font-size:11px;color:var(--subtext);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px;">🔗 Group Invite Link</div>
+      <div class="share-box">
+        <div class="share-url" id="shareUrlText">—</div>
+        <button class="share-copy" onclick="copyGroupLink()">Copy</button>
+      </div>
+      <button class="modal-btn mb-share" style="margin-top:4px;" onclick="shareGroupLink()">📤 Share Group Link</button>
+    </div>
+    <button class="modal-btn mb-cancel" style="margin-top:10px" onclick="closeModal('infoModal')">Close</button>
     <button class="modal-btn mb-danger" id="leaveBtn" onclick="leaveGroup()" style="margin-top:6px;display:none">🚪 Leave Group</button>
   </div>
 </div>
@@ -195,9 +209,13 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       ✅ Premium badge
     </div>
     <div class="pm-earn" id="pmEarnNote"></div>
-    <input class="modal-inp" id="pmPasscode" placeholder="Enter your passcode…" style="margin-bottom:6px;">
-    <div style="font-size:11px;color:var(--subtext);margin-bottom:12px;">
-      Don't have a passcode? <span style="color:var(--accent2);cursor:pointer;" onclick="requestPasscode()">Get one →</span>
+    <input class="modal-inp" id="pmPasscode" placeholder="Enter your 6-digit code…" style="margin-bottom:6px;letter-spacing:4px;font-size:18px;font-weight:700;text-align:center;">
+    <div style="background:#1a2a40;border:1px solid #5288c155;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;line-height:1.9;color:var(--subtext);">
+      Don't have a code yet?<br>
+      <a href="https://t.me/intelpremiumbot" target="_blank"
+         style="color:#64b5f6;font-weight:700;font-size:13px;display:inline-flex;align-items:center;gap:4px;">
+        👉 Open @intelpremiumbot
+      </a> to generate your code,<br>then come back and enter it above.
     </div>
     <div id="pmMsg" style="font-size:13px;margin-bottom:10px;min-height:18px;"></div>
     <button class="modal-btn mb-gold" onclick="buyPremium()">⭐ Buy Premium – ₦5,000</button>
@@ -214,7 +232,11 @@ const userName   = user?.first_name || "Guest";
 const userUname  = user?.username ? "@"+user.username : "";
 
 const params  = new URLSearchParams(location.search);
-const groupId = params.get("id");
+// Support both ?id=XXX (direct) and Telegram startapp deep link (?tgWebAppStartParam=XXX)
+const groupId = params.get("id")
+  || params.get("tgWebAppStartParam")
+  || tg?.initDataUnsafe?.start_param
+  || null;
 if (!groupId) location.href = "index.html";
 
 let groupData    = null;
@@ -689,7 +711,8 @@ async function delGroup() {
 
 function openInfo() {
   if (!groupData) return;
-  const mc = Object.keys(groupData.members||{}).length;
+  const mc      = Object.keys(groupData.members||{}).length;
+  const shareUrl = groupShareLink(groupId);
   document.getElementById("infoTitle").textContent = groupData.name || "Group";
   document.getElementById("infoContent").innerHTML = `
     ${groupData.description?`<p style="margin-bottom:12px;color:var(--text)">${esc(groupData.description)}</p>`:""}
@@ -699,9 +722,42 @@ function openInfo() {
     ${groupData.isPremiumOnly?"<div>⭐ Premium members only</div>":""}
     ${groupData.isPrivate?"<div>🔒 Private group</div>":"<div>🌐 Public group</div>"}
     ${isOwner?`<br><div style="font-size:12px;color:var(--subtext)">💰 Total earnings: ₦${(groupData.totalEarnings||0).toLocaleString()}</div>`:""}`;
+  document.getElementById("shareUrlText").textContent = shareUrl;
   const lb = document.getElementById("leaveBtn");
   lb.style.display = (!isOwner && isJoined) ? "block" : "none";
   document.getElementById("infoModal").classList.add("open");
+}
+
+/* ── Group share link helpers ── */
+function groupShareLink(gid) {
+  // Telegram WebApp deep link: opens the mini app with startapp=<groupId>
+  return `https://t.me/intelligentpublicgroupsbot/explore?startapp=${gid}`;
+}
+
+function copyGroupLink() {
+  const url = groupShareLink(groupId);
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(url).then(() => showTmp("✅ Link copied!","suc")).catch(() => fallbackCopy(url));
+  } else { fallbackCopy(url); }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); showTmp("✅ Link copied!","suc"); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function shareGroupLink() {
+  const url  = groupShareLink(groupId);
+  const name = groupData?.name || "this group";
+  // Use Telegram share if inside Telegram WebApp
+  if (tg?.openTelegramLink) {
+    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Join " + name + " on Intel Groups!")}`);
+  } else {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Join " + name + " on Intel Groups!")}`, "_blank");
+  }
 }
 async function leaveGroup() {
   if (!confirm("Leave this group?")) return;
@@ -799,25 +855,6 @@ function openPremiumModal() {
     ? `💰 ${groupData.ownerName} (this group's owner) earns ₦2,500 when you buy here.`
     : "";
   document.getElementById("premiumModal").classList.add("open");
-}
-
-async function requestPasscode() {
-  if (!telegramId) return;
-  document.getElementById("pmMsg").textContent = "⏳ Sending passcode to your Telegram…";
-  document.getElementById("pmMsg").style.color = "#f59e0b";
-  try {
-    const res  = await fetch("/generate-premium-passcode", {
-      method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ telegramId })
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-    document.getElementById("pmMsg").textContent = "✅ Check your Telegram for the passcode!";
-    document.getElementById("pmMsg").style.color = "#4db6ac";
-  } catch(e) {
-    document.getElementById("pmMsg").textContent = "❌ " + e.message;
-    document.getElementById("pmMsg").style.color = "#ef5350";
-  }
 }
 
 async function buyPremium() {
