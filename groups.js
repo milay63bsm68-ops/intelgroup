@@ -144,5 +144,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771712823552
       }
     ]
+  },
+  "78FCEFBB71": {
+    "name": "Harmayoh test number 2",
+    "description": "I'm testing my group",
+    "ownerId": "7979664801",
+    "ownerName": "mi",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🥳\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771713031062,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7979664801": {
+        "name": "mi",
+        "joinedAt": 1771713031062
+      }
+    },
+    "messages": []
   }
 }
