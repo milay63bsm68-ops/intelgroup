@@ -100,15 +100,38 @@ async function sendTelegram(text, chatId) {
 async function sendTelegramPhoto(chatId, photoBase64, caption) {
   if (!BOT_TOKEN || !chatId) return;
   try {
+    // Build multipart/form-data so Telegram accepts the image as a file upload
+    const imgBuffer = Buffer.from(photoBase64, "base64");
+    const boundary  = "----TgBoundary" + Date.now();
+
+    const head =
+      `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="chat_id"\r\n\r\n` +
+      `${Number(chatId)}\r\n` +
+      `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="caption"\r\n\r\n` +
+      `${caption}\r\n` +
+      `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="parse_mode"\r\n\r\n` +
+      `HTML\r\n` +
+      `--${boundary}\r\n` +
+      `Content-Disposition: form-data; name="photo"; filename="deposit.jpg"\r\n` +
+      `Content-Type: image/jpeg\r\n\r\n`;
+    const tail = `\r\n--${boundary}--\r\n`;
+
+    const body = Buffer.concat([
+      Buffer.from(head, "utf8"),
+      imgBuffer,
+      Buffer.from(tail, "utf8")
+    ]);
+
     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
       method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id:    Number(chatId),
-        photo:      photoBase64,
-        caption,
-        parse_mode: "HTML"
-      })
+      headers: {
+        "Content-Type":   `multipart/form-data; boundary=${boundary}`,
+        "Content-Length": String(body.length)
+      },
+      body
     });
   } catch (e) { console.error("sendTelegramPhoto:", e.message); }
 }
