@@ -521,6 +521,20 @@ app.get("/api/groups/:id/messages", async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+/* Returns only messages newer than ?since=<timestamp>
+   Clients use this for efficient incremental polling */
+app.get("/api/groups/:id/messages/since", async (req, res) => {
+  try {
+    const since = parseInt(req.query.since, 10) || 0;
+    const { groups } = await readGroups();
+    const group = groups[req.params.id];
+    if (!group) return res.status(404).json({ error: "Group not found" });
+    const all  = (group.messages || []).slice(-200);
+    const newMsgs = all.filter(m => m.timestamp > since);
+    res.json(newMsgs.map(m => ({ ...m, audioData: undefined })));
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 const audioCache = {};
 
 app.post("/api/groups/:id/messages", async (req, res) => {
