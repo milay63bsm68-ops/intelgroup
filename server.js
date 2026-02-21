@@ -304,7 +304,7 @@ app.post("/api/buy-premium", async (req, res) => {
   if (!telegramId) return res.status(400).json({ error: "Missing Telegram ID" });
 
   try {
-    /* Resolve group owner info if a groupId was provided */
+    /* Resolve group owner info — owner ONLY earns if user buys inside their group */
     let groupOwnerId   = null;
     let groupOwnerName = null;
     let groupName      = null;
@@ -314,12 +314,17 @@ app.post("/api/buy-premium", async (req, res) => {
         const { groups } = await readGroups();
         const g = groups[groupId];
         if (g && g.ownerId && g.ownerId !== telegramId) {
+          // Valid: buyer is not the owner of this group
           groupOwnerId   = g.ownerId;
           groupOwnerName = g.ownerName || g.ownerId;
           groupName      = g.name || groupId;
+        } else if (g && g.ownerId === telegramId) {
+          // Owner buying premium in their own group — no self-reward
+          console.log(`Owner ${telegramId} buying premium in own group ${groupId} — no reward credited.`);
         }
       } catch (e) { console.error("Group lookup error:", e.message); }
     }
+    // If no groupId provided, owner earns nothing — purchase is still valid
 
     /* ── Call balance server — does everything ── */
     const result = await processPremiumPurchase({
