@@ -1,6 +1,6 @@
 window.GROUPS_DATA = {
   "7881AB7423": {
-    "name": "Harmayohtest",
+    "name": "Harmayoh",
     "description": "Test mayyoh",
     "ownerId": "6940101627",
     "ownerName": "Harmayoh",
