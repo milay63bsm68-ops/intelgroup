@@ -561,7 +561,7 @@ app.get("/api/groups/:id/messages/since", async (req, res) => {
 const audioCache = {};
 
 app.post("/api/groups/:id/messages", async (req, res) => {
-  const { telegramId, senderName, type, text, audioData, duration } = req.body;
+  const { telegramId, senderName, type, text, audioData, duration, replyTo } = req.body;
   if (!telegramId) return res.status(400).json({ error: "Missing Telegram ID" });
   if (type === "text" && !text?.trim()) return res.status(400).json({ error: "Empty message" });
   try {
@@ -587,6 +587,7 @@ app.post("/api/groups/:id/messages", async (req, res) => {
         id: msgId, type: "text",
         senderId: telegramId, senderName,
         text: text.slice(0, 4000),
+        ...(replyTo ? { replyTo } : {}),
         timestamp
       };
     }
