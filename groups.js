@@ -363,66 +363,6 @@ window.GROUPS_DATA = {
       }
     ]
   },
-  "96E3573D9B": {
-    "name": "https://www.facebook.com/photo.php?fbid=121424371346623&set=a.10",
-    "description": "Major guru",
-    "ownerId": "8473626341",
-    "ownerName": "Isaac",
-    "avatar": "{\"type\":\"emoji\",\"emoji\":\"😀\",\"color\":\"#5288c1\"}",
-    "isPrivate": true,
-    "isPremiumOnly": true,
-    "createdAt": 1771723512237,
-    "lastMessageAt": 1771725196849,
-    "lastMessage": "Harmayoh joined",
-    "totalEarnings": 0,
-    "members": {
-      "8473626341": {
-        "name": "Isaac",
-        "joinedAt": 1771723512237
-      },
-      "7497799470": {
-        "name": "m",
-        "username": "@Minvyk",
-        "joinedAt": 1771724019190
-      },
-      "6940101627": {
-        "name": "Harmayoh",
-        "username": "@harmayoh",
-        "joinedAt": 1771725196849
-      }
-    },
-    "messages": [
-      {
-        "id": "e5616fac7395ec80",
-        "type": "system",
-        "text": "m joined the group",
-        "timestamp": 1771724019191
-      },
-      {
-        "id": "7f07ff07d44ad923",
-        "type": "text",
-        "senderId": "7497799470",
-        "senderName": "m",
-        "text": "Hello here ✋",
-        "timestamp": 1771724047367,
-        "edited": true
-      },
-      {
-        "id": "f8f00111b12e43ee",
-        "type": "text",
-        "senderId": "7497799470",
-        "senderName": "m",
-        "text": "🚨 *BIG ANNOUNCEMENT* 🚨 ━━━━━━━━━━━━━━━━━━━━━━ 🤖 *INTRODUCING: INTELLIGENT SOCIAL & GROUP EARNING BOT* This is not just a chat app — it's a *money-making platform* built right inside Telegram! Here's how YOU can start earning today 👇 ━━━━━━━━━━━━━━━━━━━━━━ 💰 *HOW TO EARN* ━━━━━━━━━━━━━━━━━━━━━━ 👥 *Create Your Own Group* • Open the bot and create your own group • Share your group link with your friends, followers, or audience • Every time someone joins your group and buys Premium — *you earn ₦2,500 automatically!* 🔥 • No manual work. No stress. The money lands in your balance instantly. ⭐ *Buy Premium & Unlock Everything* • Premium costs just *₦5,000 once* • Get *unlimited messages*, access to all premium groups, voice notes priority & a premium badge • Premium is your key to the full experience 📢 *Grow Your Group = Grow Your Income* • The more people you bring into your group, the more Premium sales you make • 10 people buy Premium through your group = *₦25,000 earned* 🤑 • 50 people = *₦125,000* — just from sharing a link! ━━━━━━━━━━━━━━━━━━━━━━ 💵 *EARNING BREAKDOWN* ━━━━━━━━━━━━━━━━━━━━━━ ✅ Each Premium sale via your group → *₦2,500 to you* ✅ Earnings tracked live in ₦ and $ ✅ Withdraw anytime directly from the app ✅ Real NGN/USD exchange rate used automatically ━━━━━━━━━━━━━━━━━━━━━━ 🚀 *HOW TO GET STARTED* ━━━━━━━━━━━━━━━━━━━━━━ 1️⃣ Click the link below to open the bot 2️⃣ Tap *\"Explore\"* to enter the app 3️⃣ Deposit funds & buy Premium 4️⃣ Create your group 5️⃣ Share your group invite link 6️⃣ Sit back and *collect your commissions* 💸 ━━━━━━━━━━━━━━━━━━━━━━ 👉 *TAP TO START EARNING NOW:* https://t.me/intelligentpublicgroupsbot/explore ━━━━━━━━━━━━━━━━━━━━━━ ⚠️ *Don't sleep on this.* The earlier you create your group and build your audience, the more you earn. This is 100% automated — once your group is set up, it earns for you *24/7.* Drop a 🙋 below if you're joining! Let's get this money 💰",
-        "timestamp": 1771724175294
-      },
-      {
-        "id": "ee5e06e68fe2e5f8",
-        "type": "system",
-        "text": "Harmayoh joined the group",
-        "timestamp": 1771725196849
-      }
-    ]
-  },
   "A2C5D1ED23": {
     "name": "Harmayoh texh",
     "description": "Learn tech",
