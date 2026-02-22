@@ -821,8 +821,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771777410678,
-    "lastMessageAt": 1771781612787,
-    "lastMessage": "mi joined",
+    "lastMessageAt": 1771781662752,
+    "lastMessage": "m joined",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
@@ -843,6 +843,11 @@ window.GROUPS_DATA = {
         "name": "mi",
         "username": "@Hueryten",
         "joinedAt": 1771781612787
+      },
+      "7497799470": {
+        "name": "m",
+        "username": "@Minvyk",
+        "joinedAt": 1771781662752
       }
     },
     "messages": [
@@ -887,6 +892,12 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "mi joined the group",
         "timestamp": 1771781612787
+      },
+      {
+        "id": "5864e4b448194b2e",
+        "type": "system",
+        "text": "m joined the group",
+        "timestamp": 1771781662752
       }
     ]
   }
