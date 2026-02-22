@@ -546,8 +546,9 @@ function showPremiumOverlay() {
     <div class="overlay">
       <div class="ov-icon">⭐</div>
       <div class="ov-title">Premium Members Only</div>
-      <div class="ov-sub">This group is for premium members only. Upgrade to join.</div>
-      <button class="btn-upgrade" onclick="location.href='premium.html?groupId=${groupId}'">⭐ Get Premium – ₦5,000</button>
+      <div class="ov-sub">This group is for premium members only. Upgrade to join, or go back and browse other groups.</div>
+      <button class="btn-upgrade" onclick="location.href='premium.html?groupId=${groupId}'" style="margin-bottom:12px;">⭐ Get Premium – ₦5,000</button>
+      <button class="btn-join" onclick="location.href='index.html'" style="background:var(--surface2);border:1px solid var(--border);color:var(--subtext);font-size:13px;">← Back to Groups</button>
     </div>`;
   document.getElementById("inputArea").style.display = "none";
   document.getElementById("rateBar").style.display   = "none";
