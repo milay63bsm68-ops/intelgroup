@@ -583,5 +583,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771755024076
       }
     ]
+  },
+  "57DD01C391": {
+    "name": "Music is life",
+    "description": "Music",
+    "ownerId": "7497799470",
+    "ownerName": "m",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🎵\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771755809424,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7497799470": {
+        "name": "m",
+        "joinedAt": 1771755809424
+      }
+    },
+    "messages": []
   }
 }
