@@ -642,6 +642,26 @@ app.delete("/api/groups/:id/messages/:msgId", async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
+/* Edit a text message — only the original sender can edit */
+app.post("/api/groups/:id/messages/:msgId/edit", async (req, res) => {
+  const { telegramId, text } = req.body;
+  if (!telegramId || !text?.trim()) return res.status(400).json({ error: "Missing fields" });
+  try {
+    const { groups, sha } = await readGroups();
+    const group = groups[req.params.id];
+    if (!group) return res.status(404).json({ error: "Group not found" });
+    const msg = (group.messages || []).find(m => m.id === req.params.msgId);
+    if (!msg) return res.status(404).json({ error: "Message not found" });
+    if (msg.senderId !== telegramId)
+      return res.status(403).json({ error: "Only the sender can edit" });
+    if (msg.type !== "text") return res.status(400).json({ error: "Only text messages can be edited" });
+    msg.text   = text.slice(0, 4000);
+    msg.edited = true;
+    await saveGroups(groups, sha, `Edit msg ${req.params.msgId}`);
+    res.json({ success: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 /* ════════════════════════════════════════════════════════════
    DEPOSIT  —  notifies admin via Telegram, no balance change
    (admin manually credits the balance server)
