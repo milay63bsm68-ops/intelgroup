@@ -853,8 +853,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771792220449,
-    "lastMessage": "Harmayoh: Create your own group and you should share your group link t",
+    "lastMessageAt": 1771792410148,
+    "lastMessage": "Dhemmyx: That's all boss",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -947,6 +947,14 @@ window.GROUPS_DATA = {
         "text": "Create your own group and you should share your group link to others anyone that join the group and purchase premium in your group you will be earning from it",
         "timestamp": 1771792220449,
         "edited": true
+      },
+      {
+        "id": "9ecd0d2210744a1f",
+        "type": "text",
+        "senderId": "6222493629",
+        "senderName": "Dhemmyx",
+        "text": "That's all boss",
+        "timestamp": 1771792410148
       }
     ]
   },
