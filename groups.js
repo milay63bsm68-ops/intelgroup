@@ -491,8 +491,8 @@ window.GROUPS_DATA = {
     "isPrivate": true,
     "isPremiumOnly": true,
     "createdAt": 1771725735190,
-    "lastMessageAt": 1771726209513,
-    "lastMessage": "Isaac: Yes",
+    "lastMessageAt": 1771767761171,
+    "lastMessage": "Harmayoh: Ohhk",
     "totalEarnings": 0,
     "members": {
       "8473626341": {
@@ -559,6 +559,14 @@ window.GROUPS_DATA = {
         "senderName": "Isaac",
         "text": "Yes",
         "timestamp": 1771726209513
+      },
+      {
+        "id": "b22ff135faf68e46",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "Ohhk",
+        "timestamp": 1771767761171
       }
     ]
   },
