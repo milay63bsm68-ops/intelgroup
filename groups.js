@@ -591,7 +591,7 @@ window.GROUPS_DATA = {
     "ownerName": "m",
     "avatar": "{\"type\":\"emoji\",\"emoji\":\"🎵\",\"color\":\"#5288c1\"}",
     "isPrivate": true,
-    "isPremiumOnly": true,
+    "isPremiumOnly": false,
     "createdAt": 1771755809424,
     "lastMessageAt": 1771755817901,
     "lastMessage": "m: Hey",
