@@ -619,7 +619,7 @@ window.GROUPS_DATA = {
     "ownerId": "7497799470",
     "ownerName": "m",
     "avatar": "{\"type\":\"emoji\",\"emoji\":\"🐯\",\"color\":\"#5288c1\"}",
-    "isPrivate": true,
+    "isPrivate": false,
     "isPremiumOnly": true,
     "createdAt": 1771756883876,
     "lastMessageAt": null,
