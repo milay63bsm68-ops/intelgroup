@@ -260,8 +260,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771718748388,
-    "lastMessageAt": 1771720436049,
-    "lastMessage": "Harmayoh: Guy's let repost",
+    "lastMessageAt": 1771720445505,
+    "lastMessage": "Harmayoh: I",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -304,6 +304,14 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "Guy's let repost",
         "timestamp": 1771720436049
+      },
+      {
+        "id": "35a0b1a94556cd3e",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "I",
+        "timestamp": 1771720445505
       }
     ]
   }
