@@ -411,5 +411,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771724175294
       }
     ]
+  },
+  "A2C5D1ED23": {
+    "name": "Harmayoh texh",
+    "description": "Learn tech",
+    "ownerId": "7497799470",
+    "ownerName": "m",
+    "avatar": "https://i.ibb.co/0VfpHqr2/file-00000000121471f49d102b318df496fb.png",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771724577494,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7497799470": {
+        "name": "m",
+        "joinedAt": 1771724577494
+      }
+    },
+    "messages": []
   }
 }
