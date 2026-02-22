@@ -789,5 +789,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771767709519
       }
     ]
+  },
+  "549E2E1DA8": {
+    "name": "Ricardo earning forum",
+    "description": "This group is to teach you how to make money and how to earn cool cash by just playing games",
+    "ownerId": "7866657321",
+    "ownerName": "Dee",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🎮\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771777410678,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7866657321": {
+        "name": "Dee",
+        "joinedAt": 1771777410678
+      }
+    },
+    "messages": []
   }
 }
