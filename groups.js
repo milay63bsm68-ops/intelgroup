@@ -967,8 +967,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771777410678,
-    "lastMessageAt": 1771793006091,
-    "lastMessage": "Dee: U know about this update very well..?",
+    "lastMessageAt": 1771793061630,
+    "lastMessage": "Harmayoh: Yeah",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
@@ -1076,6 +1076,14 @@ window.GROUPS_DATA = {
         "senderName": "Dee",
         "text": "U know about this update very well..?",
         "timestamp": 1771793006091
+      },
+      {
+        "id": "62070ada74bb7177",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "Yeah",
+        "timestamp": 1771793061630
       }
     ]
   },
