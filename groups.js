@@ -853,8 +853,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771792122493,
-    "lastMessage": "Harmayoh: @ØLÄMÏLËKÄÑ DÇ how are you",
+    "lastMessageAt": 1771792160812,
+    "lastMessage": "Dhemmyx: Sup guys am new here so does anyone know how this thing work",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -930,6 +930,14 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "@ØLÄMÏLËKÄÑ DÇ how are you",
         "timestamp": 1771792122493
+      },
+      {
+        "id": "b2152df60ec12ccd",
+        "type": "text",
+        "senderId": "6222493629",
+        "senderName": "Dhemmyx",
+        "text": "Sup guys am new here so does anyone know how this thing work and how do we start making money anyone here to guide us",
+        "timestamp": 1771792160812
       }
     ]
   },
