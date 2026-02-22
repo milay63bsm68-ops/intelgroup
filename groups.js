@@ -945,7 +945,8 @@ window.GROUPS_DATA = {
         "senderId": "6940101627",
         "senderName": "Harmayoh",
         "text": "Create your own group and you should share your group link to others anyone that join the group and purchase premium in your group you will be earning from it",
-        "timestamp": 1771792220449
+        "timestamp": 1771792220449,
+        "edited": true
       }
     ]
   },
