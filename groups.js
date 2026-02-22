@@ -681,8 +681,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771756883876,
-    "lastMessageAt": null,
-    "lastMessage": null,
+    "lastMessageAt": 1771781710856,
+    "lastMessage": "m: Hello",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -690,7 +690,16 @@ window.GROUPS_DATA = {
         "joinedAt": 1771756883876
       }
     },
-    "messages": []
+    "messages": [
+      {
+        "id": "249d2edd51e2c2f8",
+        "type": "text",
+        "senderId": "7497799470",
+        "senderName": "m",
+        "text": "Hello",
+        "timestamp": 1771781710856
+      }
+    ]
   },
   "C14BB817ED": {
     "name": "🐼 Panda",
