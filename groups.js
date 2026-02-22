@@ -276,8 +276,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771718748388,
-    "lastMessageAt": 1771724165168,
-    "lastMessage": "m: 🚨 *BIG ANNOUNCEMENT* 🚨 ━━━━━━━━━━━━━━━━━━━━━━ 🤖 *INTRODUC",
+    "lastMessageAt": 1771726256935,
+    "lastMessage": "(✿◠‿◠♥️)(♥️◠‿◠✿) joined",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -288,6 +288,11 @@ window.GROUPS_DATA = {
         "name": "Harmayoh",
         "username": "@harmayoh",
         "joinedAt": 1771720409446
+      },
+      "6976365864": {
+        "name": "(✿◠‿◠♥️)(♥️◠‿◠✿)",
+        "username": "@averytradery",
+        "joinedAt": 1771726256935
       }
     },
     "messages": [
@@ -360,6 +365,12 @@ window.GROUPS_DATA = {
         "senderName": "m",
         "text": "🚨 *BIG ANNOUNCEMENT* 🚨 ━━━━━━━━━━━━━━━━━━━━━━ 🤖 *INTRODUCING: INTELLIGENT SOCIAL & GROUP EARNING BOT* This is not just a chat app — it's a *money-making platform* built right inside Telegram! Here's how YOU can start earning today 👇 ━━━━━━━━━━━━━━━━━━━━━━ 💰 *HOW TO EARN* ━━━━━━━━━━━━━━━━━━━━━━ 👥 *Create Your Own Group* • Open the bot and create your own group • Share your group link with your friends, followers, or audience • Every time someone joins your group and buys Premium — *you earn ₦2,500 automatically!* 🔥 • No manual work. No stress. The money lands in your balance instantly. ⭐ *Buy Premium & Unlock Everything* • Premium costs just *₦5,000 once* • Get *unlimited messages*, access to all premium groups, voice notes priority & a premium badge • Premium is your key to the full experience 📢 *Grow Your Group = Grow Your Income* • The more people you bring into your group, the more Premium sales you make • 10 people buy Premium through your group = *₦25,000 earned* 🤑 • 50 people = *₦125,000* — just from sharing a link! ━━━━━━━━━━━━━━━━━━━━━━ 💵 *EARNING BREAKDOWN* ━━━━━━━━━━━━━━━━━━━━━━ ✅ Each Premium sale via your group → *₦2,500 to you* ✅ Earnings tracked live in ₦ and $ ✅ Withdraw anytime directly from the app ✅ Real NGN/USD exchange rate used automatically ━━━━━━━━━━━━━━━━━━━━━━ 🚀 *HOW TO GET STARTED* ━━━━━━━━━━━━━━━━━━━━━━ 1️⃣ Click the link below to open the bot 2️⃣ Tap *\"Explore\"* to enter the app 3️⃣ Deposit funds & buy Premium 4️⃣ Create your group 5️⃣ Share your group invite link 6️⃣ Sit back and *collect your commissions* 💸 ━━━━━━━━━━━━━━━━━━━━━━ 👉 *TAP TO START EARNING NOW:* https://t.me/intelligentpublicgroupsbot/explore ━━━━━━━━━━━━━━━━━━━━━━ ⚠️ *Don't sleep on this.* The earlier you create your group and build your audience, the more you earn. This is 100% automated — once your group is set up, it earns for you *24/7.* Drop a 🙋 below if you're joining! Let's get this money 💰",
         "timestamp": 1771724165168
+      },
+      {
+        "id": "842cd67a37614579",
+        "type": "system",
+        "text": "(✿◠‿◠♥️)(♥️◠‿◠✿) joined the group",
+        "timestamp": 1771726256935
       }
     ]
   },
