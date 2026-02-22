@@ -48,21 +48,26 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .g-preview{font-size:13px;color:var(--subtext);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .g-members{font-size:11px;color:var(--subtext);}
 .vip-badge{background:linear-gradient(135deg,#f59e0b,#f97316);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;flex-shrink:0;}
-.fab{position:fixed;bottom:24px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;color:white;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(82,136,193,0.5);cursor:pointer;z-index:200;}
+.fab{position:fixed;bottom:24px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;color:white;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(82,136,193,0.5);cursor:pointer;z-index:200;transition:transform 0.15s;}
 .fab:active{transform:scale(0.93);}
+/* Pulse ring around FAB to draw attention */
+.fab.pulse::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--accent2);opacity:0;animation:fabPulse 1.4s ease-out infinite;}
+@keyframes fabPulse{0%{transform:scale(0.85);opacity:0.8}100%{transform:scale(1.5);opacity:0;}}
 .fab-label{
   position:fixed;bottom:32px;right:86px;
   background:var(--accent);color:white;
   font-size:13px;font-weight:700;
-  padding:7px 14px;border-radius:20px;
+  padding:8px 16px;border-radius:24px;
   white-space:nowrap;z-index:199;
-  box-shadow:0 4px 12px rgba(82,136,193,0.4);
-  pointer-events:none;
-  opacity:0;transform:translateX(10px);
+  box-shadow:0 4px 14px rgba(82,136,193,0.5);
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+  opacity:0;transform:translateX(16px);
   transition:opacity 0.3s ease,transform 0.3s ease;
 }
 .fab-label.show{opacity:1;transform:translateX(0);}
-.fab-label.hide{opacity:0;transform:translateX(10px);}
+.fab-label.hide{opacity:0;transform:translateX(16px);pointer-events:none;}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:var(--subtext);text-align:center;}
 .empty-icon{font-size:56px;margin-bottom:16px;opacity:0.5;}
 .empty-title{font-size:16px;font-weight:600;margin-bottom:6px;color:var(--text);}
@@ -121,8 +126,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="skel-item"><div class="skeleton skel-av"></div><div style="flex:1"><div class="skeleton skel-ln" style="width:50%"></div><div class="skeleton skel-ln" style="width:70%"></div></div></div>
 </div>
 
-<button class="fab" onclick="location.href='create-group.html'">✏️</button>
-<div class="fab-label" id="fabLabel">Create Group ✏️</div>
+<button class="fab" id="fabBtn" onclick="location.href='create-group.html'" ontouchstart="">✏️</button>
+<div class="fab-label" id="fabLabel" onclick="location.href='create-group.html'" ontouchstart="">Create Group ✏️</div>
 
 <!-- Balance bottom sheet -->
 <div class="bal-sheet-bg" id="balSheetBg" onclick="closeBalSheet()">
@@ -315,16 +320,27 @@ function avatarBgColor(avatar, name) {
 loadBalance();
 loadAll();
 
-/* ── FAB label: show "Create Group ✏️" for 2.5s on load, then fade out ── */
+/* ── FAB label: show "Create Group ✏️" on load, pulse FAB, re-show every 30s ── */
 (function() {
   const label = document.getElementById("fabLabel");
-  setTimeout(() => {
+  const fab   = document.getElementById("fabBtn");
+
+  function showLabel() {
+    label.classList.remove("hide");
     label.classList.add("show");
+    fab.classList.add("pulse");
     setTimeout(() => {
       label.classList.add("hide");
+      fab.classList.remove("pulse");
       setTimeout(() => label.classList.remove("show","hide"), 350);
-    }, 2500);
-  }, 800);
+    }, 3000);
+  }
+
+  // Show on load after a short delay
+  setTimeout(showLabel, 800);
+
+  // Re-show every 30s to nudge users who haven't created a group yet
+  setInterval(showLabel, 30000);
 })();
 </script>
 </body>
