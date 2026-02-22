@@ -821,8 +821,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771777410678,
-    "lastMessageAt": 1771777538182,
-    "lastMessage": "Dee: Hello, welcome to Ricardo earning forum",
+    "lastMessageAt": 1771778062609,
+    "lastMessage": "Dee: This is full squad, feel free to make new frnds here, also i",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
@@ -838,6 +838,14 @@ window.GROUPS_DATA = {
         "senderName": "Dee",
         "text": "Hello, welcome to Ricardo earning forum",
         "timestamp": 1771777538182
+      },
+      {
+        "id": "84cfd88706e78efc",
+        "type": "text",
+        "senderId": "7866657321",
+        "senderName": "Dee",
+        "text": "This is full squad, feel free to make new frnds here, also invite others to join👇👇 https://t.me/intelligentpublicgroupsbot/explore?startapp=549E2E1DA8",
+        "timestamp": 1771778062609
       }
     ]
   }
