@@ -661,5 +661,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771757595277
       }
     ]
+  },
+  "C2ED701C09": {
+    "name": "Flower garden 🏡",
+    "description": "Flower group",
+    "ownerId": "6940101627",
+    "ownerName": "Harmayoh",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🍀\",\"color\":\"#673ab7\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771759075188,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "6940101627": {
+        "name": "Harmayoh",
+        "joinedAt": 1771759075188
+      }
+    },
+    "messages": []
   }
 }
