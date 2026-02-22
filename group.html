@@ -147,25 +147,57 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .reply-btn{display:none;}
 .del-btn{display:none;}
 
-/* ── MESSAGE CONTEXT MENU ── */
-.ctx-menu{
-  position:fixed;z-index:600;
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:14px;min-width:180px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.5);
-  overflow:hidden;animation:ctxIn 0.15s ease;
+/* ── MESSAGE ACTION SHEET (bottom-sheet style, works on all devices) ── */
+.action-sheet-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:600;
+  display:none;align-items:flex-end;justify-content:center;
 }
-@keyframes ctxIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
-.ctx-item{
-  display:flex;align-items:center;gap:12px;
-  padding:13px 16px;font-size:14px;cursor:pointer;
-  color:var(--text);transition:background 0.15s;border:none;
-  background:none;width:100%;text-align:left;
+.action-sheet-bg.open{display:flex;}
+.action-sheet{
+  background:var(--surface);border-radius:20px 20px 0 0;
+  width:100%;max-width:480px;padding:0 0 12px;
+  animation:su 0.22s ease;overflow:hidden;
 }
-.ctx-item:active{background:var(--surface2);}
-.ctx-item.danger{color:var(--red);}
-.ctx-item:not(:last-child){border-bottom:1px solid var(--border);}
-.ctx-overlay{position:fixed;inset:0;z-index:599;}
+.as-handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:10px auto 6px;}
+.as-preview{
+  padding:10px 16px 12px;border-bottom:1px solid var(--border);
+  font-size:13px;color:var(--subtext);
+  display:flex;align-items:flex-start;gap:10px;
+}
+.as-preview-line{
+  border-left:3px solid var(--accent2);padding-left:10px;flex:1;min-width:0;
+}
+.as-preview-name{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:2px;}
+.as-preview-text{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.as-item{
+  display:flex;align-items:center;gap:16px;
+  padding:14px 20px;font-size:15px;cursor:pointer;
+  color:var(--text);transition:background 0.12s;
+  border:none;background:none;width:100%;text-align:left;
+  -webkit-tap-highlight-color:transparent;
+}
+.as-item:active{background:var(--surface2);}
+.as-item .as-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.as-item.danger{color:var(--red);}
+.as-item:not(:last-child){border-bottom:1px solid var(--border);}
+.as-cancel{
+  display:flex;align-items:center;justify-content:center;
+  margin:6px 16px 0;padding:14px;border-radius:14px;
+  background:var(--surface2);color:var(--subtext);
+  font-size:15px;font-weight:600;cursor:pointer;
+  border:none;width:calc(100% - 32px);
+  -webkit-tap-highlight-color:transparent;
+}
+.as-cancel:active{opacity:0.7;}
+
+/* ── EDIT MODE bar ── */
+.edit-mode-bar{
+  background:#1a2a40;border-top:1px solid var(--accent);
+  padding:7px 12px;display:none;align-items:center;gap:10px;flex-shrink:0;
+}
+.edit-mode-bar.show{display:flex;}
+.edit-mode-label{flex:1;font-size:12px;color:var(--accent2);font-weight:600;}
+.edit-cancel-btn{background:none;border:none;color:var(--subtext);font-size:18px;cursor:pointer;padding:2px 4px;}
 
 /* ── @ MENTION DROPDOWN ── */
 .mention-list{
@@ -303,13 +335,33 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 </div>
 
-<!-- MESSAGE CONTEXT MENU -->
-<div class="ctx-overlay" id="ctxOverlay" style="display:none" onclick="closeCtx()"></div>
-<div class="ctx-menu" id="ctxMenu" style="display:none">
-  <button class="ctx-item" id="ctxReply"   onclick="ctxDoReply()">↩ Reply</button>
-  <button class="ctx-item" id="ctxCopy"    onclick="ctxDoCopy()">📋 Copy Message</button>
-  <button class="ctx-item" id="ctxCopyAll" onclick="ctxDoCopyAll()">📄 Copy All Chat</button>
-  <button class="ctx-item danger" id="ctxDelete" onclick="ctxDoDelete()" style="display:none">🗑 Delete</button>
+<!-- EDIT MODE BAR (shown above input when editing a message) -->
+<div class="edit-mode-bar" id="editModeBar">
+  <div style="width:3px;background:var(--accent);border-radius:2px;align-self:stretch;flex-shrink:0;"></div>
+  <div class="edit-mode-label">✏️ Editing message</div>
+  <button class="edit-cancel-btn" onclick="cancelEdit()">✕</button>
+</div>
+
+<!-- MESSAGE ACTION SHEET -->
+<div class="action-sheet-bg" id="actionSheetBg" onclick="closeActionSheet()">
+  <div class="action-sheet" onclick="event.stopPropagation()">
+    <div class="as-handle"></div>
+    <!-- Message preview -->
+    <div class="as-preview" id="asPreview">
+      <div class="as-preview-line">
+        <div class="as-preview-name" id="asPreviewName"></div>
+        <div class="as-preview-text" id="asPreviewText"></div>
+      </div>
+    </div>
+    <!-- Actions -->
+    <button class="as-item" id="asReply"   onclick="asDoReply()">  <span class="as-icon">↩️</span> Reply</button>
+    <button class="as-item" id="asCopy"    onclick="asDoCopy()">   <span class="as-icon">📋</span> Copy Message</button>
+    <button class="as-item" id="asEdit"    onclick="asDoEdit()"  style="display:none"><span class="as-icon">✏️</span> Edit Message</button>
+    <button class="as-item" id="asForward" onclick="asDoForward()"><span class="as-icon">↪️</span> Forward</button>
+    <button class="as-item" id="asCopyAll" onclick="asDoCopyAll()"><span class="as-icon">📄</span> Copy Whole Chat</button>
+    <button class="as-item danger" id="asDelete" onclick="asDoDelete()" style="display:none"><span class="as-icon">🗑️</span> Delete Message</button>
+    <button class="as-cancel" onclick="closeActionSheet()">Cancel</button>
+  </div>
 </div>
 
 <script>
@@ -346,6 +398,7 @@ let isOffline    = false;
 let joinedGroups = JSON.parse(localStorage.getItem("joinedGroups") || "[]");
 let replyTo      = null; // { id, senderName, text }
 let mentionQuery = null; // current @ search string or null
+let editMsgId    = null; // message currently being edited
 
 /* ════════════════════════════════════
    MESSAGE CACHE — localStorage per group
@@ -563,8 +616,8 @@ function renderMsg(m) {
       return `<div class="wbar" style="height:${h}px"></div>`;
     }).join("");
     return `<div class="bw ${cls}" id="msg-${m.id}"
-      oncontextmenu="openCtx(event,'${m.id}','',${canDelAttr});return false;"
-      ontouchstart="startLongPress(event,'${m.id}','',${canDelAttr})"
+      oncontextmenu="openActionSheet(event,'${m.id}');return false;"
+      ontouchstart="startLongPress(event,'${m.id}')"
       ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
       ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
       ${replyBlock}
@@ -577,13 +630,13 @@ function renderMsg(m) {
     </div>`;
   }
   return `<div class="bw ${cls}" id="msg-${m.id}"
-    oncontextmenu="openCtx(event,'${m.id}',${JSON.stringify(msgText)},${canDelAttr});return false;"
-    ontouchstart="startLongPress(event,'${m.id}',${JSON.stringify(msgText)},${canDelAttr})"
+    oncontextmenu="openActionSheet(event,'${m.id}');return false;"
+    ontouchstart="startLongPress(event,'${m.id}')"
     ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
     ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
     ${replyBlock}
     <div class="bubble">${fmtText(m.text)}</div>
-    <div class="b-meta">${time}${m.edited?"<span>edited</span>":""}${isMe?"✓✓":""}</div>
+    <div class="b-meta">${time}${m.edited?`<span style="font-size:10px;color:var(--subtext)"> ✎ edited</span>`:""}${isMe?"✓✓":""}</div>
   </div>`;
 }
 function fmtText(t) {
@@ -596,6 +649,26 @@ async function sendMsg() {
   const inp  = document.getElementById("msgInp");
   const text = inp.value.trim();
   if (!text || !telegramId) return;
+
+  // ── EDIT MODE: save edit instead of sending new message ──
+  if (editMsgId) {
+    const id = editMsgId;
+    cancelEdit();
+    inp.value = ""; inp.style.height = "40px";
+    try {
+      const res = await fetch("/api/groups/" + groupId + "/messages/" + id + "/edit", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ telegramId, text })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Edit failed");
+      // Update locally
+      const m = messages.find(m => m.id === id);
+      if (m) { m.text = text; m.edited = true; cacheSave(messages); renderMsgs(); }
+      showTmp("✅ Message edited","suc");
+    } catch(e) { showTmp("❌ " + e.message, "err"); }
+    return;
+  }
+
   if (!isOwner && !isPremium) {
     const now = Date.now();
     if (now - msgWinStart > MSG_WIN) { msgCount = 0; msgWinStart = now; }
@@ -612,7 +685,6 @@ async function sendMsg() {
   cancelReply();
   inp.value = ""; inp.style.height = "40px";
 
-  // ── Optimistic cache: add message locally immediately ──
   const optimisticId = "local_" + Date.now() + "_" + Math.random().toString(36).slice(2);
   const optimisticMsg = {
     id: optimisticId, type: "text",
@@ -1031,83 +1103,87 @@ async function buyPremium() {
 }
 
 /* ════════════════════════════════════
-   CONTEXT MENU — long press on mobile, right-click on desktop
+   MESSAGE ACTION SHEET
+   Long-press on mobile, right-click on desktop
 ════════════════════════════════════ */
-let ctxMsgId   = null;
-let ctxMsgText = "";
-let ctxCanDel  = false;
+let asMsg          = null;  // current message object
 let longPressTimer = null;
 
-function openCtx(e, msgId, text, canDel) {
-  ctxMsgId   = msgId;
-  ctxMsgText = text;
-  ctxCanDel  = canDel;
-
-  const menu = document.getElementById("ctxMenu");
-  const overlay = document.getElementById("ctxOverlay");
-
-  // Position menu near tap/click, keep inside viewport
-  let x = e.clientX || (e.touches?.[0]?.clientX) || window.innerWidth/2;
-  let y = e.clientY || (e.touches?.[0]?.clientY) || window.innerHeight/2;
-
-  menu.style.display = "block";
-  overlay.style.display = "block";
-
-  // Find the message to get senderName for reply
+function openActionSheet(e, msgId) {
   const msg = messages.find(m => m.id === msgId);
-  document.getElementById("ctxReply").dataset.senderName = msg?.senderName || "";
-  document.getElementById("ctxCopy").style.display  = text ? "flex" : "none";
-  document.getElementById("ctxDelete").style.display = canDel ? "flex" : "none";
+  if (!msg || msg.type === "system") return;
+  asMsg = msg;
 
-  // Adjust position so menu stays on screen
-  requestAnimationFrame(() => {
-    const mw = menu.offsetWidth, mh = menu.offsetHeight;
-    if (x + mw > window.innerWidth)  x = window.innerWidth  - mw - 10;
-    if (y + mh > window.innerHeight) y = window.innerHeight - mh - 10;
-    if (x < 10) x = 10;
-    if (y < 10) y = 10;
-    menu.style.left = x + "px";
-    menu.style.top  = y + "px";
-  });
+  const isMe   = msg.senderId === telegramId;
+  const canDel = isMe || isOwner;
+  const canEdit = isMe && msg.type === "text";
+  const hasText = msg.type === "text" && msg.text;
+
+  // Preview
+  document.getElementById("asPreviewName").textContent = msg.senderName || "";
+  document.getElementById("asPreviewText").textContent =
+    msg.type === "voice" ? "🎤 Voice note" : (msg.text || "").slice(0, 100);
+
+  // Show/hide conditional items
+  document.getElementById("asCopy").style.display   = hasText   ? "flex" : "none";
+  document.getElementById("asEdit").style.display   = canEdit   ? "flex" : "none";
+  document.getElementById("asDelete").style.display = canDel    ? "flex" : "none";
+
+  document.getElementById("actionSheetBg").classList.add("open");
 }
 
-function closeCtx() {
-  document.getElementById("ctxMenu").style.display    = "none";
-  document.getElementById("ctxOverlay").style.display = "none";
-  ctxMsgId = null; ctxMsgText = ""; ctxCanDel = false;
+function closeActionSheet() {
+  document.getElementById("actionSheetBg").classList.remove("open");
+  asMsg = null;
 }
 
-function startLongPress(e, msgId, text, canDel) {
+function startLongPress(e, msgId) {
   cancelLongPress();
   longPressTimer = setTimeout(() => {
-    // Vibrate for haptic feedback
-    if (navigator.vibrate) navigator.vibrate(40);
-    openCtx(e, msgId, text, canDel);
-  }, 500);
+    if (navigator.vibrate) navigator.vibrate(45);
+    openActionSheet(e, msgId);
+  }, 480);
 }
 function cancelLongPress() {
   if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
 }
 
-function ctxDoReply() {
-  const msg = messages.find(m => m.id === ctxMsgId);
-  if (msg) {
-    const sName = msg.senderName || "";
-    const txt   = msg.type === "voice" ? "🎤 Voice note" : (msg.text || "").slice(0, 80);
-    startReply(ctxMsgId, sName, txt);
-  }
-  closeCtx();
+/* Action sheet actions */
+function asDoReply() {
+  if (!asMsg) return;
+  const sName = asMsg.senderName || "";
+  const txt   = asMsg.type === "voice" ? "🎤 Voice note" : (asMsg.text || "").slice(0, 80);
+  closeActionSheet();
+  startReply(asMsg.id, sName, txt);
 }
-function ctxDoCopy() {
-  const text = ctxMsgText;
-  closeCtx();
-  if (!text) return;
+function asDoCopy() {
+  if (!asMsg?.text) return;
+  const text = asMsg.text;
+  closeActionSheet();
   if (navigator.clipboard?.writeText) {
     navigator.clipboard.writeText(text).then(() => showTmp("✅ Message copied","suc")).catch(() => fallbackCopyText(text));
   } else { fallbackCopyText(text); }
 }
-function ctxDoCopyAll() {
-  closeCtx();
+function asDoEdit() {
+  if (!asMsg) return;
+  const msg = asMsg;
+  closeActionSheet();
+  startEdit(msg.id, msg.text);
+}
+function asDoForward() {
+  if (!asMsg) return;
+  const text = asMsg.type === "voice"
+    ? "🎤 Voice note (forwarded)"
+    : (asMsg.text || "");
+  closeActionSheet();
+  if (tg?.openTelegramLink) {
+    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent("")}&text=${encodeURIComponent(text)}`);
+  } else {
+    window.open(`https://t.me/share/url?text=${encodeURIComponent(text)}`, "_blank");
+  }
+}
+function asDoCopyAll() {
+  closeActionSheet();
   const lines = messages
     .filter(m => m.type !== "system")
     .map(m => {
@@ -1120,10 +1196,10 @@ function ctxDoCopyAll() {
     navigator.clipboard.writeText(lines).then(() => showTmp("✅ Full chat copied","suc")).catch(() => fallbackCopyText(lines));
   } else { fallbackCopyText(lines); }
 }
-function ctxDoDelete() {
-  const id = ctxMsgId;
-  closeCtx();
-  delMsg(id);
+function asDoDelete() {
+  const id = asMsg?.id;
+  closeActionSheet();
+  if (id) delMsg(id);
 }
 function fallbackCopyText(text) {
   const ta = document.createElement("textarea");
@@ -1131,6 +1207,28 @@ function fallbackCopyText(text) {
   document.body.appendChild(ta); ta.select();
   try { document.execCommand("copy"); showTmp("✅ Copied","suc"); } catch(e){}
   document.body.removeChild(ta);
+}
+
+/* ════════════════════════════════════
+   EDIT MESSAGE
+════════════════════════════════════ */
+function startEdit(msgId, currentText) {
+  editMsgId = msgId;
+  const inp = document.getElementById("msgInp");
+  inp.value = currentText;
+  autoResize(inp);
+  inp.focus();
+  // Put cursor at end
+  inp.setSelectionRange(inp.value.length, inp.value.length);
+  document.getElementById("editModeBar").classList.add("show");
+  // Scroll to show input
+  document.getElementById("inputArea").scrollIntoView({ behavior:"smooth", block:"end" });
+}
+function cancelEdit() {
+  editMsgId = null;
+  document.getElementById("editModeBar").classList.remove("show");
+  const inp = document.getElementById("msgInp");
+  inp.value = ""; inp.style.height = "40px";
 }
 
 /* ════════════════════════════════════
