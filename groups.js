@@ -520,8 +520,8 @@ window.GROUPS_DATA = {
     "isPrivate": true,
     "isPremiumOnly": true,
     "createdAt": 1771726097171,
-    "lastMessageAt": 1771728826427,
-    "lastMessage": "Oluwafunke joined",
+    "lastMessageAt": 1771755022667,
+    "lastMessage": "mi joined",
     "totalEarnings": 2500,
     "members": {
       "6940101627": {
@@ -537,6 +537,11 @@ window.GROUPS_DATA = {
         "name": "Oluwafunke",
         "username": "",
         "joinedAt": 1771728826427
+      },
+      "7979664801": {
+        "name": "mi",
+        "username": "@Hueryten",
+        "joinedAt": 1771755022420
       }
     },
     "messages": [
@@ -551,6 +556,12 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "Oluwafunke joined the group",
         "timestamp": 1771728826427
+      },
+      {
+        "id": "fc8648b4a04a5100",
+        "type": "system",
+        "text": "mi joined the group",
+        "timestamp": 1771755022667
       }
     ]
   }
