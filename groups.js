@@ -690,8 +690,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771757557870,
-    "lastMessageAt": 1771767826525,
-    "lastMessage": "Harmayoh joined",
+    "lastMessageAt": 1771767842230,
+    "lastMessage": "Harmayoh: Hey 👋",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -718,6 +718,14 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "Harmayoh joined the group",
         "timestamp": 1771767826525
+      },
+      {
+        "id": "aeedb8e5bb9d83e8",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "Hey 👋",
+        "timestamp": 1771767842230
       }
     ]
   },
