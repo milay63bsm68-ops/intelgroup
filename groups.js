@@ -612,5 +612,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771755817901
       }
     ]
+  },
+  "69E216BD82": {
+    "name": "King lion",
+    "description": "Kind lion",
+    "ownerId": "7497799470",
+    "ownerName": "m",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🐯\",\"color\":\"#5288c1\"}",
+    "isPrivate": true,
+    "isPremiumOnly": true,
+    "createdAt": 1771756883876,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7497799470": {
+        "name": "m",
+        "joinedAt": 1771756883876
+      }
+    },
+    "messages": []
   }
 }
