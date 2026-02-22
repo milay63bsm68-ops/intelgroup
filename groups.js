@@ -853,8 +853,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771792039184,
-    "lastMessage": "ØLÄMÏLËKÄÑ DÇ joined",
+    "lastMessageAt": 1771792056036,
+    "lastMessage": "ØLÄMÏLËKÄÑ DÇ: Hello everyone",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -914,6 +914,14 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "ØLÄMÏLËKÄÑ DÇ joined the group",
         "timestamp": 1771792039184
+      },
+      {
+        "id": "2a2c0739a844b8f9",
+        "type": "text",
+        "senderId": "8597566039",
+        "senderName": "ØLÄMÏLËKÄÑ DÇ",
+        "text": "Hello everyone",
+        "timestamp": 1771792056036
       }
     ]
   },
