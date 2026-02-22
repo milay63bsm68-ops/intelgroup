@@ -642,8 +642,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771757557870,
-    "lastMessageAt": null,
-    "lastMessage": null,
+    "lastMessageAt": 1771757595277,
+    "lastMessage": "m: Hello \nGuy's ✋✋✋",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -651,6 +651,15 @@ window.GROUPS_DATA = {
         "joinedAt": 1771757557870
       }
     },
-    "messages": []
+    "messages": [
+      {
+        "id": "7d56cc5dd58f0546",
+        "type": "text",
+        "senderId": "7497799470",
+        "senderName": "m",
+        "text": "Hello \nGuy's ✋✋✋",
+        "timestamp": 1771757595277
+      }
+    ]
   }
 }
