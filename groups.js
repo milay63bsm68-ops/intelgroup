@@ -354,5 +354,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771721543807
       }
     ]
+  },
+  "96E3573D9B": {
+    "name": "https://www.facebook.com/photo.php?fbid=121424371346623&set=a.10",
+    "description": "Major guru",
+    "ownerId": "8473626341",
+    "ownerName": "Isaac",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"😀\",\"color\":\"#5288c1\"}",
+    "isPrivate": true,
+    "isPremiumOnly": true,
+    "createdAt": 1771723512237,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "8473626341": {
+        "name": "Isaac",
+        "joinedAt": 1771723512237
+      }
+    },
+    "messages": []
   }
 }
