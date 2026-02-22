@@ -489,8 +489,8 @@ window.GROUPS_DATA = {
     "isPrivate": true,
     "isPremiumOnly": true,
     "createdAt": 1771725735190,
-    "lastMessageAt": null,
-    "lastMessage": null,
+    "lastMessageAt": 1771725747303,
+    "lastMessage": "Isaac: Hello",
     "totalEarnings": 0,
     "members": {
       "8473626341": {
@@ -498,6 +498,15 @@ window.GROUPS_DATA = {
         "joinedAt": 1771725735190
       }
     },
-    "messages": []
+    "messages": [
+      {
+        "id": "c954ce5e53ea5499",
+        "type": "text",
+        "senderId": "8473626341",
+        "senderName": "Isaac",
+        "text": "Hello",
+        "timestamp": 1771725747303
+      }
+    ]
   }
 }
