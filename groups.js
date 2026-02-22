@@ -632,5 +632,25 @@ window.GROUPS_DATA = {
       }
     },
     "messages": []
+  },
+  "C14BB817ED": {
+    "name": "🐼 Panda",
+    "description": "Panda chat",
+    "ownerId": "7497799470",
+    "ownerName": "m",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🐼\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771757557870,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7497799470": {
+        "name": "m",
+        "joinedAt": 1771757557870
+      }
+    },
+    "messages": []
   }
 }
