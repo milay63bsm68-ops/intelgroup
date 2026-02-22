@@ -853,8 +853,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771792410148,
-    "lastMessage": "Dhemmyx: That's all boss",
+    "lastMessageAt": 1771794057716,
+    "lastMessage": "Harmayoh: Who dey active",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -955,6 +955,14 @@ window.GROUPS_DATA = {
         "senderName": "Dhemmyx",
         "text": "That's all boss",
         "timestamp": 1771792410148
+      },
+      {
+        "id": "f221da7c8f5e1ee3",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "Who dey active",
+        "timestamp": 1771794057716
       }
     ]
   },
