@@ -967,8 +967,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771777410678,
-    "lastMessageAt": 1771793061630,
-    "lastMessage": "Harmayoh: Yeah",
+    "lastMessageAt": 1771793149160,
+    "lastMessage": "Dee: Make we text for whatsapp so u fit explain gimme",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
@@ -1084,6 +1084,14 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "Yeah",
         "timestamp": 1771793061630
+      },
+      {
+        "id": "76059cbb6bb07ec8",
+        "type": "text",
+        "senderId": "7866657321",
+        "senderName": "Dee",
+        "text": "Make we text for whatsapp so u fit explain gimme",
+        "timestamp": 1771793149160
       }
     ]
   },
