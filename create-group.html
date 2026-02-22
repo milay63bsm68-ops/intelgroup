@@ -2,347 +2,1338 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Create Group</title>
+<title>Group Chat</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#17212b;--surface:#1e2c3a;--surface2:#242f3d;
-  --accent:#5288c1;--accent2:#64b5f6;--text:#e8e8e8;
-  --subtext:#8a9ba8;--border:#2b3a4a;--green:#4db6ac;
-  --red:#ef5350;
+:root{--bg:#17212b;--surface:#1e2c3a;--surface2:#242f3d;--accent:#5288c1;--accent2:#64b5f6;--text:#e8e8e8;--subtext:#8a9ba8;--border:#2b3a4a;--green:#4db6ac;--red:#ef5350;--gold:#ffd700;--out:#2b5278;--in:#1e2c3a;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;display:flex;flex-direction:column;}
+.header{background:var(--surface);padding:10px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.back-btn{background:none;border:none;color:var(--accent2);font-size:22px;cursor:pointer;flex-shrink:0;}
+.h-av{width:40px;height:40px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0;overflow:hidden;}
+.h-av img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.h-info{flex:1;min-width:0;}
+.h-name{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.h-sub{font-size:12px;color:var(--subtext);}
+.h-btn{background:none;border:none;color:var(--subtext);font-size:20px;cursor:pointer;padding:4px;}
+#msgs{flex:1;overflow-y:auto;padding:12px 10px;display:flex;flex-direction:column;gap:4px;-webkit-overflow-scrolling:touch;}
+.sys-msg{text-align:center;font-size:12px;color:var(--subtext);background:rgba(30,44,58,0.7);padding:4px 12px;border-radius:10px;margin:6px auto;max-width:80%;}
+.bw{display:flex;flex-direction:column;max-width:85%;animation:fi 0.15s ease;}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.bw.out{align-self:flex-end;align-items:flex-end;}
+.bw.in{align-self:flex-start;align-items:flex-start;}
+.b-sender{font-size:12px;color:var(--accent2);margin-bottom:2px;font-weight:600;padding:0 4px;}
+.bubble{padding:8px 12px;border-radius:16px;font-size:14px;line-height:1.5;word-break:break-word;}
+.bw.out .bubble{background:var(--out);border-bottom-right-radius:4px;}
+.bw.in .bubble{background:var(--in);border-bottom-left-radius:4px;border:1px solid var(--border);}
+.b-meta{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--subtext);padding:0 4px;margin-top:2px;}
+.bw.out .b-meta{justify-content:flex-end;}
+.del-btn{background:none;border:none;color:var(--subtext);font-size:14px;cursor:pointer;padding:2px 4px;opacity:0;}
+.bw:hover .del-btn{opacity:1;}
+.voice-bub{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:16px;background:var(--in);border:1px solid var(--border);min-width:160px;}
+.bw.out .voice-bub{background:var(--out);border-color:transparent;}
+.play-btn{width:36px;height:36px;border-radius:50%;background:var(--accent);border:none;color:white;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.wave{flex:1;height:24px;display:flex;align-items:center;gap:2px;}
+.wbar{flex:1;background:var(--subtext);border-radius:2px;min-height:3px;max-height:20px;}
+.v-dur{font-size:12px;color:var(--subtext);flex-shrink:0;}
+.rate-bar{background:var(--surface);padding:8px 14px;font-size:12px;color:var(--subtext);display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);flex-shrink:0;}
+.rate-prog{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.rate-fill{height:100%;background:var(--green);border-radius:2px;transition:width 0.3s;}
+.rate-fill.warn{background:#f59e0b;}
+.rate-fill.full{background:var(--red);}
+.rec-bar{background:#3d1515;border-top:1px solid var(--red);padding:8px 14px;font-size:13px;color:#fca5a5;display:none;align-items:center;gap:8px;flex-shrink:0;}
+.rec-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.input-area{background:var(--surface);padding:10px 12px;display:flex;align-items:flex-end;gap:10px;border-top:1px solid var(--border);flex-shrink:0;}
+.msg-inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:10px 14px;color:var(--text);font-size:14px;resize:none;max-height:120px;min-height:40px;font-family:inherit;outline:none;line-height:1.4;}
+.msg-inp:focus{border-color:var(--accent);}
+.send-btn,.voice-btn{width:42px;height:42px;border-radius:50%;border:none;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.send-btn{background:var(--accent);}
+.send-btn:active{transform:scale(0.9);}
+.voice-btn{background:var(--surface2);color:var(--subtext);border:1px solid var(--border);}
+.voice-btn.rec{background:var(--red);color:white;animation:pulse 1s infinite;}
+.overlay{position:absolute;inset:0;background:rgba(23,33,43,0.93);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
+.ov-icon{font-size:52px;margin-bottom:14px;}
+.ov-title{font-size:17px;font-weight:700;margin-bottom:8px;}
+.ov-sub{font-size:13px;color:var(--subtext);margin-bottom:20px;line-height:1.6;}
+.btn-join{padding:12px 28px;border-radius:24px;border:none;background:var(--accent);color:white;font-size:14px;font-weight:700;cursor:pointer;}
+.btn-upgrade{padding:12px 28px;border-radius:24px;border:none;background:linear-gradient(135deg,#f59e0b,#f97316);color:white;font-size:14px;font-weight:700;cursor:pointer;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:100;display:none;align-items:flex-end;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:480px;padding:20px;animation:su 0.25s ease;}
+@keyframes su{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:16px;text-align:center;}
+.modal-inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-size:14px;outline:none;margin-bottom:10px;}
+.modal-ta{resize:none;height:80px;font-family:inherit;}
+.modal-btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px;color:white;}
+.mb-save{background:var(--accent);}
+.mb-cancel{background:var(--surface2);color:var(--subtext);}
+.mb-danger{background:var(--red);}
+.tmp-msg{padding:10px 12px;border-radius:10px;font-size:13px;margin:8px;animation:fi 0.2s ease;}
+.err{background:#3d1515;border:1px solid var(--red);color:#fca5a5;}
+.suc{background:#1a3a2a;border:1px solid var(--green);color:#86efac;}
+.loading-msg{text-align:center;padding:40px 20px;color:var(--subtext);font-size:14px;}
+
+/* ── OFFLINE / CACHE INDICATOR ── */
+.offline-bar{
+  background:#2a1505;border-bottom:1px solid #f59e0b55;
+  padding:5px 14px;font-size:11px;color:#f59e0b;
+  display:none;align-items:center;gap:6px;flex-shrink:0;
+  text-align:center;justify-content:center;
 }
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;min-height:100vh;}
+.offline-bar.show{display:flex;}
+.offline-dot{width:7px;height:7px;border-radius:50%;background:#f59e0b;animation:pulse 1.5s infinite;}
+.cached-badge{
+  font-size:10px;color:var(--subtext);background:var(--surface2);
+  border:1px solid var(--border);border-radius:6px;
+  padding:1px 6px;margin-left:4px;vertical-align:middle;
+}
 
-/* HEADER */
-.header{background:var(--surface);padding:14px 16px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
-.back-btn{background:none;border:none;color:var(--accent2);font-size:22px;cursor:pointer;line-height:1;}
-.header-title{font-size:17px;font-weight:700;}
+/* ── BUY PREMIUM BANNER ── */
+.premium-banner{
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#2a1f05,#3a2800);
+  border-top:1px solid #f59e0b44;border-bottom:1px solid #f59e0b44;
+  padding:10px 14px;flex-shrink:0;cursor:pointer;
+  transition:opacity 0.15s;
+}
+.premium-banner:active{opacity:0.8;}
+.pb-icon{font-size:22px;flex-shrink:0;}
+.pb-text{flex:1;min-width:0;}
+.pb-title{font-size:13px;font-weight:700;color:#fcd34d;}
+.pb-sub{font-size:11px;color:#b45309;}
+.pb-btn{
+  background:linear-gradient(135deg,#f59e0b,#f97316);
+  color:white;border:none;border-radius:20px;
+  padding:6px 14px;font-size:12px;font-weight:700;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+}
 
-/* FORM */
-.form{padding:20px 16px;max-width:480px;margin:0 auto;}
-.sec-label{font-size:11px;color:var(--subtext);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;margin-top:20px;}
+/* ── PREMIUM MODAL ── */
+.pm-head{text-align:center;margin-bottom:16px;}
+.pm-icon{font-size:44px;margin-bottom:8px;}
+.pm-price{font-size:22px;font-weight:800;color:#f59e0b;margin:4px 0;}
+.pm-perks{background:var(--surface2);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:2;color:var(--text);}
+.pm-earn{font-size:12px;color:var(--subtext);text-align:center;margin-bottom:14px;}
+.mb-gold{background:linear-gradient(135deg,#f59e0b,#f97316);}
 
-/* ── AVATAR PREVIEW ── */
-.av-center{display:flex;justify-content:center;margin-bottom:4px;}
-.av-preview{
-  width:90px;height:90px;border-radius:50%;
+/* ── SHARE LINK ── */
+.share-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:10px 0;display:flex;align-items:center;gap:8px;}
+.share-url{flex:1;font-size:11px;color:var(--subtext);word-break:break-all;line-height:1.4;}
+.share-copy{background:var(--accent);border:none;border-radius:8px;color:white;font-size:12px;font-weight:700;padding:6px 10px;cursor:pointer;flex-shrink:0;white-space:nowrap;}
+.share-copy:active{opacity:0.8;}
+.mb-share{background:#1a3a2a;color:#4db6ac;border:1px solid #4db6ac44;}
+
+/* ── REPLY BAR ── */
+.reply-bar{
+  background:var(--surface2);border-top:1px solid var(--border);
+  padding:7px 12px;display:none;align-items:center;gap:10px;flex-shrink:0;
+}
+.reply-bar.show{display:flex;}
+.reply-bar-content{flex:1;min-width:0;}
+.reply-bar-name{font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:1px;}
+.reply-bar-text{font-size:12px;color:var(--subtext);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.reply-bar-cancel{background:none;border:none;color:var(--subtext);font-size:18px;cursor:pointer;flex-shrink:0;padding:2px 4px;line-height:1;}
+.reply-indicator{
+  background:var(--surface2);border-left:3px solid var(--accent2);
+  border-radius:6px;padding:5px 8px;margin-bottom:5px;font-size:12px;
+  color:var(--subtext);cursor:pointer;
+}
+.reply-indicator b{color:var(--accent2);font-size:12px;}
+
+/* ── REPLY ACTION BUTTON on bubble ── */
+.reply-btn{display:none;}
+.del-btn{display:none;}
+
+/* ── MESSAGE ACTION SHEET (bottom-sheet style, works on all devices) ── */
+.action-sheet-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:600;
+  display:none;align-items:flex-end;justify-content:center;
+}
+.action-sheet-bg.open{display:flex;}
+.action-sheet{
+  background:var(--surface);border-radius:20px 20px 0 0;
+  width:100%;max-width:480px;padding:0 0 12px;
+  animation:su 0.22s ease;overflow:hidden;
+}
+.as-handle{width:36px;height:4px;border-radius:2px;background:var(--border);margin:10px auto 6px;}
+.as-preview{
+  padding:10px 16px 12px;border-bottom:1px solid var(--border);
+  font-size:13px;color:var(--subtext);
+  display:flex;align-items:flex-start;gap:10px;
+}
+.as-preview-line{
+  border-left:3px solid var(--accent2);padding-left:10px;flex:1;min-width:0;
+}
+.as-preview-name{font-size:12px;font-weight:700;color:var(--accent2);margin-bottom:2px;}
+.as-preview-text{font-size:13px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.as-item{
+  display:flex;align-items:center;gap:16px;
+  padding:14px 20px;font-size:15px;cursor:pointer;
+  color:var(--text);transition:background 0.12s;
+  border:none;background:none;width:100%;text-align:left;
+  -webkit-tap-highlight-color:transparent;
+}
+.as-item:active{background:var(--surface2);}
+.as-item .as-icon{font-size:20px;width:28px;text-align:center;flex-shrink:0;}
+.as-item.danger{color:var(--red);}
+.as-item:not(:last-child){border-bottom:1px solid var(--border);}
+.as-cancel{
   display:flex;align-items:center;justify-content:center;
-  font-size:36px;font-weight:700;color:white;
-  border:3px solid var(--border);overflow:hidden;
-  transition:border-color 0.2s;position:relative;
-  background:var(--accent);
-  user-select:none;
+  margin:6px 16px 0;padding:14px;border-radius:14px;
+  background:var(--surface2);color:var(--subtext);
+  font-size:15px;font-weight:600;cursor:pointer;
+  border:none;width:calc(100% - 32px);
+  -webkit-tap-highlight-color:transparent;
 }
-.av-preview img{width:100%;height:100%;object-fit:cover;}
-.av-preview .av-badge{
-  position:absolute;bottom:0;left:0;right:0;
-  background:rgba(0,0,0,0.55);font-size:11px;
-  text-align:center;padding:3px 0;color:#fff;
+.as-cancel:active{opacity:0.7;}
+
+/* ── EDIT MODE bar ── */
+.edit-mode-bar{
+  background:#1a2a40;border-top:1px solid var(--accent);
+  padding:7px 12px;display:none;align-items:center;gap:10px;flex-shrink:0;
 }
+.edit-mode-bar.show{display:flex;}
+.edit-mode-label{flex:1;font-size:12px;color:var(--accent2);font-weight:600;}
+.edit-cancel-btn{background:none;border:none;color:var(--subtext);font-size:18px;cursor:pointer;padding:2px 4px;}
 
-/* ── EMOJI AVATAR PICKER ── */
-.emoji-grid{
-  display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:14px;padding:12px;
+/* ── @ MENTION DROPDOWN ── */
+.mention-list{
+  position:absolute;bottom:100%;left:0;right:0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px 12px 0 0;max-height:180px;overflow-y:auto;
+  z-index:500;display:none;box-shadow:0 -4px 16px rgba(0,0,0,0.3);
 }
-.emoji-opt{
-  aspect-ratio:1;border-radius:50%;display:flex;align-items:center;
-  justify-content:center;font-size:26px;cursor:pointer;
-  border:2px solid transparent;transition:all 0.15s;
-  position:relative;
+.mention-list.show{display:block;}
+.mention-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;cursor:pointer;transition:background 0.15s;
+  border-bottom:1px solid var(--border);font-size:14px;
 }
-.emoji-opt:hover{transform:scale(1.12);}
-.emoji-opt.selected{border-color:var(--accent2);box-shadow:0 0 0 2px var(--accent);}
-
-/* color row */
-.color-strip{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center;}
-.color-dot{
-  width:30px;height:30px;border-radius:50%;cursor:pointer;
-  border:2px solid transparent;transition:all 0.15s;
+.mention-item:last-child{border-bottom:none;}
+.mention-item:hover,.mention-item:active{background:var(--surface2);}
+.mention-av{
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:white;flex-shrink:0;
 }
-.color-dot:hover{transform:scale(1.15);}
-.color-dot.selected{border-color:#fff;box-shadow:0 0 0 2px var(--accent);}
-
-/* ── IMAGE URL INPUT ── */
-.img-url-hint{font-size:11px;color:var(--subtext);margin-top:6px;line-height:1.5;}
-.url-status{font-size:12px;margin-top:5px;min-height:16px;}
-.url-status.ok{color:var(--green);}
-.url-status.err{color:var(--red);}
-.url-status.loading{color:#f59e0b;}
-
-/* ── INPUTS ── */
-.inp{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:13px 14px;color:var(--text);font-size:15px;outline:none;transition:border-color 0.2s;}
-.inp:focus{border-color:var(--accent2);}
-textarea.inp{resize:none;height:90px;font-family:inherit;}
-.char-count{text-align:right;font-size:11px;color:var(--subtext);margin-top:4px;}
-
-/* ── TOGGLES ── */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;}
-.toggle-info{flex:1;margin-right:12px;}
-.toggle-label{font-size:14px;font-weight:600;}
-.toggle-sub{font-size:12px;color:var(--subtext);margin-top:2px;}
-.sw{position:relative;width:44px;height:24px;flex-shrink:0;}
-.sw input{opacity:0;width:0;height:0;position:absolute;}
-.sw-track{position:absolute;inset:0;border-radius:12px;background:#2b3a4a;cursor:pointer;transition:background 0.2s;}
-.sw input:checked~.sw-track{background:var(--accent);}
-.sw-thumb{position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:white;transition:transform 0.2s;pointer-events:none;}
-.sw input:checked~.sw-track .sw-thumb{transform:translateX(20px);}
-
-/* ── BUTTON ── */
-.btn-create{width:100%;padding:15px;margin-top:24px;border:none;border-radius:14px;background:var(--accent);color:white;font-size:16px;font-weight:700;cursor:pointer;transition:transform 0.1s,opacity 0.2s;}
-.btn-create:active{transform:scale(0.98);}
-.btn-create:disabled{opacity:0.4;}
-
-/* ── MSG ── */
-.msg{padding:12px 14px;border-radius:12px;font-size:13px;margin-top:12px;}
-.error{background:#3d1515;border:1px solid var(--red);color:#fca5a5;}
-.success{background:#1a3a2a;border:1px solid var(--green);color:#86efac;}
-.loading{background:#2a2a15;border:1px solid #f59e0b;color:#fcd34d;}
+.mention-name{font-weight:600;color:var(--text);}
+.mention-highlight{color:var(--accent2);}
+.input-wrap{flex:1;position:relative;}
 </style>
 </head>
 <body>
 <div class="header">
-  <button class="back-btn" onclick="history.back()">←</button>
-  <div class="header-title">New Group</div>
+  <button class="back-btn" onclick="location.href='index.html'">←</button>
+  <div class="h-av" id="hAv">G</div>
+  <div class="h-info">
+    <div class="h-name" id="hName">Loading…</div>
+    <div class="h-sub"  id="hSub">members</div>
+  </div>
+  <button class="h-btn" id="editBtn" style="display:none" onclick="openEdit()">⚙️</button>
+  <button class="h-btn" onclick="openInfo()">ℹ️</button>
 </div>
 
-<div class="form">
+<div id="msgs"><div class="loading-msg">Loading messages…</div></div>
 
-  <!-- AVATAR PREVIEW -->
-  <div class="av-center">
-    <div class="av-preview" id="avPreview">
-      <span id="avContent">G</span>
-    </div>
+<!-- OFFLINE / CACHE STATUS BAR -->
+<div class="offline-bar" id="offlineBar">
+  <div class="offline-dot"></div>
+  <span id="offlineText">Server unreachable — showing cached messages</span>
+</div>
+
+<div class="rate-bar" id="rateBar" style="display:none">
+  <span id="rateText">0/5 messages</span>
+  <div class="rate-prog"><div class="rate-fill" id="rateFill" style="width:0%"></div></div>
+  <span id="rateCd"></span>
+</div>
+
+<div class="rec-bar" id="recBar">
+  <div class="rec-dot"></div><span>Recording… tap 🎤 to stop</span>
+</div>
+
+<!-- REPLY BAR -->
+<div class="reply-bar" id="replyBar">
+  <div style="width:3px;background:var(--accent2);border-radius:2px;align-self:stretch;flex-shrink:0;"></div>
+  <div class="reply-bar-content">
+    <div class="reply-bar-name" id="replyBarName"></div>
+    <div class="reply-bar-text" id="replyBarText"></div>
   </div>
+  <button class="reply-bar-cancel" onclick="cancelReply()">✕</button>
+</div>
 
-  <!-- EMOJI PICKER (always visible) -->
-  <div class="sec-label" style="margin-top:14px;">Choose Avatar</div>
-  <div class="emoji-grid" id="emojiGrid"></div>
-  <div class="color-strip" id="colorStrip"></div>
-
-  <!-- IMAGE URL (optional override) -->
-  <div class="sec-label">Or Use Image URL (optional)</div>
-  <input class="inp" id="imgUrlInput" type="url"
-    placeholder="https://i.imgur.com/example.jpg"
-    oninput="onUrlInput(this.value)">
-  <div class="url-status" id="urlStatus"></div>
-  <div class="img-url-hint">Paste any direct image link — it will be used as your group avatar instead of the emoji above.</div>
-
-  <!-- GROUP NAME -->
-  <div class="sec-label">Group Name *</div>
-  <input class="inp" id="gName" maxlength="64" placeholder="Enter group name…"
-    oninput="onNameInput(this.value);document.getElementById('nc').textContent=this.value.length">
-  <div class="char-count"><span id="nc">0</span>/64</div>
-
-  <!-- DESCRIPTION -->
-  <div class="sec-label">Description</div>
-  <textarea class="inp" id="gDesc" maxlength="255" placeholder="What is this group about?"
-    oninput="document.getElementById('dc').textContent=this.value.length"></textarea>
-  <div class="char-count"><span id="dc">0</span>/255</div>
-
-  <!-- SETTINGS -->
-  <div class="sec-label">Settings</div>
-  <div class="toggle-row">
-    <div class="toggle-info">
-      <div class="toggle-label">🔒 Private Group</div>
-      <div class="toggle-sub">Only people with the link can join</div>
-    </div>
-    <label class="sw"><input type="checkbox" id="isPrivate"><div class="sw-track"><div class="sw-thumb"></div></div></label>
+<div class="input-area" id="inputArea">
+  <button class="voice-btn" id="voiceBtn" onclick="toggleRec()">🎤</button>
+  <div class="input-wrap">
+    <!-- @ mention dropdown -->
+    <div class="mention-list" id="mentionList"></div>
+    <textarea class="msg-inp" id="msgInp" placeholder="Message…" rows="1" oninput="autoResize(this);handleMentionInput(this)"></textarea>
   </div>
-  <div class="toggle-row">
-    <div class="toggle-info">
-      <div class="toggle-label">⭐ Premium Only</div>
-      <div class="toggle-sub">Only premium users can join</div>
-    </div>
-    <label class="sw"><input type="checkbox" id="isPremiumOnly"><div class="sw-track"><div class="sw-thumb"></div></div></label>
-  </div>
+  <button class="send-btn" onclick="sendMsg()">➤</button>
+</div>
 
-  <button class="btn-create" id="createBtn" onclick="createGroup()">✅ Create Group</button>
-  <div id="msgBox"></div>
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="editModal" onclick="closeModal('editModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Edit Group</div>
+    <input class="modal-inp" id="eName" maxlength="64" placeholder="Group name">
+    <textarea class="modal-inp modal-ta" id="eDesc" maxlength="255" placeholder="Description"></textarea>
+    <input class="modal-inp" id="eAvatar" type="url" placeholder="Avatar image URL (optional)">
+    <div id="eAvatarPreview" style="display:flex;justify-content:center;margin:8px 0 4px;"></div>
+    <div class="toggle-row" style="margin-top:10px;">
+      <div class="toggle-info">
+        <div class="toggle-label">🔒 Private Group</div>
+        <div class="toggle-sub">Only people with the link can join</div>
+      </div>
+      <label class="sw"><input type="checkbox" id="eIsPrivate"><div class="sw-track"><div class="sw-thumb"></div></div></label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">⭐ Premium Only</div>
+        <div class="toggle-sub">Only premium users can join</div>
+      </div>
+      <label class="sw"><input type="checkbox" id="eIsPremiumOnly"><div class="sw-track"><div class="sw-thumb"></div></div></label>
+    </div>
+    <button class="modal-btn mb-save"   onclick="saveEdit()">Save Changes</button>
+    <button class="modal-btn mb-danger" onclick="delGroup()">🗑️ Delete Group</button>
+    <button class="modal-btn mb-cancel" onclick="closeModal('editModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- INFO MODAL -->
+<div class="modal-bg" id="infoModal" onclick="closeModal('infoModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="infoTitle">Group Info</div>
+    <div id="infoContent" style="font-size:13px;color:var(--subtext);line-height:1.8;"></div>
+    <div style="margin-top:12px;">
+      <div style="font-size:11px;color:var(--subtext);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px;">🔗 Group Invite Link</div>
+      <div class="share-box">
+        <div class="share-url" id="shareUrlText">—</div>
+        <button class="share-copy" onclick="copyGroupLink()">Copy</button>
+      </div>
+      <button class="modal-btn mb-share" style="margin-top:4px;" onclick="shareGroupLink()">📤 Share Group Link</button>
+    </div>
+    <button class="modal-btn mb-cancel" style="margin-top:10px" onclick="closeModal('infoModal')">Close</button>
+    <button class="modal-btn mb-danger" id="leaveBtn" onclick="leaveGroup()" style="margin-top:6px;display:none">🚪 Leave Group</button>
+  </div>
+</div>
+
+<!-- PREMIUM PURCHASE MODAL -->
+<div class="modal-bg" id="premiumModal" onclick="closeModal('premiumModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="pm-head">
+      <div class="pm-icon">⭐</div>
+      <div class="modal-title">Get Premium</div>
+      <div class="pm-price">₦5,000</div>
+    </div>
+    <div class="pm-perks">
+      ✅ Unlimited messages<br>
+      ✅ Access all Premium groups<br>
+      ✅ Voice notes priority<br>
+      ✅ Premium badge
+    </div>
+    <div class="pm-earn" id="pmEarnNote"></div>
+    <input class="modal-inp" id="pmPasscode" placeholder="Enter your 6-digit code…" style="margin-bottom:6px;letter-spacing:4px;font-size:18px;font-weight:700;text-align:center;">
+    <div style="background:#1a2a40;border:1px solid #5288c155;border-radius:10px;padding:10px 12px;margin-bottom:12px;font-size:12px;line-height:1.9;color:var(--subtext);">
+      Don't have a code yet? Generate one instantly:<br>
+      <button id="genCodeBtn" onclick="generateCode()" style="display:block;width:100%;margin-top:8px;padding:9px;border:none;border-radius:10px;background:#1e40af;color:white;font-size:13px;font-weight:700;cursor:pointer;">
+        🔑 Generate My Code
+      </button>
+      <div id="genCodeMsg" style="margin-top:6px;min-height:16px;font-size:12px;"></div>
+    </div>
+    <div id="pmMsg" style="font-size:13px;margin-bottom:10px;min-height:18px;"></div>
+    <button class="modal-btn mb-gold" onclick="buyPremium()">⭐ Buy Premium – ₦5,000</button>
+    <button class="modal-btn mb-cancel" style="margin-top:6px;" onclick="closeModal('premiumModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- EDIT MODE BAR (shown above input when editing a message) -->
+<div class="edit-mode-bar" id="editModeBar">
+  <div style="width:3px;background:var(--accent);border-radius:2px;align-self:stretch;flex-shrink:0;"></div>
+  <div class="edit-mode-label">✏️ Editing message</div>
+  <button class="edit-cancel-btn" onclick="cancelEdit()">✕</button>
+</div>
+
+<!-- MESSAGE ACTION SHEET -->
+<div class="action-sheet-bg" id="actionSheetBg" onclick="closeActionSheet()">
+  <div class="action-sheet" onclick="event.stopPropagation()">
+    <div class="as-handle"></div>
+    <!-- Message preview -->
+    <div class="as-preview" id="asPreview">
+      <div class="as-preview-line">
+        <div class="as-preview-name" id="asPreviewName"></div>
+        <div class="as-preview-text" id="asPreviewText"></div>
+      </div>
+    </div>
+    <!-- Actions -->
+    <button class="as-item" id="asReply"   onclick="asDoReply()">  <span class="as-icon">↩️</span> Reply</button>
+    <button class="as-item" id="asCopy"    onclick="asDoCopy()">   <span class="as-icon">📋</span> Copy Message</button>
+    <button class="as-item" id="asEdit"    onclick="asDoEdit()"  style="display:none"><span class="as-icon">✏️</span> Edit Message</button>
+    <button class="as-item" id="asForward" onclick="asDoForward()"><span class="as-icon">↪️</span> Forward</button>
+    <button class="as-item" id="asCopyAll" onclick="asDoCopyAll()"><span class="as-icon">📄</span> Copy Whole Chat</button>
+    <button class="as-item danger" id="asDelete" onclick="asDoDelete()" style="display:none"><span class="as-icon">🗑️</span> Delete Message</button>
+    <button class="as-cancel" onclick="closeActionSheet()">Cancel</button>
+  </div>
 </div>
 
 <script>
-/* ════════════════════════════════════
-   TELEGRAM INIT
-════════════════════════════════════ */
 const tg = window.Telegram?.WebApp;
-tg?.ready();
+tg?.ready(); tg?.expand();
 const user       = tg?.initDataUnsafe?.user;
 const telegramId = user ? String(user.id) : null;
 const userName   = user?.first_name || "Guest";
+const userUname  = user?.username ? "@"+user.username : "";
+
+const params  = new URLSearchParams(location.search);
+//Support both ?id=XXX (direct) and Telegram startapp deep link (?tgWebAppStartParam=XXX)
+const groupId = params.get("id")
+  || params.get("tgWebAppStartParam")
+  || tg?.initDataUnsafe?.start_param
+  || null;
+if (!groupId) location.href = "index.html";
+
+let groupData    = null;
+let messages     = [];
+let isOwner      = false;
+let isJoined     = false;
+let isPremium    = false;
+let msgCount     = 0;
+let msgWinStart  = Date.now();
+const MSG_LIMIT  = 5;
+const MSG_WIN    = 5 * 60 * 1000;
+let cdTimer      = null;
+let pollInterval = null;
+let mediaRec     = null;
+let audioChunks  = [];
+let isRecording  = false;
+let isOffline    = false;
+let joinedGroups = JSON.parse(localStorage.getItem("joinedGroups") || "[]");
+let replyTo      = null; // { id, senderName, text }
+let mentionQuery = null; // current @ search string or null
+let editMsgId    = null; // message currently being edited
 
 /* ════════════════════════════════════
-   AVATAR STATE
+   MESSAGE CACHE — localStorage per group
+   Key: "msgcache_<groupId>"
+   Stores up to 300 messages per group.
+   Shared between ALL users on this device
+   who view the group (sender + viewers).
 ════════════════════════════════════ */
-const EMOJIS = [
-  "😀","😎","🤩","🥳","🦁","🐯","🐻","🦊","🐼","🦄",
-  "🌟","🔥","💎","🚀","⚡","🌈","🎮","🎯","🏆","💡",
-  "🎵","🎸","🌺","🍀","🌙","❄️","🌊","🎭","🦋","🦅"
-];
-const COLORS = [
-  "#5288c1","#4db6ac","#ef5350","#f59e0b","#9c27b0",
-  "#e91e63","#00bcd4","#8bc34a","#ff5722","#607d8b",
-  "#795548","#3f51b5","#009688","#ffc107","#673ab7"
-];
+const CACHE_KEY     = "msgcache_" + groupId;
+const CACHE_LIMIT   = 300;
 
-let selectedEmoji = "😀";
-let selectedColor = COLORS[0];
-let avatarImageUrl = null; // final hosted URL (string) or null
-
-function buildEmojiGrid() {
-  const grid = document.getElementById("emojiGrid");
-  grid.innerHTML = "";
-  EMOJIS.forEach((em, i) => {
-    const el = document.createElement("div");
-    el.className = "emoji-opt" + (i === 0 ? " selected" : "");
-    el.textContent = em;
-    el.style.background = COLORS[i % COLORS.length];
-    el.onclick = () => {
-      document.querySelectorAll(".emoji-opt").forEach(e => e.classList.remove("selected"));
-      el.classList.add("selected");
-      selectedEmoji = em;
-      avatarImageUrl = null;
-      renderPreview();
-    };
-    grid.appendChild(el);
-  });
+function cacheLoad() {
+  try { return JSON.parse(localStorage.getItem(CACHE_KEY) || "[]"); }
+  catch(e) { return []; }
 }
 
-function buildColorStrip() {
-  const strip = document.getElementById("colorStrip");
-  strip.innerHTML = "";
-  COLORS.forEach((c, i) => {
-    const el = document.createElement("div");
-    el.className = "color-dot" + (i === 0 ? " selected" : "");
-    el.style.background = c;
-    el.title = c;
-    el.onclick = () => {
-      document.querySelectorAll(".color-dot").forEach(d => d.classList.remove("selected"));
-      el.classList.add("selected");
-      selectedColor = c;
-      avatarImageUrl = null;
-      renderPreview();
-    };
-    strip.appendChild(el);
-  });
+function cacheSave(msgs) {
+  try {
+    // Keep only the latest CACHE_LIMIT messages
+    const trimmed = msgs.slice(-CACHE_LIMIT);
+    localStorage.setItem(CACHE_KEY, JSON.stringify(trimmed));
+  } catch(e) {
+    // Storage full — clear old caches for other groups and retry
+    pruneOldCaches();
+    try { localStorage.setItem(CACHE_KEY, JSON.stringify(msgs.slice(-100))); } catch(e2) {}
+  }
 }
 
-function renderPreview() {
-  const preview = document.getElementById("avPreview");
-  const content = document.getElementById("avContent");
-  if (avatarImageUrl) {
-    preview.style.background = "transparent";
-    preview.innerHTML = `<img src="${avatarImageUrl}" alt="avatar">`;
+function cacheMerge(existing, incoming) {
+  // Merge incoming messages into existing, dedup by id, keep sorted by timestamp
+  const map = new Map();
+  for (const m of existing) map.set(m.id, m);
+  for (const m of incoming) map.set(m.id, m);
+  return Array.from(map.values()).sort((a, b) => a.timestamp - b.timestamp);
+}
+
+function cacheDeleteMsg(msgId) {
+  const cached = cacheLoad();
+  const updated = cached.filter(m => m.id !== msgId);
+  cacheSave(updated);
+}
+
+function pruneOldCaches() {
+  // Remove message caches for groups not in joinedGroups to free space
+  const keep = new Set(joinedGroups.map(id => "msgcache_" + id));
+  keep.add(CACHE_KEY);
+  const toRemove = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith("msgcache_") && !keep.has(k)) toRemove.push(k);
+  }
+  toRemove.forEach(k => localStorage.removeItem(k));
+}
+
+function setOffline(offline) {
+  isOffline = offline;
+  const bar = document.getElementById("offlineBar");
+  if (offline) {
+    bar.classList.add("show");
   } else {
-    preview.style.background = selectedColor;
-    preview.innerHTML = `<span id="avContent" style="font-size:36px">${selectedEmoji}</span>`;
+    bar.classList.remove("show");
   }
 }
 
-function onNameInput(val) {
-  if (!avatarImageUrl) renderPreview();
-}
-
-/* ════════════════════════════════════
-   IMAGE URL — live preview as user types
-════════════════════════════════════ */
-let urlDebounce = null;
-function onUrlInput(val) {
-  clearTimeout(urlDebounce);
-  const trimmed = val.trim();
-  if (!trimmed) {
-    // cleared — fall back to emoji
-    avatarImageUrl = null;
-    renderPreview();
-    setUrlStatus("", "");
-    return;
+async function init() {
+  // ── Show cached messages instantly before server responds ──
+  const cached = cacheLoad();
+  if (cached.length > 0) {
+    messages = cached;
+    // Render right away so user sees chat immediately
+    document.getElementById("msgs").innerHTML = "";
+    renderMsgs(true); // true = from cache, suppress scroll-to-bottom jank
   }
-  setUrlStatus("⏳ Loading…", "loading");
-  urlDebounce = setTimeout(() => {
-    const img = new Image();
-    img.onload = () => {
-      avatarImageUrl = trimmed;
-      renderPreview();
-      setUrlStatus("✅ Image loaded!", "ok");
-    };
-    img.onerror = () => {
-      avatarImageUrl = null;
-      renderPreview();
-      setUrlStatus("❌ Could not load image from this URL", "err");
-    };
-    img.src = trimmed;
-  }, 600);
-}
-
-function setUrlStatus(msg, cls) {
-  const el = document.getElementById("urlStatus");
-  el.textContent = msg;
-  el.className = "url-status " + cls;
-}
-
-/* ════════════════════════════════════
-   BUILD AVATAR VALUE FOR API
-   Returns a small JSON string stored on GitHub
-   instead of a huge base64 blob
-════════════════════════════════════ */
-function buildAvatarValue() {
-  if (avatarImageUrl) {
-    // Store as a URL reference — tiny string
-    return JSON.stringify({ type: "url", src: avatarImageUrl });
-  } else {
-    // Store emoji + color — a few bytes only
-    return JSON.stringify({ type: "emoji", emoji: selectedEmoji, color: selectedColor });
-  }
-}
-
-/* ════════════════════════════════════
-   CREATE GROUP
-════════════════════════════════════ */
-async function createGroup() {
-  const gName = document.getElementById("gName").value.trim();
-  if (!telegramId) return showMsg("❌ Open this from Telegram.","error");
-  if (!gName)      return showMsg("❌ Please enter a group name.","error");
-
-  showMsg("⏳ Creating…","loading");
-  document.getElementById("createBtn").disabled = true;
 
   try {
-    const res = await fetch("/api/groups/create", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        telegramId,
-        ownerName:    userName,
-        name:         gName,
-        description:  document.getElementById("gDesc").value.trim(),
-        isPrivate:    document.getElementById("isPrivate").checked,
-        isPremiumOnly:document.getElementById("isPremiumOnly").checked,
-        avatar:       buildAvatarValue()   // ← tiny JSON, not base64
-      })
+    const [gRes, pRes] = await Promise.all([
+      fetch("/api/groups/" + groupId),
+      fetch("/api/premium-list")
+    ]);
+    if (!gRes.ok) { document.getElementById("msgs").innerHTML = '<div class="loading-msg">Group not found.</div>'; return; }
+    groupData = await gRes.json();
+    const pList = await pRes.json();
+    isPremium = telegramId && pList.includes(telegramId);
+    isOwner   = groupData.ownerId === telegramId;
+    isJoined  = joinedGroups.includes(groupId) || isOwner || !!(groupData.members && groupData.members[telegramId]);
+
+    const hAv = document.getElementById("hAv");
+    renderAvatar(groupData.avatar, hAv, groupData.name);
+    document.getElementById("hName").textContent = groupData.name || "Group";
+    const mc = Object.keys(groupData.members||{}).length;
+    document.getElementById("hSub").textContent  = mc + " member" + (mc!==1?"s":"");
+    if (isOwner) document.getElementById("editBtn").style.display = "flex";
+
+    if (!isJoined) { showJoinOverlay(); return; }
+    if (groupData.isPremiumOnly && !isPremium && !isOwner) { showPremiumOverlay(); return; }
+
+    await fetch("/api/groups/" + groupId + "/join", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId, name: userName, username: userUname })
+    });
+    if (!joinedGroups.includes(groupId)) {
+      joinedGroups.push(groupId);
+      localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+    }
+    // Show Buy Premium banner for non-premium, non-owner members
+    if (!isPremium && !isOwner) showPremiumBanner();
+    setOffline(false);
+    loadMsgs();
+    pollInterval = setInterval(loadMsgs, 4000);
+    updateRateBar();
+  } catch(e) {
+    // Server unreachable — use cache if available
+    if (cached.length > 0) {
+      setOffline(true);
+      // Still render input area so user can queue messages
+      updateRateBar();
+    } else {
+      document.getElementById("msgs").innerHTML = '<div class="loading-msg">⚠️ Cannot reach server and no cached messages.</div>';
+    }
+  }
+}
+
+function showJoinOverlay() {
+  document.getElementById("msgs").innerHTML = `
+    <div class="overlay">
+      <div class="ov-icon">👥</div>
+      <div class="ov-title">Join this Group</div>
+      <div class="ov-sub">${esc(groupData.description || "Join to start chatting.")}</div>
+      <button class="btn-join" onclick="doJoin()">Join Group</button>
+    </div>`;
+  document.getElementById("inputArea").style.display = "none";
+  document.getElementById("rateBar").style.display   = "none";
+}
+async function doJoin() {
+  await fetch("/api/groups/" + groupId + "/join", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ telegramId, name: userName, username: userUname })
+  });
+  joinedGroups.push(groupId);
+  localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+  location.reload();
+}
+function showPremiumOverlay() {
+  document.getElementById("msgs").innerHTML = `
+    <div class="overlay">
+      <div class="ov-icon">⭐</div>
+      <div class="ov-title">Premium Members Only</div>
+      <div class="ov-sub">This group is for premium members only. Upgrade to join, or go back and browse other groups.</div>
+      <button class="btn-upgrade" onclick="location.href='premium.html?groupId=${groupId}'" style="margin-bottom:12px;">⭐ Get Premium – ₦5,000</button>
+      <button class="btn-join" onclick="location.href='index.html'" style="background:var(--surface2);border:1px solid var(--border);color:var(--subtext);font-size:13px;">← Back to Groups</button>
+    </div>`;
+  document.getElementById("inputArea").style.display = "none";
+  document.getElementById("rateBar").style.display   = "none";
+}
+
+async function loadMsgs() {
+  try {
+    const res  = await fetch("/api/groups/" + groupId + "/messages");
+    if (!res.ok) throw new Error("Server error");
+    const data = await res.json();
+
+    // Merge server data with local cache (catches any messages cached offline)
+    const merged = cacheMerge(cacheLoad(), data);
+
+    if (JSON.stringify(merged) === JSON.stringify(messages)) {
+      setOffline(false);
+      return;
+    }
+    messages = merged;
+    cacheSave(messages);   // ← persist to localStorage
+    setOffline(false);
+    renderMsgs();
+  } catch(e) {
+    // Server down — keep showing what we have from cache
+    setOffline(true);
+    if (messages.length === 0) {
+      const cached = cacheLoad();
+      if (cached.length > 0) { messages = cached; renderMsgs(); }
+    }
+  }
+}
+
+function renderMsgs(fromCache = false) {
+  const area     = document.getElementById("msgs");
+  const atBottom = area.scrollHeight - area.scrollTop - area.clientHeight < 80;
+  if (messages.length === 0) {
+    area.innerHTML = '<div class="sys-msg">No messages yet. Say hello! 👋</div>';
+    return;
+  }
+  area.innerHTML = messages.map(m => renderMsg(m)).join("");
+  // Scroll to bottom: always on first load, or if already near bottom
+  if (!fromCache || atBottom) area.scrollTop = area.scrollHeight;
+}
+
+function renderMsg(m) {
+  const isMe   = m.senderId === telegramId;
+  const cls    = isMe ? "out" : "in";
+  const time   = new Date(m.timestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+  const canDel = isMe || isOwner;
+  if (m.type === "system") return `<div class="sys-msg">${esc(m.text)}</div>`;
+
+  // Reply quote block
+  let replyBlock = "";
+  if (m.replyTo) {
+    replyBlock = `<div class="reply-indicator" onclick="scrollToMsg('${esc(m.replyTo.id)}')">
+      <b>${esc(m.replyTo.senderName||"")}</b><br>${esc((m.replyTo.text||"🎤 Voice note").slice(0,80))}
+    </div>`;
+  }
+
+  const canDelAttr = canDel ? "true" : "false";
+  const msgText    = m.type === "text" ? (m.text||"") : "";
+
+  if (m.type === "voice") {
+    const bars = Array.from({length:20},(_,i) => {
+      const h = 4 + Math.abs(Math.sin(i*0.7 + m.timestamp*0.001)*16);
+      return `<div class="wbar" style="height:${h}px"></div>`;
+    }).join("");
+    return `<div class="bw ${cls}" id="msg-${m.id}"
+      oncontextmenu="openActionSheet(event,'${m.id}');return false;"
+      ontouchstart="startLongPress(event,'${m.id}')"
+      ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
+      ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
+      ${replyBlock}
+      <div class="voice-bub">
+        <button class="play-btn" onclick="playVoice('${m.audioUrl}',this)">▶</button>
+        <div class="wave">${bars}</div>
+        <span class="v-dur">${m.duration||"0:00"}</span>
+      </div>
+      <div class="b-meta">${time}</div>
+    </div>`;
+  }
+  return `<div class="bw ${cls}" id="msg-${m.id}"
+    oncontextmenu="openActionSheet(event,'${m.id}');return false;"
+    ontouchstart="startLongPress(event,'${m.id}')"
+    ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
+    ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
+    ${replyBlock}
+    <div class="bubble">${fmtText(m.text)}</div>
+    <div class="b-meta">${time}${m.edited?`<span style="font-size:10px;color:var(--subtext)"> ✎ edited</span>`:""}${isMe?"✓✓":""}</div>
+  </div>`;
+}
+function fmtText(t) {
+  return esc(t)
+    .replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" style="color:var(--accent2)">$1</a>')
+    .replace(/(@\w+)/g,'<span style="color:var(--accent2);font-weight:600">$1</span>');
+}
+
+async function sendMsg() {
+  const inp  = document.getElementById("msgInp");
+  const text = inp.value.trim();
+  if (!text || !telegramId) return;
+
+  // ── EDIT MODE: save edit instead of sending new message ──
+  if (editMsgId) {
+    const id = editMsgId;
+    cancelEdit();
+    inp.value = ""; inp.style.height = "40px";
+    try {
+      const res = await fetch("/api/groups/" + groupId + "/messages/" + id + "/edit", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ telegramId, text })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Edit failed");
+      // Update locally
+      const m = messages.find(m => m.id === id);
+      if (m) { m.text = text; m.edited = true; cacheSave(messages); renderMsgs(); }
+      showTmp("✅ Message edited","suc");
+    } catch(e) { showTmp("❌ " + e.message, "err"); }
+    return;
+  }
+
+  if (!isOwner && !isPremium) {
+    const now = Date.now();
+    if (now - msgWinStart > MSG_WIN) { msgCount = 0; msgWinStart = now; }
+    if (msgCount >= MSG_LIMIT) {
+      const left = Math.ceil((MSG_WIN - (Date.now() - msgWinStart)) / 1000);
+      showTmp(`⏳ Limit reached. Wait ${Math.floor(left/60)}m ${left%60}s or get ⭐ Premium`, "err");
+      return;
+    }
+    msgCount++;
+    updateRateBar();
+  }
+
+  const currentReply = replyTo ? { ...replyTo } : null;
+  cancelReply();
+  inp.value = ""; inp.style.height = "40px";
+
+  const optimisticId = "local_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+  const optimisticMsg = {
+    id: optimisticId, type: "text",
+    senderId: telegramId, senderName: userName,
+    text, timestamp: Date.now(),
+    replyTo: currentReply || undefined,
+    _pending: true
+  };
+  messages = cacheMerge(messages, [optimisticMsg]);
+  cacheSave(messages);
+  renderMsgs();
+
+  try {
+    const res = await fetch("/api/groups/" + groupId + "/messages", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId, senderName: userName, text, type:"text", replyTo: currentReply || undefined })
+    });
+    if (!res.ok) throw new Error("Server error");
+    messages = messages.filter(m => m.id !== optimisticId);
+    cacheSave(messages);
+    loadMsgs();
+  } catch(e) {
+    showTmp("⚠️ Saved locally — will sync when online", "err");
+    setOffline(true);
+  }
+}
+
+function autoResize(el) { el.style.height="40px"; el.style.height=Math.min(el.scrollHeight,120)+"px"; }
+// Enter always creates a new line — send only via the ➤ button
+
+async function delMsg(msgId) {
+  if (!confirm("Delete this message for everyone?")) return;
+  try {
+    await fetch("/api/groups/" + groupId + "/messages/" + msgId, {
+      method:"DELETE", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId, isOwner })
+    });
+    // Remove from local cache immediately
+    cacheDeleteMsg(msgId);
+    messages = messages.filter(m => m.id !== msgId);
+    renderMsgs();
+  } catch(e) {
+    // If server is down, still remove from local cache
+    cacheDeleteMsg(msgId);
+    messages = messages.filter(m => m.id !== msgId);
+    renderMsgs();
+    showTmp("⚠️ Deleted locally — server will sync later", "err");
+  }
+}
+
+function updateRateBar() {
+  if (isOwner || isPremium) { document.getElementById("rateBar").style.display="none"; return; }
+  document.getElementById("rateBar").style.display = "flex";
+  const pct  = (msgCount / MSG_LIMIT) * 100;
+  const fill = document.getElementById("rateFill");
+  fill.style.width = pct + "%";
+  fill.className   = "rate-fill" + (pct>=100?" full":pct>=80?" warn":"");
+  document.getElementById("rateText").textContent = msgCount+"/"+MSG_LIMIT+" messages";
+  if (msgCount >= MSG_LIMIT) startCd();
+}
+function startCd() {
+  if (cdTimer) clearInterval(cdTimer);
+  const el  = document.getElementById("rateCd");
+  cdTimer = setInterval(() => {
+    const diff = Math.max(0, msgWinStart + MSG_WIN - Date.now());
+    if (diff <= 0) { el.textContent=""; msgCount=0; msgWinStart=Date.now(); updateRateBar(); clearInterval(cdTimer); return; }
+    const s = Math.ceil(diff/1000);
+    el.textContent = Math.floor(s/60)+"m "+s%60+"s";
+  }, 1000);
+}
+
+async function toggleRec() {
+  if (isRecording) stopRec(); else startRec();
+}
+async function startRec() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    audioChunks  = [];
+    mediaRec     = new MediaRecorder(stream);
+    mediaRec.ondataavailable = e => audioChunks.push(e.data);
+    mediaRec.onstop          = uploadVoice;
+    mediaRec.start();
+    isRecording = true;
+    document.getElementById("voiceBtn").className = "voice-btn rec";
+    document.getElementById("voiceBtn").textContent = "⏹";
+    document.getElementById("recBar").style.display = "flex";
+  } catch(e) { showTmp("❌ Microphone access denied","err"); }
+}
+function stopRec() {
+  if (mediaRec && isRecording) {
+    mediaRec.stop();
+    mediaRec.stream.getTracks().forEach(t=>t.stop());
+    isRecording = false;
+    document.getElementById("voiceBtn").className   = "voice-btn";
+    document.getElementById("voiceBtn").textContent = "🎤";
+    document.getElementById("recBar").style.display = "none";
+  }
+}
+async function uploadVoice() {
+  const blob = new Blob(audioChunks, { type:"audio/webm" });
+  const dur  = await new Promise(res => {
+    const a = new Audio(URL.createObjectURL(blob));
+    a.onloadedmetadata = () => res(a.duration||0);
+    a.onerror = () => res(0);
+  });
+  const fmtDur = s => Math.floor(s/60)+":"+String(Math.floor(s%60)).padStart(2,"0");
+  const reader = new FileReader();
+  reader.onload = async e => {
+    const b64 = e.target.result.split(",")[1];
+    const localUrl = URL.createObjectURL(blob);
+    const optimisticId = "voice_local_" + Date.now();
+
+    // Optimistic: show voice message immediately in UI (local blob URL)
+    const optimisticVoice = {
+      id: optimisticId, type: "voice",
+      senderId: telegramId, senderName: userName,
+      duration: fmtDur(dur),
+      audioUrl: localUrl,   // local blob for immediate playback
+      timestamp: Date.now(),
+      _pending: true
+    };
+    messages = cacheMerge(messages, [optimisticVoice]);
+    // Note: we don't cache voice audio data (too large) — only the metadata
+    // The blob URL works for this session; after server sync it uses the real URL
+    renderMsgs();
+
+    try {
+      await fetch("/api/groups/" + groupId + "/messages", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ telegramId, senderName:userName, type:"voice", audioData:b64, duration:fmtDur(dur) })
+      });
+      // Remove optimistic placeholder and load real message
+      messages = messages.filter(m => m.id !== optimisticId);
+      cacheSave(messages);
+      loadMsgs();
+    } catch(err) {
+      showTmp("❌ Failed to send voice note","err");
+      messages = messages.filter(m => m.id !== optimisticId);
+      renderMsgs();
+    }
+  };
+  reader.readAsDataURL(blob);
+}
+
+function playVoice(url, btn) {
+  const audio = new Audio(url);
+  btn.textContent = "⏸";
+  audio.play();
+  audio.onended = () => { btn.textContent = "▶"; };
+}
+
+function openEdit() {
+  document.getElementById("eName").value = groupData.name || "";
+  document.getElementById("eDesc").value = groupData.description || "";
+  // Pre-fill avatar URL if it's a plain URL (not emoji JSON)
+  const av = groupData.avatar || "";
+  const isUrl = av.startsWith("http");
+  document.getElementById("eAvatar").value = isUrl ? av : "";
+  // Show current avatar preview
+  const prev = document.getElementById("eAvatarPreview");
+  prev.innerHTML = "";
+  const previewEl = document.createElement("div");
+  previewEl.style.cssText = "width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid var(--border);";
+  renderAvatar(groupData.avatar, previewEl, groupData.name);
+  prev.appendChild(previewEl);
+  // Live preview on URL change
+  document.getElementById("eAvatar").oninput = function() {
+    const val = this.value.trim();
+    const el2 = document.createElement("div");
+    el2.style.cssText = "width:60px;height:60px;border-radius:50%;overflow:hidden;border:2px solid var(--border);";
+    renderAvatar(val || groupData.avatar, el2, groupData.name);
+    prev.innerHTML = "";
+    prev.appendChild(el2);
+  };
+  document.getElementById("eIsPrivate").checked    = !!groupData.isPrivate;
+  document.getElementById("eIsPremiumOnly").checked = !!groupData.isPremiumOnly;
+  document.getElementById("editModal").classList.add("open");
+}
+async function saveEdit() {
+  const name        = document.getElementById("eName").value.trim();
+  const desc        = document.getElementById("eDesc").value.trim();
+  const avatar      = document.getElementById("eAvatar").value.trim() || undefined;
+  const isPrivate     = document.getElementById("eIsPrivate").checked;
+  const isPremiumOnly = document.getElementById("eIsPremiumOnly").checked;
+  if (!name) return;
+  try {
+    const res = await fetch("/api/groups/" + groupId + "/edit", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId, name, description: desc, avatar, isPrivate, isPremiumOnly })
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    closeModal("editModal");
+    groupData.name = name; groupData.description = desc; groupData.isPrivate = isPrivate; groupData.isPremiumOnly = isPremiumOnly;
+    if (avatar !== undefined) groupData.avatar = avatar;
+    document.getElementById("hName").textContent = name;
+    // Update header avatar
+    renderAvatar(groupData.avatar, document.getElementById("hAv"), groupData.name);
+    showTmp("✅ Group updated","suc");
+  } catch(e) { showTmp("❌ "+e.message,"err"); }
+}
+async function delGroup() {
+  if (!confirm("Delete this group permanently?")) return;
+  try {
+    const res = await fetch("/api/groups/" + groupId + "/delete", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId })
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    location.href = "index.html";
+  } catch(e) { showTmp("❌ "+e.message,"err"); }
+}
+
+function openInfo() {
+  if (!groupData) return;
+  const mc      = Object.keys(groupData.members||{}).length;
+  const shareUrl = groupShareLink(groupId);
+  document.getElementById("infoTitle").textContent = groupData.name || "Group";
+  document.getElementById("infoContent").innerHTML = `
+    ${groupData.description?`<p style="margin-bottom:12px;color:var(--text)">${esc(groupData.description)}</p>`:""}
+    <div>👥 <b>${mc}</b> member${mc!==1?"s":""}</div>
+    <div>🆔 Group ID: <code>${groupId}</code></div>
+    <div>📅 Created: ${groupData.createdAt?new Date(groupData.createdAt).toLocaleDateString():"N/A"}</div>
+    ${groupData.isPremiumOnly?"<div>⭐ Premium members only</div>":""}
+    ${groupData.isPrivate?"<div>🔒 Private group</div>":"<div>🌐 Public group</div>"}
+    ${isOwner?`<br><div style="font-size:12px;color:var(--subtext)">💰 Total earnings: ₦${(groupData.totalEarnings||0).toLocaleString()}</div>`:""}`;
+  document.getElementById("shareUrlText").textContent = shareUrl;
+  const lb = document.getElementById("leaveBtn");
+  lb.style.display = (!isOwner && isJoined) ? "block" : "none";
+  document.getElementById("infoModal").classList.add("open");
+}
+
+/* ── Group share link helpers ── */
+function groupShareLink(gid) {
+  // Telegram WebApp deep link: opens the mini app with startapp=<groupId>
+  return `https://t.me/intelligentpublicgroupsbot/explore?startapp=${gid}`;
+}
+
+function copyGroupLink() {
+  const url = groupShareLink(groupId);
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(url).then(() => showTmp("✅ Link copied!","suc")).catch(() => fallbackCopy(url));
+  } else { fallbackCopy(url); }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); showTmp("✅ Link copied!","suc"); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function shareGroupLink() {
+  const url  = groupShareLink(groupId);
+  const name = groupData?.name || "this group";
+  // Use Telegram share if inside Telegram WebApp
+  if (tg?.openTelegramLink) {
+    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Join " + name + " on Intel Groups!")}`);
+  } else {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Join " + name + " on Intel Groups!")}`, "_blank");
+  }
+}
+async function leaveGroup() {
+  if (!confirm("Leave this group?")) return;
+  try {
+    await fetch("/api/groups/" + groupId + "/leave", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId })
+    });
+    joinedGroups = joinedGroups.filter(id => id !== groupId);
+    localStorage.setItem("joinedGroups", JSON.stringify(joinedGroups));
+    location.href = "index.html";
+  } catch(e){}
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove("open"); }
+function showTmp(text, type) {
+  const area = document.getElementById("msgs");
+  const div  = document.createElement("div");
+  div.className = "tmp-msg " + type;
+  div.textContent = text;
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+  setTimeout(() => div.remove(), 4000);
+}
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+/* ════════════════════════════════════
+   AVATAR RENDERER — handles emoji JSON, URL, or fallback letter
+════════════════════════════════════ */
+function renderAvatar(avatarVal, el, groupName) {
+  el.style.cssText += ";display:flex;align-items:center;justify-content:center;overflow:hidden;";
+  if (!avatarVal) {
+    el.style.background = "#5288c1";
+    el.innerHTML = `<span style="font-size:${Math.round(el.offsetWidth*0.4||16)}px;font-weight:700;color:white">${(groupName||"G").charAt(0).toUpperCase()}</span>`;
+    return;
+  }
+  // Legacy base64
+  if (avatarVal.startsWith("data:image/")) {
+    el.innerHTML = `<img src="${avatarVal}" style="width:100%;height:100%;object-fit:cover;">`;
+    return;
+  }
+  // Emoji JSON: {"type":"emoji","emoji":"🦁","color":"#5288c1"}
+  if (avatarVal.startsWith("{")) {
+    try {
+      const av = JSON.parse(avatarVal);
+      if (av.type === "emoji") {
+        el.style.background = av.color || "#5288c1";
+        el.innerHTML = `<span style="font-size:22px">${av.emoji}</span>`;
+        return;
+      }
+      if (av.type === "url") {
+        el.innerHTML = `<img src="${av.src}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='📷'">`;
+        return;
+      }
+    } catch(e){}
+  }
+  // Plain URL
+  if (avatarVal.startsWith("http")) {
+    el.innerHTML = `<img src="${avatarVal}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.textContent='📷'">`;
+    return;
+  }
+  // Fallback
+  el.style.background = "#5288c1";
+  el.innerHTML = `<span style="font-size:16px;font-weight:700;color:white">${(groupName||"G").charAt(0).toUpperCase()}</span>`;
+}
+
+/* ════════════════════════════════════
+   PREMIUM BANNER  — shown to non-premium members inside the group
+   Owner earns ONLY when user buys premium from inside their group
+════════════════════════════════════ */
+function showPremiumBanner() {
+  // Remove any existing banner
+  document.getElementById("premiumBanner")?.remove();
+  const banner = document.createElement("div");
+  banner.id = "premiumBanner";
+  banner.className = "premium-banner";
+  banner.innerHTML = `
+    <div class="pb-icon">⭐</div>
+    <div class="pb-text">
+      <div class="pb-title">Unlock Premium</div>
+      <div class="pb-sub">Remove message limits • Support this group</div>
+    </div>
+    <button class="pb-btn" onclick="openPremiumModal()">₦5,000</button>`;
+  // Insert above input area
+  const inputArea = document.getElementById("inputArea");
+  inputArea.parentNode.insertBefore(banner, inputArea);
+}
+
+function openPremiumModal() {
+  // Tell the modal whose group this is so owner earns the reward
+  document.getElementById("pmPasscode").value = "";
+  document.getElementById("pmMsg").textContent = "";
+  const earnNote = document.getElementById("pmEarnNote");
+  earnNote.textContent = groupData?.ownerName
+    ? `💰 ${groupData.ownerName} (this group's owner) earns ₦2,500 when you buy here.`
+    : "";
+  document.getElementById("premiumModal").classList.add("open");
+}
+
+async function generateCode() {
+  if (!telegramId) {
+    document.getElementById("genCodeMsg").innerHTML = '<span style="color:#ef5350">❌ Open from Telegram first.</span>';
+    return;
+  }
+  const btn = document.getElementById("genCodeBtn");
+  btn.disabled = true;
+  btn.textContent = "⏳ Generating…";
+  document.getElementById("genCodeMsg").innerHTML = "";
+  try {
+    const res  = await fetch("/generate-premium-passcode", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ telegramId })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || "Failed");
-    showMsg("✅ Group created!","success");
-    setTimeout(() => location.href = "group.html?id=" + data.groupId, 1000);
-  } catch(err) {
-    showMsg("❌ " + err.message,"error");
-    document.getElementById("createBtn").disabled = false;
+    document.getElementById("genCodeMsg").innerHTML =
+      '<span style="color:#4db6ac">✅ Code sent! Open <a href="https://t.me/intelpremiumbot" target="_blank" style="color:#64b5f6;font-weight:700;">@intelpremiumbot</a> on Telegram to see your code, then enter it above.</span>';
+    btn.textContent = "✅ Code Sent";
+  } catch(e) {
+    document.getElementById("genCodeMsg").innerHTML = `<span style="color:#ef5350">❌ ${e.message}</span>`;
+    btn.disabled = false;
+    btn.textContent = "🔑 Generate My Code";
   }
 }
 
-function showMsg(text, type) {
-  document.getElementById("msgBox").innerHTML = `<div class="msg ${type}">${text}</div>`;
+async function buyPremium() {
+  const passcode = document.getElementById("pmPasscode").value.trim();
+  if (!passcode) {
+    document.getElementById("pmMsg").textContent = "❌ Please enter your passcode.";
+    document.getElementById("pmMsg").style.color = "#ef5350";
+    return;
+  }
+  document.getElementById("pmMsg").textContent = "⏳ Processing…";
+  document.getElementById("pmMsg").style.color = "#f59e0b";
+  try {
+    const res  = await fetch("/api/buy-premium", {
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        telegramId,
+        name:     userName,
+        username: userUname,
+        passcode,
+        groupId   // ← critical: owner only earns when groupId is sent
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    document.getElementById("pmMsg").textContent = "🎉 " + (data.message || "You are now Premium!");
+    document.getElementById("pmMsg").style.color = "#4db6ac";
+    isPremium = true;
+    // Remove banner, update rate bar
+    document.getElementById("premiumBanner")?.remove();
+    updateRateBar();
+    setTimeout(() => { closeModal("premiumModal"); location.reload(); }, 2000);
+  } catch(e) {
+    document.getElementById("pmMsg").textContent = "❌ " + e.message;
+    document.getElementById("pmMsg").style.color = "#ef5350";
+  }
 }
 
 /* ════════════════════════════════════
-   INIT
+   MESSAGE ACTION SHEET
+   Long-press on mobile, right-click on desktop
 ════════════════════════════════════ */
-buildEmojiGrid();
-buildColorStrip();
-renderPreview();
+let asMsg          = null;  // current message object
+let longPressTimer = null;
+
+function openActionSheet(e, msgId) {
+  const msg = messages.find(m => m.id === msgId);
+  if (!msg || msg.type === "system") return;
+  asMsg = msg;
+
+  const isMe   = msg.senderId === telegramId;
+  const canDel = isMe || isOwner;
+  const canEdit = isMe && msg.type === "text";
+  const hasText = msg.type === "text" && msg.text;
+
+  // Preview
+  document.getElementById("asPreviewName").textContent = msg.senderName || "";
+  document.getElementById("asPreviewText").textContent =
+    msg.type === "voice" ? "🎤 Voice note" : (msg.text || "").slice(0, 100);
+
+  // Show/hide conditional items
+  document.getElementById("asCopy").style.display   = hasText   ? "flex" : "none";
+  document.getElementById("asEdit").style.display   = canEdit   ? "flex" : "none";
+  document.getElementById("asDelete").style.display = canDel    ? "flex" : "none";
+
+  document.getElementById("actionSheetBg").classList.add("open");
+}
+
+function closeActionSheet() {
+  document.getElementById("actionSheetBg").classList.remove("open");
+  asMsg = null;
+}
+
+function startLongPress(e, msgId) {
+  cancelLongPress();
+  longPressTimer = setTimeout(() => {
+    if (navigator.vibrate) navigator.vibrate(45);
+    openActionSheet(e, msgId);
+  }, 480);
+}
+function cancelLongPress() {
+  if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+}
+
+/* Action sheet actions */
+function asDoReply() {
+  if (!asMsg) return;
+  const sName = asMsg.senderName || "";
+  const txt   = asMsg.type === "voice" ? "🎤 Voice note" : (asMsg.text || "").slice(0, 80);
+  closeActionSheet();
+  startReply(asMsg.id, sName, txt);
+}
+function asDoCopy() {
+  if (!asMsg?.text) return;
+  const text = asMsg.text;
+  closeActionSheet();
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(() => showTmp("✅ Message copied","suc")).catch(() => fallbackCopyText(text));
+  } else { fallbackCopyText(text); }
+}
+function asDoEdit() {
+  if (!asMsg) return;
+  const msg = asMsg;
+  closeActionSheet();
+  startEdit(msg.id, msg.text);
+}
+function asDoForward() {
+  if (!asMsg) return;
+  const text = asMsg.type === "voice"
+    ? "🎤 Voice note (forwarded)"
+    : (asMsg.text || "");
+  closeActionSheet();
+  if (tg?.openTelegramLink) {
+    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent("")}&text=${encodeURIComponent(text)}`);
+  } else {
+    window.open(`https://t.me/share/url?text=${encodeURIComponent(text)}`, "_blank");
+  }
+}
+function asDoCopyAll() {
+  closeActionSheet();
+  const lines = messages
+    .filter(m => m.type !== "system")
+    .map(m => {
+      const time = new Date(m.timestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+      if (m.type === "voice") return `[${time}] ${m.senderName}: 🎤 Voice note`;
+      return `[${time}] ${m.senderName}: ${m.text||""}`;
+    }).join("\n");
+  if (!lines) return showTmp("No messages to copy","err");
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(lines).then(() => showTmp("✅ Full chat copied","suc")).catch(() => fallbackCopyText(lines));
+  } else { fallbackCopyText(lines); }
+}
+function asDoDelete() {
+  const id = asMsg?.id;
+  closeActionSheet();
+  if (id) delMsg(id);
+}
+function fallbackCopyText(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); showTmp("✅ Copied","suc"); } catch(e){}
+  document.body.removeChild(ta);
+}
+
+/* ════════════════════════════════════
+   EDIT MESSAGE
+════════════════════════════════════ */
+function startEdit(msgId, currentText) {
+  editMsgId = msgId;
+  const inp = document.getElementById("msgInp");
+  inp.value = currentText;
+  autoResize(inp);
+  inp.focus();
+  // Put cursor at end
+  inp.setSelectionRange(inp.value.length, inp.value.length);
+  document.getElementById("editModeBar").classList.add("show");
+  // Scroll to show input
+  document.getElementById("inputArea").scrollIntoView({ behavior:"smooth", block:"end" });
+}
+function cancelEdit() {
+  editMsgId = null;
+  document.getElementById("editModeBar").classList.remove("show");
+  const inp = document.getElementById("msgInp");
+  inp.value = ""; inp.style.height = "40px";
+}
+
+/* ════════════════════════════════════
+   REPLY
+════════════════════════════════════ */
+function startReply(msgId, senderName, text) {
+  replyTo = { id: msgId, senderName, text };
+  document.getElementById("replyBarName").textContent = "↩ Replying to " + senderName;
+  document.getElementById("replyBarText").textContent = text;
+  document.getElementById("replyBar").classList.add("show");
+  document.getElementById("msgInp").focus();
+}
+function cancelReply() {
+  replyTo = null;
+  document.getElementById("replyBar").classList.remove("show");
+  document.getElementById("replyBarName").textContent = "";
+  document.getElementById("replyBarText").textContent = "";
+}
+function scrollToMsg(msgId) {
+  const el = document.getElementById("msg-" + msgId);
+  if (el) {
+    el.scrollIntoView({ behavior:"smooth", block:"center" });
+    el.style.transition = "background 0.3s";
+    el.style.background = "rgba(82,136,193,0.25)";
+    setTimeout(() => { el.style.background = ""; }, 1200);
+  }
+}
+
+/* ════════════════════════════════════
+   @ MENTION
+════════════════════════════════════ */
+function handleMentionInput(el) {
+  const val   = el.value;
+  const cur   = el.selectionStart;
+  // Find the last @ before cursor
+  const before = val.slice(0, cur);
+  const atIdx  = before.lastIndexOf("@");
+  if (atIdx === -1 || (atIdx > 0 && !/\s/.test(before[atIdx-1]))) {
+    hideMentions(); return;
+  }
+  const query = before.slice(atIdx + 1).toLowerCase();
+  // Only show if no space in the query (still typing the mention)
+  if (/\s/.test(query)) { hideMentions(); return; }
+  mentionQuery = query;
+  showMentions(query, atIdx, cur);
+}
+function showMentions(query, atIdx, cursorPos) {
+  const members = Object.entries(groupData?.members || {});
+  const filtered = members.filter(([id, m]) => {
+    const n = (m.name || "").toLowerCase();
+    const u = (m.username || "").toLowerCase().replace("@","");
+    return n.includes(query) || u.includes(query);
+  }).slice(0, 6);
+
+  const list = document.getElementById("mentionList");
+  if (filtered.length === 0) { hideMentions(); return; }
+  list.innerHTML = filtered.map(([id, m]) => {
+    const name = m.name || id;
+    const hi   = query ? name.replace(new RegExp("("+query+")", "gi"), '<span class="mention-highlight">$1</span>') : name;
+    const init  = name.charAt(0).toUpperCase();
+    return `<div class="mention-item" onclick="insertMention('${esc(name)}',${atIdx},${cursorPos})">
+      <div class="mention-av">${init}</div>
+      <div class="mention-name">${hi}</div>
+    </div>`;
+  }).join("");
+  list.classList.add("show");
+}
+function hideMentions() {
+  mentionQuery = null;
+  document.getElementById("mentionList").classList.remove("show");
+}
+function insertMention(name, atIdx, cursorPos) {
+  const inp   = document.getElementById("msgInp");
+  const val   = inp.value;
+  const before = val.slice(0, atIdx);
+  const after  = val.slice(cursorPos);
+  const mention = "@" + name + " ";
+  inp.value = before + mention + after;
+  const newCur = before.length + mention.length;
+  inp.setSelectionRange(newCur, newCur);
+  hideMentions();
+  inp.focus();
+  autoResize(inp);
+}
+
+init();
 </script>
 </body>
 </html>
