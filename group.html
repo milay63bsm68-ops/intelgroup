@@ -292,7 +292,7 @@ const userName   = user?.first_name || "Guest";
 const userUname  = user?.username ? "@"+user.username : "";
 
 const params  = new URLSearchParams(location.search);
-// Support both ?id=XXX (direct) and Telegram startapp deep link (?tgWebAppStartParam=XXX)
+//Support both ?id=XXX (direct) and Telegram startapp deep link (?tgWebAppStartParam=XXX)
 const groupId = params.get("id")
   || params.get("tgWebAppStartParam")
   || tg?.initDataUnsafe?.start_param
