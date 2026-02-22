@@ -364,15 +364,27 @@ window.GROUPS_DATA = {
     "isPrivate": true,
     "isPremiumOnly": true,
     "createdAt": 1771723512237,
-    "lastMessageAt": null,
-    "lastMessage": null,
+    "lastMessageAt": 1771724019191,
+    "lastMessage": "m joined",
     "totalEarnings": 0,
     "members": {
       "8473626341": {
         "name": "Isaac",
         "joinedAt": 1771723512237
+      },
+      "7497799470": {
+        "name": "m",
+        "username": "@Minvyk",
+        "joinedAt": 1771724019190
       }
     },
-    "messages": []
+    "messages": [
+      {
+        "id": "e5616fac7395ec80",
+        "type": "system",
+        "text": "m joined the group",
+        "timestamp": 1771724019191
+      }
+    ]
   }
 }
