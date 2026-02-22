@@ -799,8 +799,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771777410678,
-    "lastMessageAt": null,
-    "lastMessage": null,
+    "lastMessageAt": 1771777538182,
+    "lastMessage": "Dee: Hello, welcome to Ricardo earning forum",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
@@ -808,6 +808,15 @@ window.GROUPS_DATA = {
         "joinedAt": 1771777410678
       }
     },
-    "messages": []
+    "messages": [
+      {
+        "id": "e55b3ecb6df89edf",
+        "type": "text",
+        "senderId": "7866657321",
+        "senderName": "Dee",
+        "text": "Hello, welcome to Ricardo earning forum",
+        "timestamp": 1771777538182
+      }
+    ]
   }
 }
