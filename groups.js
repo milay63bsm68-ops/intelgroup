@@ -508,8 +508,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771725735190,
-    "lastMessageAt": 1771782535039,
-    "lastMessage": "Harmayoh: You can now turn on or off private group and Premium only",
+    "lastMessageAt": 1771795978969,
+    "lastMessage": "Isaac: Bro how was your day",
     "totalEarnings": 0,
     "members": {
       "8473626341": {
@@ -592,6 +592,14 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "You can now turn on or off private group and Premium only",
         "timestamp": 1771782535039
+      },
+      {
+        "id": "6a21f8cea4e87c25",
+        "type": "text",
+        "senderId": "8473626341",
+        "senderName": "Isaac",
+        "text": "Bro how was your day",
+        "timestamp": 1771795978969
       }
     ]
   },
