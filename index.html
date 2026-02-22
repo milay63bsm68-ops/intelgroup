@@ -50,6 +50,19 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .vip-badge{background:linear-gradient(135deg,#f59e0b,#f97316);color:white;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;flex-shrink:0;}
 .fab{position:fixed;bottom:24px;right:20px;width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;color:white;font-size:26px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(82,136,193,0.5);cursor:pointer;z-index:200;}
 .fab:active{transform:scale(0.93);}
+.fab-label{
+  position:fixed;bottom:32px;right:86px;
+  background:var(--accent);color:white;
+  font-size:13px;font-weight:700;
+  padding:7px 14px;border-radius:20px;
+  white-space:nowrap;z-index:199;
+  box-shadow:0 4px 12px rgba(82,136,193,0.4);
+  pointer-events:none;
+  opacity:0;transform:translateX(10px);
+  transition:opacity 0.3s ease,transform 0.3s ease;
+}
+.fab-label.show{opacity:1;transform:translateX(0);}
+.fab-label.hide{opacity:0;transform:translateX(10px);}
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:var(--subtext);text-align:center;}
 .empty-icon{font-size:56px;margin-bottom:16px;opacity:0.5;}
 .empty-title{font-size:16px;font-weight:600;margin-bottom:6px;color:var(--text);}
@@ -109,6 +122,7 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 </div>
 
 <button class="fab" onclick="location.href='create-group.html'">✏️</button>
+<div class="fab-label" id="fabLabel">Create Group ✏️</div>
 
 <!-- Balance bottom sheet -->
 <div class="bal-sheet-bg" id="balSheetBg" onclick="closeBalSheet()">
@@ -300,6 +314,18 @@ function avatarBgColor(avatar, name) {
 // Load balance and groups in parallel
 loadBalance();
 loadAll();
+
+/* ── FAB label: show "Create Group ✏️" for 2.5s on load, then fade out ── */
+(function() {
+  const label = document.getElementById("fabLabel");
+  setTimeout(() => {
+    label.classList.add("show");
+    setTimeout(() => {
+      label.classList.add("hide");
+      setTimeout(() => label.classList.remove("show","hide"), 350);
+    }, 2500);
+  }, 800);
+})();
 </script>
 </body>
 </html>
