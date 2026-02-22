@@ -853,8 +853,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771792160812,
-    "lastMessage": "Dhemmyx: Sup guys am new here so does anyone know how this thing work",
+    "lastMessageAt": 1771792220449,
+    "lastMessage": "Harmayoh: Create your own group and you should share your group link t",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -938,6 +938,14 @@ window.GROUPS_DATA = {
         "senderName": "Dhemmyx",
         "text": "Sup guys am new here so does anyone know how this thing work and how do we start making money anyone here to guide us",
         "timestamp": 1771792160812
+      },
+      {
+        "id": "ac0bb60fbfaff42a",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "Create your own group and you should share your group link to others anyone that join the group and purchase premium in your group you will be earning from it",
+        "timestamp": 1771792220449
       }
     ]
   },
