@@ -920,5 +920,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771781662752
       }
     ]
+  },
+  "1DE25D2F2F": {
+    "name": "Earning group",
+    "description": "Earn money for free here",
+    "ownerId": "7497799470",
+    "ownerName": "m",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🎯\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771781889209,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7497799470": {
+        "name": "m",
+        "joinedAt": 1771781889209
+      }
+    },
+    "messages": []
   }
 }
