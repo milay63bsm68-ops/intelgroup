@@ -276,8 +276,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771718748388,
-    "lastMessageAt": 1771726256935,
-    "lastMessage": "(✿◠‿◠♥️)(♥️◠‿◠✿) joined",
+    "lastMessageAt": 1771755099988,
+    "lastMessage": "mi joined",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -293,6 +293,11 @@ window.GROUPS_DATA = {
         "name": "(✿◠‿◠♥️)(♥️◠‿◠✿)",
         "username": "@averytradery",
         "joinedAt": 1771726256935
+      },
+      "7979664801": {
+        "name": "mi",
+        "username": "@Hueryten",
+        "joinedAt": 1771755099987
       }
     },
     "messages": [
@@ -371,6 +376,12 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "(✿◠‿◠♥️)(♥️◠‿◠✿) joined the group",
         "timestamp": 1771726256935
+      },
+      {
+        "id": "e54079fdac55abad",
+        "type": "system",
+        "text": "mi joined the group",
+        "timestamp": 1771755099988
       }
     ]
   },
