@@ -260,8 +260,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771718748388,
-    "lastMessageAt": 1771718798163,
-    "lastMessage": "m: Hello",
+    "lastMessageAt": 1771720364694,
+    "lastMessage": "m: 🚨 *BIG ANNOUNCEMENT* 🚨\n━━━━━━━━━━━━━━━━━━━━━━\n\n🤖 *INTRODU",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -277,6 +277,14 @@ window.GROUPS_DATA = {
         "senderName": "m",
         "text": "Hello",
         "timestamp": 1771718798163
+      },
+      {
+        "id": "ac5ed4ef47ec5bca",
+        "type": "text",
+        "senderId": "7497799470",
+        "senderName": "m",
+        "text": "🚨 *BIG ANNOUNCEMENT* 🚨\n━━━━━━━━━━━━━━━━━━━━━━\n\n🤖 *INTRODUCING: INTELLIGENT SOCIAL & GROUP EARNING BOT*\n\nThis is not just a chat app — it's a *money-making platform* built right inside Telegram! Here's how YOU can start earning today 👇\n\n━━━━━━━━━━━━━━━━━━━━━━\n💰 *HOW TO EARN*\n━━━━━━━━━━━━━━━━━━━━━━\n\n👥 *Create Your Own Group*\n• Open the bot and create your own group\n• Share your group link with your friends, followers, or audience\n• Every time someone joins your group and buys Premium — *you earn ₦2,500 automatically!* 🔥\n• No manual work. No stress. The money lands in your balance instantly.\n\n⭐ *Buy Premium & Unlock Everything*\n• Premium costs just *₦5,000 once*\n• Get *unlimited messages*, access to all premium groups, voice notes priority & a premium badge\n• Premium is your key to the full experience\n\n📢 *Grow Your Group = Grow Your Income*\n• The more people you bring into your group, the more Premium sales you make\n• 10 people buy Premium through your group = *₦25,000 earned* 🤑\n• 50 people = *₦125,000* — just from sharing a link!\n\n━━━━━━━━━━━━━━━━━━━━━━\n💵 *EARNING BREAKDOWN*\n━━━━━━━━━━━━━━━━━━━━━━\n✅ Each Premium sale via your group → *₦2,500 to you*\n✅ Earnings tracked live in ₦ and $\n✅ Withdraw anytime directly from the app\n✅ Real NGN/USD exchange rate used automatically\n\n━━━━━━━━━━━━━━━━━━━━━━\n🚀 *HOW TO GET STARTED*\n━━━━━━━━━━━━━━━━━━━━━━\n\n1️⃣ Click the link below to open the bot\n2️⃣ Tap *\"Explore\"* to enter the app\n3️⃣ Deposit funds & buy Premium\n4️⃣ Create your group\n5️⃣ Share your group invite link\n6️⃣ Sit back and *collect your commissions* 💸\n\n━━━━━━━━━━━━━━━━━━━━━━\n👉 *TAP TO START EARNING NOW:*\nhttps://t.me/intelligentpublicgroupsbot/explore\n━━━━━━━━━━━━━━━━━━━━━━\n\n⚠️ *Don't sleep on this.* The earlier you create your group and build your audience, the more you earn. This is 100% automated — once your group is set up, it earns for you *24/7.*\n\nDrop a 🙋 below if you're joining! Let's get this money 💰",
+        "timestamp": 1771720364694
       }
     ]
   }
