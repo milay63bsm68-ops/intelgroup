@@ -115,8 +115,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771712760494,
-    "lastMessageAt": 1771717531586,
-    "lastMessage": "mi: Hi",
+    "lastMessageAt": 1771722101769,
+    "lastMessage": "m: Hello",
     "totalEarnings": 2500,
     "members": {
       "7979664801": {
@@ -188,6 +188,14 @@ window.GROUPS_DATA = {
         "senderName": "mi",
         "text": "Hi",
         "timestamp": 1771717531586
+      },
+      {
+        "id": "a382058b89459b75",
+        "type": "text",
+        "senderId": "7497799470",
+        "senderName": "m",
+        "text": "Hello",
+        "timestamp": 1771722101769
       }
     ]
   },
