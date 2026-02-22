@@ -390,8 +390,9 @@ window.GROUPS_DATA = {
         "type": "text",
         "senderId": "7497799470",
         "senderName": "m",
-        "text": "Hello here",
-        "timestamp": 1771724047367
+        "text": "Hello here ✋",
+        "timestamp": 1771724047367,
+        "edited": true
       }
     ]
   }
