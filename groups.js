@@ -690,8 +690,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771757557870,
-    "lastMessageAt": 1771767842230,
-    "lastMessage": "Harmayoh: Hey 👋",
+    "lastMessageAt": 1771777592848,
+    "lastMessage": "Dee joined",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -702,6 +702,11 @@ window.GROUPS_DATA = {
         "name": "Harmayoh",
         "username": "@harmayoh",
         "joinedAt": 1771767826525
+      },
+      "7866657321": {
+        "name": "Dee",
+        "username": "@BYD_cargiveaways82",
+        "joinedAt": 1771777592848
       }
     },
     "messages": [
@@ -726,6 +731,12 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "Hey 👋",
         "timestamp": 1771767842230
+      },
+      {
+        "id": "e96ca18ab0c0a67f",
+        "type": "system",
+        "text": "Dee joined the group",
+        "timestamp": 1771777592848
       }
     ]
   },
