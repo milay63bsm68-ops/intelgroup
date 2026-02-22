@@ -491,5 +491,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771726028369
       }
     ]
+  },
+  "C75024C0E3": {
+    "name": "Harmayoh intelligent",
+    "description": "Intelligent bby",
+    "ownerId": "6940101627",
+    "ownerName": "Harmayoh",
+    "avatar": "https://i.ibb.co/0VfpHqr2/file-00000000121471f49d102b318df496fb.png",
+    "isPrivate": true,
+    "isPremiumOnly": true,
+    "createdAt": 1771726097171,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "6940101627": {
+        "name": "Harmayoh",
+        "joinedAt": 1771726097171
+      }
+    },
+    "messages": []
   }
 }
