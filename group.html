@@ -282,6 +282,20 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <textarea class="modal-inp modal-ta" id="eDesc" maxlength="255" placeholder="Description"></textarea>
     <input class="modal-inp" id="eAvatar" type="url" placeholder="Avatar image URL (optional)">
     <div id="eAvatarPreview" style="display:flex;justify-content:center;margin:8px 0 4px;"></div>
+    <div class="toggle-row" style="margin-top:10px;">
+      <div class="toggle-info">
+        <div class="toggle-label">🔒 Private Group</div>
+        <div class="toggle-sub">Only people with the link can join</div>
+      </div>
+      <label class="sw"><input type="checkbox" id="eIsPrivate"><div class="sw-track"><div class="sw-thumb"></div></div></label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info">
+        <div class="toggle-label">⭐ Premium Only</div>
+        <div class="toggle-sub">Only premium users can join</div>
+      </div>
+      <label class="sw"><input type="checkbox" id="eIsPremiumOnly"><div class="sw-track"><div class="sw-thumb"></div></div></label>
+    </div>
     <button class="modal-btn mb-save"   onclick="saveEdit()">Save Changes</button>
     <button class="modal-btn mb-danger" onclick="delGroup()">🗑️ Delete Group</button>
     <button class="modal-btn mb-cancel" onclick="closeModal('editModal')">Cancel</button>
@@ -860,21 +874,25 @@ function openEdit() {
     prev.innerHTML = "";
     prev.appendChild(el2);
   };
+  document.getElementById("eIsPrivate").checked    = !!groupData.isPrivate;
+  document.getElementById("eIsPremiumOnly").checked = !!groupData.isPremiumOnly;
   document.getElementById("editModal").classList.add("open");
 }
 async function saveEdit() {
-  const name   = document.getElementById("eName").value.trim();
-  const desc   = document.getElementById("eDesc").value.trim();
-  const avatar = document.getElementById("eAvatar").value.trim() || undefined;
+  const name        = document.getElementById("eName").value.trim();
+  const desc        = document.getElementById("eDesc").value.trim();
+  const avatar      = document.getElementById("eAvatar").value.trim() || undefined;
+  const isPrivate     = document.getElementById("eIsPrivate").checked;
+  const isPremiumOnly = document.getElementById("eIsPremiumOnly").checked;
   if (!name) return;
   try {
     const res = await fetch("/api/groups/" + groupId + "/edit", {
       method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ telegramId, name, description: desc, avatar })
+      body: JSON.stringify({ telegramId, name, description: desc, avatar, isPrivate, isPremiumOnly })
     });
     if (!res.ok) throw new Error((await res.json()).error);
     closeModal("editModal");
-    groupData.name = name; groupData.description = desc;
+    groupData.name = name; groupData.description = desc; groupData.isPrivate = isPrivate; groupData.isPremiumOnly = isPremiumOnly;
     if (avatar !== undefined) groupData.avatar = avatar;
     document.getElementById("hName").textContent = name;
     // Update header avatar
