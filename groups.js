@@ -479,5 +479,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771725121802
       }
     ]
+  },
+  "98536DB27A": {
+    "name": "MAJOR  PROPHET",
+    "description": "TECH TUTORIALS",
+    "ownerId": "8473626341",
+    "ownerName": "Isaac",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🐯\",\"color\":\"#5288c1\"}",
+    "isPrivate": true,
+    "isPremiumOnly": true,
+    "createdAt": 1771725735190,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "8473626341": {
+        "name": "Isaac",
+        "joinedAt": 1771725735190
+      }
+    },
+    "messages": []
   }
 }
