@@ -821,13 +821,18 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771777410678,
-    "lastMessageAt": 1771778062609,
-    "lastMessage": "Dee: This is full squad, feel free to make new frnds here, also i",
+    "lastMessageAt": 1771781517267,
+    "lastMessage": "Harmayoh joined",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
         "name": "Dee",
         "joinedAt": 1771777410678
+      },
+      "6940101627": {
+        "name": "Harmayoh",
+        "username": "@harmayoh",
+        "joinedAt": 1771781517267
       }
     },
     "messages": [
@@ -846,6 +851,12 @@ window.GROUPS_DATA = {
         "senderName": "Dee",
         "text": "This is full squad, feel free to make new frnds here, also invite others to join👇👇 https://t.me/intelligentpublicgroupsbot/explore?startapp=549E2E1DA8",
         "timestamp": 1771778062609
+      },
+      {
+        "id": "fa8cf57dbbcea4ca",
+        "type": "system",
+        "text": "Harmayoh joined the group",
+        "timestamp": 1771781517267
       }
     ]
   }
