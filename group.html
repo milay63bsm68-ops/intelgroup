@@ -144,8 +144,28 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .reply-indicator b{color:var(--accent2);font-size:12px;}
 
 /* ── REPLY ACTION BUTTON on bubble ── */
-.reply-btn{background:none;border:none;color:var(--subtext);font-size:13px;cursor:pointer;padding:2px 4px;opacity:0;}
-.bw:hover .reply-btn{opacity:1;}
+.reply-btn{display:none;}
+.del-btn{display:none;}
+
+/* ── MESSAGE CONTEXT MENU ── */
+.ctx-menu{
+  position:fixed;z-index:600;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;min-width:180px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  overflow:hidden;animation:ctxIn 0.15s ease;
+}
+@keyframes ctxIn{from{opacity:0;transform:scale(0.92)}to{opacity:1;transform:scale(1)}}
+.ctx-item{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 16px;font-size:14px;cursor:pointer;
+  color:var(--text);transition:background 0.15s;border:none;
+  background:none;width:100%;text-align:left;
+}
+.ctx-item:active{background:var(--surface2);}
+.ctx-item.danger{color:var(--red);}
+.ctx-item:not(:last-child){border-bottom:1px solid var(--border);}
+.ctx-overlay{position:fixed;inset:0;z-index:599;}
 
 /* ── @ MENTION DROPDOWN ── */
 .mention-list{
@@ -281,6 +301,15 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <button class="modal-btn mb-gold" onclick="buyPremium()">⭐ Buy Premium – ₦5,000</button>
     <button class="modal-btn mb-cancel" style="margin-top:6px;" onclick="closeModal('premiumModal')">Cancel</button>
   </div>
+</div>
+
+<!-- MESSAGE CONTEXT MENU -->
+<div class="ctx-overlay" id="ctxOverlay" style="display:none" onclick="closeCtx()"></div>
+<div class="ctx-menu" id="ctxMenu" style="display:none">
+  <button class="ctx-item" id="ctxReply"   onclick="ctxDoReply()">↩ Reply</button>
+  <button class="ctx-item" id="ctxCopy"    onclick="ctxDoCopy()">📋 Copy Message</button>
+  <button class="ctx-item" id="ctxCopyAll" onclick="ctxDoCopyAll()">📄 Copy All Chat</button>
+  <button class="ctx-item danger" id="ctxDelete" onclick="ctxDoDelete()" style="display:none">🗑 Delete</button>
 </div>
 
 <script>
@@ -525,12 +554,18 @@ function renderMsg(m) {
     </div>`;
   }
 
+  const canDelAttr = canDel ? "true" : "false";
+  const msgText    = m.type === "text" ? (m.text||"") : "";
+
   if (m.type === "voice") {
     const bars = Array.from({length:20},(_,i) => {
       const h = 4 + Math.abs(Math.sin(i*0.7 + m.timestamp*0.001)*16);
       return `<div class="wbar" style="height:${h}px"></div>`;
     }).join("");
-    return `<div class="bw ${cls}" id="msg-${m.id}">
+    return `<div class="bw ${cls}" id="msg-${m.id}"
+      oncontextmenu="openCtx(event,'${m.id}','',${canDelAttr});return false;"
+      ontouchstart="startLongPress(event,'${m.id}','',${canDelAttr})"
+      ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
       ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
       ${replyBlock}
       <div class="voice-bub">
@@ -538,21 +573,17 @@ function renderMsg(m) {
         <div class="wave">${bars}</div>
         <span class="v-dur">${m.duration||"0:00"}</span>
       </div>
-      <div class="b-meta">${time}
-        <button class="reply-btn" onclick="startReply('${m.id}','${esc(m.senderName||"")}','🎤 Voice note')">↩</button>
-        ${canDel?`<button class="del-btn" onclick="delMsg('${m.id}')">🗑</button>`:""}
-      </div>
+      <div class="b-meta">${time}</div>
     </div>`;
   }
-  return `<div class="bw ${cls}" id="msg-${m.id}">
+  return `<div class="bw ${cls}" id="msg-${m.id}"
+    oncontextmenu="openCtx(event,'${m.id}',${JSON.stringify(msgText)},${canDelAttr});return false;"
+    ontouchstart="startLongPress(event,'${m.id}',${JSON.stringify(msgText)},${canDelAttr})"
+    ontouchend="cancelLongPress()" ontouchmove="cancelLongPress()">
     ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
     ${replyBlock}
     <div class="bubble">${fmtText(m.text)}</div>
-    <div class="b-meta">${time}${m.edited?"<span>edited</span>":""}
-      <button class="reply-btn" onclick="startReply('${m.id}','${esc(m.senderName||"")}',${JSON.stringify((m.text||'').slice(0,80))})">↩</button>
-      ${canDel?`<button class="del-btn" onclick="delMsg('${m.id}')">🗑</button>`:""}
-      ${isMe?"✓✓":""}
-    </div>
+    <div class="b-meta">${time}${m.edited?"<span>edited</span>":""}${isMe?"✓✓":""}</div>
   </div>`;
 }
 function fmtText(t) {
@@ -997,6 +1028,109 @@ async function buyPremium() {
     document.getElementById("pmMsg").textContent = "❌ " + e.message;
     document.getElementById("pmMsg").style.color = "#ef5350";
   }
+}
+
+/* ════════════════════════════════════
+   CONTEXT MENU — long press on mobile, right-click on desktop
+════════════════════════════════════ */
+let ctxMsgId   = null;
+let ctxMsgText = "";
+let ctxCanDel  = false;
+let longPressTimer = null;
+
+function openCtx(e, msgId, text, canDel) {
+  ctxMsgId   = msgId;
+  ctxMsgText = text;
+  ctxCanDel  = canDel;
+
+  const menu = document.getElementById("ctxMenu");
+  const overlay = document.getElementById("ctxOverlay");
+
+  // Position menu near tap/click, keep inside viewport
+  let x = e.clientX || (e.touches?.[0]?.clientX) || window.innerWidth/2;
+  let y = e.clientY || (e.touches?.[0]?.clientY) || window.innerHeight/2;
+
+  menu.style.display = "block";
+  overlay.style.display = "block";
+
+  // Find the message to get senderName for reply
+  const msg = messages.find(m => m.id === msgId);
+  document.getElementById("ctxReply").dataset.senderName = msg?.senderName || "";
+  document.getElementById("ctxCopy").style.display  = text ? "flex" : "none";
+  document.getElementById("ctxDelete").style.display = canDel ? "flex" : "none";
+
+  // Adjust position so menu stays on screen
+  requestAnimationFrame(() => {
+    const mw = menu.offsetWidth, mh = menu.offsetHeight;
+    if (x + mw > window.innerWidth)  x = window.innerWidth  - mw - 10;
+    if (y + mh > window.innerHeight) y = window.innerHeight - mh - 10;
+    if (x < 10) x = 10;
+    if (y < 10) y = 10;
+    menu.style.left = x + "px";
+    menu.style.top  = y + "px";
+  });
+}
+
+function closeCtx() {
+  document.getElementById("ctxMenu").style.display    = "none";
+  document.getElementById("ctxOverlay").style.display = "none";
+  ctxMsgId = null; ctxMsgText = ""; ctxCanDel = false;
+}
+
+function startLongPress(e, msgId, text, canDel) {
+  cancelLongPress();
+  longPressTimer = setTimeout(() => {
+    // Vibrate for haptic feedback
+    if (navigator.vibrate) navigator.vibrate(40);
+    openCtx(e, msgId, text, canDel);
+  }, 500);
+}
+function cancelLongPress() {
+  if (longPressTimer) { clearTimeout(longPressTimer); longPressTimer = null; }
+}
+
+function ctxDoReply() {
+  const msg = messages.find(m => m.id === ctxMsgId);
+  if (msg) {
+    const sName = msg.senderName || "";
+    const txt   = msg.type === "voice" ? "🎤 Voice note" : (msg.text || "").slice(0, 80);
+    startReply(ctxMsgId, sName, txt);
+  }
+  closeCtx();
+}
+function ctxDoCopy() {
+  const text = ctxMsgText;
+  closeCtx();
+  if (!text) return;
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(() => showTmp("✅ Message copied","suc")).catch(() => fallbackCopyText(text));
+  } else { fallbackCopyText(text); }
+}
+function ctxDoCopyAll() {
+  closeCtx();
+  const lines = messages
+    .filter(m => m.type !== "system")
+    .map(m => {
+      const time = new Date(m.timestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+      if (m.type === "voice") return `[${time}] ${m.senderName}: 🎤 Voice note`;
+      return `[${time}] ${m.senderName}: ${m.text||""}`;
+    }).join("\n");
+  if (!lines) return showTmp("No messages to copy","err");
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(lines).then(() => showTmp("✅ Full chat copied","suc")).catch(() => fallbackCopyText(lines));
+  } else { fallbackCopyText(lines); }
+}
+function ctxDoDelete() {
+  const id = ctxMsgId;
+  closeCtx();
+  delMsg(id);
+}
+function fallbackCopyText(text) {
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand("copy"); showTmp("✅ Copied","suc"); } catch(e){}
+  document.body.removeChild(ta);
 }
 
 /* ════════════════════════════════════
