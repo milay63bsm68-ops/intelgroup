@@ -124,7 +124,53 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .share-url{flex:1;font-size:11px;color:var(--subtext);word-break:break-all;line-height:1.4;}
 .share-copy{background:var(--accent);border:none;border-radius:8px;color:white;font-size:12px;font-weight:700;padding:6px 10px;cursor:pointer;flex-shrink:0;white-space:nowrap;}
 .share-copy:active{opacity:0.8;}
-.mb-share{background:#1a3a2a;color:#4db6ac;border:1px solid #4db6ac44;}</style>
+.mb-share{background:#1a3a2a;color:#4db6ac;border:1px solid #4db6ac44;}
+
+/* ── REPLY BAR ── */
+.reply-bar{
+  background:var(--surface2);border-top:1px solid var(--border);
+  padding:7px 12px;display:none;align-items:center;gap:10px;flex-shrink:0;
+}
+.reply-bar.show{display:flex;}
+.reply-bar-content{flex:1;min-width:0;}
+.reply-bar-name{font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:1px;}
+.reply-bar-text{font-size:12px;color:var(--subtext);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.reply-bar-cancel{background:none;border:none;color:var(--subtext);font-size:18px;cursor:pointer;flex-shrink:0;padding:2px 4px;line-height:1;}
+.reply-indicator{
+  background:var(--surface2);border-left:3px solid var(--accent2);
+  border-radius:6px;padding:5px 8px;margin-bottom:5px;font-size:12px;
+  color:var(--subtext);cursor:pointer;
+}
+.reply-indicator b{color:var(--accent2);font-size:12px;}
+
+/* ── REPLY ACTION BUTTON on bubble ── */
+.reply-btn{background:none;border:none;color:var(--subtext);font-size:13px;cursor:pointer;padding:2px 4px;opacity:0;}
+.bw:hover .reply-btn{opacity:1;}
+
+/* ── @ MENTION DROPDOWN ── */
+.mention-list{
+  position:absolute;bottom:100%;left:0;right:0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px 12px 0 0;max-height:180px;overflow-y:auto;
+  z-index:500;display:none;box-shadow:0 -4px 16px rgba(0,0,0,0.3);
+}
+.mention-list.show{display:block;}
+.mention-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;cursor:pointer;transition:background 0.15s;
+  border-bottom:1px solid var(--border);font-size:14px;
+}
+.mention-item:last-child{border-bottom:none;}
+.mention-item:hover,.mention-item:active{background:var(--surface2);}
+.mention-av{
+  width:30px;height:30px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:white;flex-shrink:0;
+}
+.mention-name{font-weight:600;color:var(--text);}
+.mention-highlight{color:var(--accent2);}
+.input-wrap{flex:1;position:relative;}
+</style>
 </head>
 <body>
 <div class="header">
@@ -156,9 +202,23 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   <div class="rec-dot"></div><span>Recording… tap 🎤 to stop</span>
 </div>
 
+<!-- REPLY BAR -->
+<div class="reply-bar" id="replyBar">
+  <div style="width:3px;background:var(--accent2);border-radius:2px;align-self:stretch;flex-shrink:0;"></div>
+  <div class="reply-bar-content">
+    <div class="reply-bar-name" id="replyBarName"></div>
+    <div class="reply-bar-text" id="replyBarText"></div>
+  </div>
+  <button class="reply-bar-cancel" onclick="cancelReply()">✕</button>
+</div>
+
 <div class="input-area" id="inputArea">
   <button class="voice-btn" id="voiceBtn" onclick="toggleRec()">🎤</button>
-  <textarea class="msg-inp" id="msgInp" placeholder="Message…" rows="1" oninput="autoResize(this)"></textarea>
+  <div class="input-wrap">
+    <!-- @ mention dropdown -->
+    <div class="mention-list" id="mentionList"></div>
+    <textarea class="msg-inp" id="msgInp" placeholder="Message…" rows="1" oninput="autoResize(this);handleMentionInput(this)"></textarea>
+  </div>
   <button class="send-btn" onclick="sendMsg()">➤</button>
 </div>
 
@@ -255,6 +315,8 @@ let audioChunks  = [];
 let isRecording  = false;
 let isOffline    = false;
 let joinedGroups = JSON.parse(localStorage.getItem("joinedGroups") || "[]");
+let replyTo      = null; // { id, senderName, text }
+let mentionQuery = null; // current @ search string or null
 
 /* ════════════════════════════════════
    MESSAGE CACHE — localStorage per group
@@ -454,29 +516,49 @@ function renderMsg(m) {
   const time   = new Date(m.timestamp).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
   const canDel = isMe || isOwner;
   if (m.type === "system") return `<div class="sys-msg">${esc(m.text)}</div>`;
+
+  // Reply quote block
+  let replyBlock = "";
+  if (m.replyTo) {
+    replyBlock = `<div class="reply-indicator" onclick="scrollToMsg('${esc(m.replyTo.id)}')">
+      <b>${esc(m.replyTo.senderName||"")}</b><br>${esc((m.replyTo.text||"🎤 Voice note").slice(0,80))}
+    </div>`;
+  }
+
   if (m.type === "voice") {
     const bars = Array.from({length:20},(_,i) => {
       const h = 4 + Math.abs(Math.sin(i*0.7 + m.timestamp*0.001)*16);
       return `<div class="wbar" style="height:${h}px"></div>`;
     }).join("");
-    return `<div class="bw ${cls}">
+    return `<div class="bw ${cls}" id="msg-${m.id}">
       ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
+      ${replyBlock}
       <div class="voice-bub">
         <button class="play-btn" onclick="playVoice('${m.audioUrl}',this)">▶</button>
         <div class="wave">${bars}</div>
         <span class="v-dur">${m.duration||"0:00"}</span>
       </div>
-      <div class="b-meta">${time}${canDel?`<button class="del-btn" onclick="delMsg('${m.id}')">🗑</button>`:""}</div>
+      <div class="b-meta">${time}
+        <button class="reply-btn" onclick="startReply('${m.id}','${esc(m.senderName||"")}','🎤 Voice note')">↩</button>
+        ${canDel?`<button class="del-btn" onclick="delMsg('${m.id}')">🗑</button>`:""}
+      </div>
     </div>`;
   }
-  return `<div class="bw ${cls}">
+  return `<div class="bw ${cls}" id="msg-${m.id}">
     ${!isMe?`<div class="b-sender">${esc(m.senderName||"")}</div>`:""}
+    ${replyBlock}
     <div class="bubble">${fmtText(m.text)}</div>
-    <div class="b-meta">${time}${m.edited?"<span>edited</span>":""}${canDel?`<button class="del-btn" onclick="delMsg('${m.id}')">🗑</button>`:""}${isMe?"✓✓":""}</div>
+    <div class="b-meta">${time}${m.edited?"<span>edited</span>":""}
+      <button class="reply-btn" onclick="startReply('${m.id}','${esc(m.senderName||"")}',${JSON.stringify((m.text||'').slice(0,80))})">↩</button>
+      ${canDel?`<button class="del-btn" onclick="delMsg('${m.id}')">🗑</button>`:""}
+      ${isMe?"✓✓":""}
+    </div>
   </div>`;
 }
 function fmtText(t) {
-  return esc(t).replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" style="color:var(--accent2)">$1</a>');
+  return esc(t)
+    .replace(/(https?:\/\/[^\s]+)/g,'<a href="$1" target="_blank" style="color:var(--accent2)">$1</a>')
+    .replace(/(@\w+)/g,'<span style="color:var(--accent2);font-weight:600">$1</span>');
 }
 
 async function sendMsg() {
@@ -494,6 +576,9 @@ async function sendMsg() {
     msgCount++;
     updateRateBar();
   }
+
+  const currentReply = replyTo ? { ...replyTo } : null;
+  cancelReply();
   inp.value = ""; inp.style.height = "40px";
 
   // ── Optimistic cache: add message locally immediately ──
@@ -502,7 +587,8 @@ async function sendMsg() {
     id: optimisticId, type: "text",
     senderId: telegramId, senderName: userName,
     text, timestamp: Date.now(),
-    _pending: true   // flag: not yet confirmed by server
+    replyTo: currentReply || undefined,
+    _pending: true
   };
   messages = cacheMerge(messages, [optimisticMsg]);
   cacheSave(messages);
@@ -511,25 +597,20 @@ async function sendMsg() {
   try {
     const res = await fetch("/api/groups/" + groupId + "/messages", {
       method:"POST", headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ telegramId, senderName: userName, text, type:"text" })
+      body: JSON.stringify({ telegramId, senderName: userName, text, type:"text", replyTo: currentReply || undefined })
     });
     if (!res.ok) throw new Error("Server error");
-    // Remove the optimistic placeholder and load real message from server
     messages = messages.filter(m => m.id !== optimisticId);
     cacheSave(messages);
     loadMsgs();
   } catch(e) {
-    // Server down — the message stays in cache as _pending
-    // It will be re-sent or replaced when server comes back
     showTmp("⚠️ Saved locally — will sync when online", "err");
     setOffline(true);
   }
 }
 
 function autoResize(el) { el.style.height="40px"; el.style.height=Math.min(el.scrollHeight,120)+"px"; }
-document.getElementById("msgInp").addEventListener("keypress", e => {
-  if (e.key==="Enter" && !e.shiftKey) { e.preventDefault(); sendMsg(); }
-});
+// Enter always creates a new line — send only via the ➤ button
 
 async function delMsg(msgId) {
   if (!confirm("Delete this message for everyone?")) return;
@@ -916,6 +997,89 @@ async function buyPremium() {
     document.getElementById("pmMsg").textContent = "❌ " + e.message;
     document.getElementById("pmMsg").style.color = "#ef5350";
   }
+}
+
+/* ════════════════════════════════════
+   REPLY
+════════════════════════════════════ */
+function startReply(msgId, senderName, text) {
+  replyTo = { id: msgId, senderName, text };
+  document.getElementById("replyBarName").textContent = "↩ Replying to " + senderName;
+  document.getElementById("replyBarText").textContent = text;
+  document.getElementById("replyBar").classList.add("show");
+  document.getElementById("msgInp").focus();
+}
+function cancelReply() {
+  replyTo = null;
+  document.getElementById("replyBar").classList.remove("show");
+  document.getElementById("replyBarName").textContent = "";
+  document.getElementById("replyBarText").textContent = "";
+}
+function scrollToMsg(msgId) {
+  const el = document.getElementById("msg-" + msgId);
+  if (el) {
+    el.scrollIntoView({ behavior:"smooth", block:"center" });
+    el.style.transition = "background 0.3s";
+    el.style.background = "rgba(82,136,193,0.25)";
+    setTimeout(() => { el.style.background = ""; }, 1200);
+  }
+}
+
+/* ════════════════════════════════════
+   @ MENTION
+════════════════════════════════════ */
+function handleMentionInput(el) {
+  const val   = el.value;
+  const cur   = el.selectionStart;
+  // Find the last @ before cursor
+  const before = val.slice(0, cur);
+  const atIdx  = before.lastIndexOf("@");
+  if (atIdx === -1 || (atIdx > 0 && !/\s/.test(before[atIdx-1]))) {
+    hideMentions(); return;
+  }
+  const query = before.slice(atIdx + 1).toLowerCase();
+  // Only show if no space in the query (still typing the mention)
+  if (/\s/.test(query)) { hideMentions(); return; }
+  mentionQuery = query;
+  showMentions(query, atIdx, cur);
+}
+function showMentions(query, atIdx, cursorPos) {
+  const members = Object.entries(groupData?.members || {});
+  const filtered = members.filter(([id, m]) => {
+    const n = (m.name || "").toLowerCase();
+    const u = (m.username || "").toLowerCase().replace("@","");
+    return n.includes(query) || u.includes(query);
+  }).slice(0, 6);
+
+  const list = document.getElementById("mentionList");
+  if (filtered.length === 0) { hideMentions(); return; }
+  list.innerHTML = filtered.map(([id, m]) => {
+    const name = m.name || id;
+    const hi   = query ? name.replace(new RegExp("("+query+")", "gi"), '<span class="mention-highlight">$1</span>') : name;
+    const init  = name.charAt(0).toUpperCase();
+    return `<div class="mention-item" onclick="insertMention('${esc(name)}',${atIdx},${cursorPos})">
+      <div class="mention-av">${init}</div>
+      <div class="mention-name">${hi}</div>
+    </div>`;
+  }).join("");
+  list.classList.add("show");
+}
+function hideMentions() {
+  mentionQuery = null;
+  document.getElementById("mentionList").classList.remove("show");
+}
+function insertMention(name, atIdx, cursorPos) {
+  const inp   = document.getElementById("msgInp");
+  const val   = inp.value;
+  const before = val.slice(0, atIdx);
+  const after  = val.slice(cursorPos);
+  const mention = "@" + name + " ";
+  inp.value = before + mention + after;
+  const newCur = before.length + mention.length;
+  inp.setSelectionRange(newCur, newCur);
+  hideMentions();
+  inp.focus();
+  autoResize(inp);
 }
 
 init();
