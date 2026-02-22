@@ -730,5 +730,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771759086840
       }
     ]
+  },
+  "EAB2805ECF": {
+    "name": "FOREIGN SPAMMED SOCIALS",
+    "description": "Selling and buying of social logs",
+    "ownerId": "8097634090",
+    "ownerName": "Cloud",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🦅\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1771767521549,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "8097634090": {
+        "name": "Cloud",
+        "joinedAt": 1771767521549
+      }
+    },
+    "messages": []
   }
 }
