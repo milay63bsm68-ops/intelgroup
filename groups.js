@@ -881,8 +881,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771830644286,
-    "lastMessage": "Dee: Yeah",
+    "lastMessageAt": 1771837627751,
+    "lastMessage": "Harmayoh: http://t.me/intelpremiumbot/premiumdash",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -1010,6 +1010,14 @@ window.GROUPS_DATA = {
         "senderName": "Dee",
         "text": "Yeah",
         "timestamp": 1771830644286
+      },
+      {
+        "id": "20ee48e72e39f33f",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "http://t.me/intelpremiumbot/premiumdash",
+        "timestamp": 1771837627751
       }
     ]
   },
