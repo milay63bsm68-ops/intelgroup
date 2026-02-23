@@ -1095,8 +1095,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": true,
     "createdAt": 1771777410678,
-    "lastMessageAt": 1771793699433,
-    "lastMessage": "Harmayoh: I don chat you",
+    "lastMessageAt": 1771888297725,
+    "lastMessage": "Ab joined",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
@@ -1122,6 +1122,11 @@ window.GROUPS_DATA = {
         "name": "m",
         "username": "@Minvyk",
         "joinedAt": 1771781662752
+      },
+      "7378307160": {
+        "name": "Ab",
+        "username": "@Abvibes01",
+        "joinedAt": 1771888297725
       }
     },
     "messages": [
@@ -1244,6 +1249,12 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "I don chat you",
         "timestamp": 1771793699433
+      },
+      {
+        "id": "d3a0115bcd78fafd",
+        "type": "system",
+        "text": "Ab joined the group",
+        "timestamp": 1771888297725
       }
     ]
   },
