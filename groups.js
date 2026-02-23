@@ -1299,8 +1299,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771782873197,
-    "lastMessageAt": 1771857158529,
-    "lastMessage": "Akolade joined",
+    "lastMessageAt": 1771857170532,
+    "lastMessage": "Akolade: Hi",
     "totalEarnings": 0,
     "members": {
       "6940101627": {
@@ -1327,6 +1327,14 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "Akolade joined the group",
         "timestamp": 1771857158529
+      },
+      {
+        "id": "db49e2911e835858",
+        "type": "text",
+        "senderId": "7782199182",
+        "senderName": "Akolade",
+        "text": "Hi",
+        "timestamp": 1771857170532
       }
     ]
   },
