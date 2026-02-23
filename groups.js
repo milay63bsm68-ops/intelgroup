@@ -1048,8 +1048,9 @@ window.GROUPS_DATA = {
         "type": "text",
         "senderId": "6940101627",
         "senderName": "Harmayoh",
-        "text": "@Dhemmyx  Join our Marketplace group on WhatsApp \nhttps://chat.whatsapp.com/EOwT9wCjhq86f5jrLRrJs0?mode=gi_t",
-        "timestamp": 1771842825171
+        "text": "@Cloud  Join our Marketplace group on WhatsApp \nhttps://chat.whatsapp.com/EOwT9wCjhq86f5jrLRrJs0?mode=gi_t",
+        "timestamp": 1771842825171,
+        "edited": true
       }
     ]
   },
