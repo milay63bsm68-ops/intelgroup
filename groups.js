@@ -881,8 +881,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771837627751,
-    "lastMessage": "Harmayoh: http://t.me/intelpremiumbot/premiumdash",
+    "lastMessageAt": 1771837655508,
+    "lastMessage": "Harmayoh: Follow the link if you wan dey earn for reselling premium",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -1018,6 +1018,14 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "http://t.me/intelpremiumbot/premiumdash",
         "timestamp": 1771837627751
+      },
+      {
+        "id": "628ab4076b7bef92",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "Follow the link if you wan dey earn for reselling premium",
+        "timestamp": 1771837655508
       }
     ]
   },
