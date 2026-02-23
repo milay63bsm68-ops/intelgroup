@@ -889,8 +889,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771837655508,
-    "lastMessage": "Harmayoh: Follow the link if you wan dey earn for reselling premium",
+    "lastMessageAt": 1771839448810,
+    "lastMessage": "Cloud: How do we go about selling",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -1034,6 +1034,14 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "Follow the link if you wan dey earn for reselling premium",
         "timestamp": 1771837655508
+      },
+      {
+        "id": "455db4d70f99e0b0",
+        "type": "text",
+        "senderId": "8097634090",
+        "senderName": "Cloud",
+        "text": "How do we go about selling",
+        "timestamp": 1771839448810
       }
     ]
   },
