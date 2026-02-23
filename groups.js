@@ -508,8 +508,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771725735190,
-    "lastMessageAt": 1771820168185,
-    "lastMessage": "Harmayoh: Cool",
+    "lastMessageAt": 1771825195165,
+    "lastMessage": "Zzz joined",
     "totalEarnings": 0,
     "members": {
       "8473626341": {
@@ -520,6 +520,11 @@ window.GROUPS_DATA = {
         "name": "Harmayoh",
         "username": "@harmayoh",
         "joinedAt": 1771725931927
+      },
+      "8242251895": {
+        "name": "Zzz",
+        "username": "@lindathompson33",
+        "joinedAt": 1771825195165
       }
     },
     "messages": [
@@ -608,6 +613,12 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "Cool",
         "timestamp": 1771820168185
+      },
+      {
+        "id": "dba23ebfb0c2d881",
+        "type": "system",
+        "text": "Zzz joined the group",
+        "timestamp": 1771825195165
       }
     ]
   },
