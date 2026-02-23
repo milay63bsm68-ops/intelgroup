@@ -1269,5 +1269,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771782882620
       }
     ]
+  },
+  "DBDCBFEEFD": {
+    "name": "Free hacks",
+    "description": "",
+    "ownerId": "7449085093",
+    "ownerName": "Promise",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"😎\",\"color\":\"#5288c1\"}",
+    "isPrivate": true,
+    "isPremiumOnly": true,
+    "createdAt": 1771837886299,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7449085093": {
+        "name": "Promise",
+        "joinedAt": 1771837886299
+      }
+    },
+    "messages": []
   }
 }
