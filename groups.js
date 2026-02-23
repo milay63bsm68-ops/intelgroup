@@ -889,8 +889,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771842825171,
-    "lastMessage": "Harmayoh: @Dhemmyx  Join our Marketplace group on WhatsApp \nhttps://ch",
+    "lastMessageAt": 1771846090003,
+    "lastMessage": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾ joined",
     "totalEarnings": 0,
     "members": {
       "8097634090": {
@@ -921,6 +921,11 @@ window.GROUPS_DATA = {
         "name": "Dee",
         "username": "@BYD_cargiveaways82",
         "joinedAt": 1771830618385
+      },
+      "7100459393": {
+        "name": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
+        "username": "@Solution_X9",
+        "joinedAt": 1771846090003
       }
     },
     "messages": [
@@ -1051,6 +1056,12 @@ window.GROUPS_DATA = {
         "text": "@Cloud  Join our Marketplace group on WhatsApp \nhttps://chat.whatsapp.com/EOwT9wCjhq86f5jrLRrJs0?mode=gi_t",
         "timestamp": 1771842825171,
         "edited": true
+      },
+      {
+        "id": "af789b206e022ebe",
+        "type": "system",
+        "text": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾ joined the group",
+        "timestamp": 1771846090003
       }
     ]
   },
