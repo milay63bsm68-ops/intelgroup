@@ -1377,5 +1377,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771837967993
       }
     ]
+  },
+  "330DD6BB7E": {
+    "name": "No noise",
+    "description": "Better than the following",
+    "ownerId": "7782199182",
+    "ownerName": "Akolade",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"⚡\",\"color\":\"#5288c1\"}",
+    "isPrivate": true,
+    "isPremiumOnly": true,
+    "createdAt": 1771857337415,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7782199182": {
+        "name": "Akolade",
+        "joinedAt": 1771857337415
+      }
+    },
+    "messages": []
   }
 }
