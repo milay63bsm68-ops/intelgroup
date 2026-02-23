@@ -1299,8 +1299,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771782873197,
-    "lastMessageAt": 1771857170532,
-    "lastMessage": "Akolade: Hi",
+    "lastMessageAt": 1771860907007,
+    "lastMessage": "Harmayoh: @Akolade how are you",
     "totalEarnings": 0,
     "members": {
       "6940101627": {
@@ -1335,6 +1335,14 @@ window.GROUPS_DATA = {
         "senderName": "Akolade",
         "text": "Hi",
         "timestamp": 1771857170532
+      },
+      {
+        "id": "4afce31fcd94ce7c",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "@Akolade how are you",
+        "timestamp": 1771860907007
       }
     ]
   },
