@@ -1001,7 +1001,7 @@ window.GROUPS_DATA = {
     "ownerName": "Dee",
     "avatar": "{\"type\":\"emoji\",\"emoji\":\"🎮\",\"color\":\"#5288c1\"}",
     "isPrivate": false,
-    "isPremiumOnly": false,
+    "isPremiumOnly": true,
     "createdAt": 1771777410678,
     "lastMessageAt": 1771793699433,
     "lastMessage": "Harmayoh: I don chat you",
