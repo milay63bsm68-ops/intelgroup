@@ -4,223 +4,300 @@
 <meta charset="UTF-8">
 <title>Admin Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background:#020617;
-  color:white;
-  padding:30px;
-}
-.card {
-  background:#0f172a;
-  padding:20px;
-  border-radius:14px;
-  max-width:420px;
-  margin:auto;
-  position: relative;
-}
-input {
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:10px;
-  border:none;
-}
-.password-container {
-  position: relative;
-}
-.eye-icon {
-  position: absolute;
-  right: 12px;
-  top: 14px;
-  cursor: pointer;
-  color: #aaa;
-  font-size: 18px;
-}
-button {
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border:none;
-  border-radius:12px;
-  font-weight:bold;
-  cursor:pointer;
-  opacity:0.5;
-  transition: 0.2s;
-}
-button.enabled {
-  opacity:1;
-}
-.load { background:#3b82f6; opacity:1 }
-.deposit { background:#22c55e }
-.withdraw { background:#ef4444 }
-.balance {
-  margin-top:15px;
-  font-size:18px;
-}
-.message {
-  margin-top:10px;
-  font-size:16px;
-  padding:8px;
-  border-radius:8px;
-}
-.success { background: #22c55e; color: #fff; }
-.error { background: #ef4444; color: #fff; }
-.loading { background: #facc15; color: #000; font-weight:bold; }
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#020617;--surface:#0f172a;--surface2:#1e293b;--accent:#3b82f6;--text:#e2e8f0;--subtext:#94a3b8;--border:#1e293b;--green:#22c55e;--red:#ef4444;--gold:#f59e0b;}
+body{background:var(--bg);color:var(--text);font-family:Arial,sans-serif;min-height:100vh;}
+#pwGuard{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+.guard-card{width:100%;max-width:360px;background:var(--surface);border-radius:20px;padding:28px;}
+.guard-icon{font-size:48px;text-align:center;margin-bottom:12px;}
+.guard-title{font-size:20px;font-weight:800;text-align:center;margin-bottom:4px;}
+.guard-sub{font-size:13px;color:var(--subtext);text-align:center;margin-bottom:20px;}
+.top-tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+.top-tab{flex:1;padding:14px 8px;text-align:center;font-size:13px;font-weight:700;color:var(--subtext);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;}
+.top-tab.active{color:var(--accent);border-color:var(--accent);}
+.page{display:none;padding:20px 16px;max-width:500px;margin:0 auto;}
+.page.active{display:block;}
+.card{background:var(--surface);border-radius:16px;padding:20px;margin-bottom:14px;}
+.card-title{font-size:18px;font-weight:800;margin-bottom:4px;}
+.card-sub{font-size:13px;color:var(--subtext);margin-bottom:16px;}
+.inp-wrap{position:relative;margin-bottom:10px;}
+.inp{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;outline:none;}
+.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;font-size:18px;color:var(--subtext);}
+.btn{width:100%;padding:12px;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;color:white;margin-bottom:8px;}
+.btn:active{transform:scale(0.98);}
+.btn:disabled{opacity:0.4;cursor:not-allowed;}
+.btn-blue{background:var(--accent);}
+.btn-green{background:var(--green);}
+.btn-red{background:var(--red);}
+.btn-gold{background:var(--gold);color:#000;}
+.btn-gray{background:var(--surface2);color:var(--subtext);border:1px solid var(--border);}
+.bal-card{background:var(--surface2);border-radius:12px;padding:14px;margin:10px 0;border:1px solid var(--border);font-size:22px;font-weight:700;color:var(--green);display:none;}
+.divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
+.sec-label{font-size:11px;color:var(--subtext);text-transform:uppercase;letter-spacing:0.8px;margin:12px 0 8px;font-weight:700;}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;}
+.stat-val{font-size:24px;font-weight:800;color:var(--accent);}
+.stat-label{font-size:11px;color:var(--subtext);margin-top:2px;}
+.grp-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
+.grp-name{font-size:16px;font-weight:700;margin-bottom:4px;}
+.grp-id{font-family:monospace;font-size:11px;background:var(--surface2);padding:3px 8px;border-radius:6px;display:inline-block;margin:4px 0;}
+.grp-meta{font-size:12px;color:var(--subtext);line-height:1.8;}
+.grp-del{background:none;border:1px solid var(--red);color:var(--red);border-radius:8px;padding:6px 14px;font-size:12px;cursor:pointer;margin-top:8px;font-weight:700;}
+.grp-del:hover{background:var(--red);color:white;}
+.prm-row{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.prm-id{font-family:monospace;font-size:13px;}
+.prm-rem{background:none;border:1px solid var(--red);color:var(--red);border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-weight:700;}
+.prm-status{background:var(--surface2);border-radius:12px;padding:12px;margin:8px 0;font-size:14px;display:none;}
+.msg{padding:10px 12px;border-radius:10px;font-size:13px;margin-bottom:10px;}
+.success{background:#14532d;border:1px solid var(--green);color:#86efac;}
+.error{background:#7f1d1d;border:1px solid var(--red);color:#fca5a5;}
+.loading{background:#451a03;border:1px solid var(--gold);color:#fcd34d;}
 </style>
 </head>
-
 <body>
 
-<div class="card">
-  <h2>Admin Balance Control</h2>
-
-  <input id="telegramId" placeholder="Telegram User ID">
-
-  <!-- Password with Eye Icon -->
-  <div class="password-container">
-    <input id="password" placeholder="Admin Password" type="password">
-    <span id="togglePassword" class="eye-icon">👁️</span>
+<div id="pwGuard">
+  <div class="guard-card">
+    <div class="guard-icon">🔐</div>
+    <div class="guard-title">Admin Access</div>
+    <div class="guard-sub">Enter your admin password to continue</div>
+    <div class="inp-wrap">
+      <input class="inp" id="guardPw" type="password" placeholder="Admin password" onkeypress="if(event.key==='Enter')unlock()">
+      <span class="eye" onclick="toggleEye('guardPw',this)">👁️</span>
+    </div>
+    <button class="btn btn-blue" onclick="unlock()">🔓 Unlock Dashboard</button>
+    <div id="guardMsg"></div>
   </div>
+</div>
 
-  <button class="load" onclick="loadBalance()">Load Balance</button>
+<div class="top-tabs">
+  <div class="top-tab active" id="tab-groups"  onclick="switchTab('groups')">💬 Groups</div>
+  <div class="top-tab"        id="tab-premium" onclick="switchTab('premium')">⭐ Premium</div>
+</div>
 
-  <div class="balance" id="balanceText"></div>
-  <div id="messageBox"></div>
+<!-- GROUPS PAGE -->
+<div class="page active" id="page-groups">
+  <div class="card">
+    <div class="card-title">💬 Group Management</div>
+    <div class="card-sub">View and moderate all groups</div>
+    <button class="btn btn-blue" onclick="loadGroups()">🔄 Load All Groups</button>
+    <div id="grpMsg"></div>
+    <div id="grpStats" style="display:none;margin-top:10px"></div>
+    <input class="inp" id="grpSearch" placeholder="Search groups…" oninput="filterGroups()" style="display:none;margin-top:8px">
+    <div id="grpList" style="margin-top:10px"></div>
+  </div>
+</div>
 
-  <button id="depositBtn" class="deposit" onclick="handleAction('deposit')">
-    ➕ Deposit
-  </button>
-
-  <button id="withdrawBtn" class="withdraw" onclick="handleAction('withdraw')">
-    ➖ Withdraw
-  </button>
+<!-- PREMIUM PAGE -->
+<div class="page" id="page-premium">
+  <div class="card">
+    <div class="card-title">⭐ Premium Management</div>
+    <div class="card-sub">Add, remove, or check premium users</div>
+    <input class="inp" id="prmId" placeholder="Telegram User ID" style="margin-bottom:10px">
+    <button class="btn btn-blue" onclick="checkPremium()">🔍 Check Status</button>
+    <div class="prm-status" id="prmStatus"></div>
+    <button class="btn btn-gold"  id="prmAddBtn" onclick="managePremium('add')"    style="display:none">⭐ Grant Premium</button>
+    <button class="btn btn-red"   id="prmRemBtn" onclick="managePremium('remove')" style="display:none">❌ Remove Premium</button>
+    <div id="prmMsg"></div>
+    <div class="divider"></div>
+    <div class="sec-label">All Premium Users</div>
+    <button class="btn btn-gray" onclick="loadAllPremium()">📋 Load Premium List</button>
+    <div id="prmList" style="margin-top:10px"></div>
+  </div>
 </div>
 
 <script>
-const API = "https://promdashboard-1.onrender.com";
+let adminPassword = "";
+let grpListData   = {};
 
-const depositBtn = document.getElementById("depositBtn");
-const withdrawBtn = document.getElementById("withdrawBtn");
-const messageBox = document.getElementById("messageBox");
-const balanceText = document.getElementById("balanceText");
-const passwordInput = document.getElementById("password");
-const togglePassword = document.getElementById("togglePassword");
-const telegramId = document.getElementById("telegramId");
-
-depositBtn.disabled = true;
-withdrawBtn.disabled = true;
-
-// Toggle password visibility
-togglePassword.addEventListener("click", () => {
-  if (passwordInput.type === "password") {
-    passwordInput.type = "text";
-    togglePassword.textContent = "🙈"; // closed eye
-  } else {
-    passwordInput.type = "password";
-    togglePassword.textContent = "👁️"; // open eye
-  }
-});
-
-function enableButtons() {
-  depositBtn.disabled = false;
-  withdrawBtn.disabled = false;
-  depositBtn.classList.add("enabled");
-  withdrawBtn.classList.add("enabled");
+function toggleEye(id, icon) {
+  const inp = document.getElementById(id);
+  inp.type  = inp.type==="password" ? "text" : "password";
+  icon.textContent = inp.type==="password" ? "👁️" : "🙈";
 }
 
-function disableButtons() {
-  depositBtn.disabled = true;
-  withdrawBtn.disabled = true;
-  depositBtn.classList.remove("enabled");
-  withdrawBtn.classList.remove("enabled");
-}
-
-function showMessage(msg, type="success") {
-  messageBox.innerHTML = `<div class="message ${type}">${msg}</div>`;
-}
-
-function showLoading(msg="Loading...") {
-  messageBox.innerHTML = `<div class="message loading">${msg}</div>`;
-}
-
-async function loadBalance() {
-  if (!telegramId.value) {
-    showMessage("❌ Please enter a Telegram ID", "error");
-    return;
-  }
-
-  showLoading("Fetching balance...");
-  disableButtons();
-
+async function unlock() {
+  const pw = document.getElementById("guardPw").value;
+  if (!pw) return;
   try {
-    const res = await fetch(API + "/admin/get-balance", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-password": passwordInput.value
-      },
-      body: JSON.stringify({ telegramId: telegramId.value })
+    const res = await fetch("/admin/premium/check", {
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-admin-password":pw},
+      body: JSON.stringify({ telegramId:"0" })
     });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || `Server error: ${res.status}`);
-    if (data.error) throw new Error(data.error);
-
-    balanceText.innerText = `Current Balance: ₦${data.ngn.toLocaleString()}`;
-    showMessage("✅ Balance loaded successfully", "success");
-    enableButtons();
-
-  } catch (err) {
-    balanceText.innerText = "";
-    disableButtons();
-    showMessage(`❌ Failed to load balance: ${err.message}`, "error");
+    if (res.status===401) {
+      document.getElementById("guardMsg").innerHTML = '<div class="msg error">❌ Wrong password</div>';
+      return;
+    }
+    adminPassword = pw;
+    document.getElementById("pwGuard").style.display = "none";
+  } catch(e) {
+    adminPassword = pw;
+    document.getElementById("pwGuard").style.display = "none";
   }
 }
 
-async function handleAction(type) {
-  const amount = prompt(
-    type === "deposit" 
-      ? "Enter deposit amount (NGN)" 
-      : "Enter withdrawal amount (NGN)"
-  );
+function switchTab(tab) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".top-tab").forEach(t => t.classList.remove("active"));
+  document.getElementById("page-"+tab).classList.add("active");
+  document.getElementById("tab-"+tab).classList.add("active");
+}
 
-  if (!amount || isNaN(amount) || Number(amount) <= 0) {
-    showMessage("❌ Invalid amount entered", "error");
-    return;
-  }
-
-  showLoading(`${type === "deposit" ? "Depositing" : "Withdrawing"} ₦${Number(amount).toLocaleString()}...`);
-  disableButtons();
-
+/* --- GROUPS --- */
+async function loadGroups() {
+  showMsg("grpMsg","⏳ Loading groups…","loading");
   try {
-    const res = await fetch(API + "/admin/update-balance", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-admin-password": passwordInput.value
-      },
-      body: JSON.stringify({
-        telegramId: telegramId.value,
-        amount: Number(amount),
-        type
-      })
+    const res = await fetch("/admin/groups", {
+      headers:{"x-admin-password": adminPassword}
     });
-
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || `Server error: ${res.status}`);
-    if (data.error) throw new Error(data.error);
-
-    balanceText.innerText = `Current Balance: ₦${data.newBalance.toLocaleString()}`;
-    showMessage(`✅ ${type === "deposit" ? "Deposit" : "Withdrawal"} successful!`, "success");
-    enableButtons();
-
-  } catch (err) {
-    showMessage(`❌ Failed to ${type}: ${err.message}`, "error");
-  }
+    if (!res.ok) throw new Error("Unauthorized or error");
+    grpListData = await res.json();
+    showMsg("grpMsg","","");
+    renderGroups(grpListData);
+    const total   = Object.keys(grpListData).length;
+    const members = Object.values(grpListData).reduce((s,g) => s+Object.keys(g.members||{}).length,0);
+    const earn    = Object.values(grpListData).reduce((s,g) => s+(g.totalEarnings||0),0);
+    const vip     = Object.values(grpListData).filter(g=>g.isPremiumOnly).length;
+    const stats   = document.getElementById("grpStats");
+    stats.style.display = "grid";
+    stats.className     = "stats-grid";
+    stats.innerHTML = `
+      <div class="stat-card"><div class="stat-val">${total}</div><div class="stat-label">Total Groups</div></div>
+      <div class="stat-card"><div class="stat-val">${members}</div><div class="stat-label">Total Members</div></div>
+      <div class="stat-card"><div class="stat-val">${vip}</div><div class="stat-label">VIP Groups</div></div>
+      <div class="stat-card"><div class="stat-val">₦${earn.toLocaleString()}</div><div class="stat-label">Total Earnings</div></div>`;
+    document.getElementById("grpSearch").style.display = "block";
+  } catch(e) { showMsg("grpMsg","❌ "+e.message,"error"); }
 }
+
+function filterGroups() {
+  const q  = document.getElementById("grpSearch").value.toLowerCase();
+  const fd = {};
+  for (const [id,g] of Object.entries(grpListData)) {
+    if (!q || g.name.toLowerCase().includes(q) || id.toLowerCase().includes(q)) fd[id] = g;
+  }
+  renderGroups(fd);
+}
+
+function renderGroups(data) {
+  const entries = Object.entries(data);
+  const list    = document.getElementById("grpList");
+  if (entries.length===0) { list.innerHTML='<div style="text-align:center;color:var(--subtext);padding:20px">No groups found</div>'; return; }
+  entries.sort((a,b)=>(b[1].lastMessageAt||0)-(a[1].lastMessageAt||0));
+  list.innerHTML = entries.map(([id,g]) => {
+    const mc = Object.keys(g.members||{}).length;
+    return `<div class="grp-card">
+      <div class="grp-name">${esc(g.name||"Unnamed")} ${g.isPremiumOnly?"⭐":""} ${g.isPrivate?"🔒":""}</div>
+      <div class="grp-id">${id}</div>
+      <div class="grp-meta">
+        👥 ${mc} member${mc!==1?"s":""}<br>
+        👑 Owner: ${esc(g.ownerName||g.ownerId||"N/A")} (${g.ownerId||"N/A"})<br>
+        💰 Earnings: ₦${(g.totalEarnings||0).toLocaleString()}<br>
+        📅 Created: ${g.createdAt?new Date(g.createdAt).toLocaleDateString():"N/A"}
+        ${g.description?`<br>📝 ${esc(g.description.slice(0,80))}`:""}
+      </div>
+      <button class="grp-del" onclick="deleteGroup('${id}','${esc(g.name||"")}')">🗑️ Delete Group</button>
+    </div>`;
+  }).join("");
+}
+
+async function deleteGroup(id, gname) {
+  if (!confirm(`Delete group "${gname}" (${id})? This cannot be undone.`)) return;
+  try {
+    const res = await fetch("/admin/groups/"+id+"/delete", {
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-admin-password":adminPassword},
+      body:"{}"
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    delete grpListData[id];
+    renderGroups(grpListData);
+    showMsg("grpMsg","✅ Group deleted","success");
+  } catch(e) { showMsg("grpMsg","❌ "+e.message,"error"); }
+}
+
+/* --- PREMIUM --- */
+async function checkPremium() {
+  const id = document.getElementById("prmId").value.trim();
+  if (!id) return showMsg("prmMsg","❌ Enter a Telegram ID","error");
+  showMsg("prmMsg","⏳ Checking…","loading");
+  try {
+    const res  = await fetch("/admin/premium/check", {
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-admin-password":adminPassword},
+      body: JSON.stringify({ telegramId:id })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    const st = document.getElementById("prmStatus");
+    st.style.display = "block";
+    st.innerHTML = data.isPremium
+      ? `✅ ID <b>${id}</b> is <span style="color:var(--gold)">⭐ Premium</span>`
+      : `❌ ID <b>${id}</b> is <span style="color:var(--subtext)">Free user</span>`;
+    document.getElementById("prmAddBtn").style.display = data.isPremium ? "none" : "block";
+    document.getElementById("prmRemBtn").style.display = data.isPremium ? "block" : "none";
+    showMsg("prmMsg","","");
+  } catch(e) { showMsg("prmMsg","❌ "+e.message,"error"); }
+}
+
+async function managePremium(action) {
+  const id = document.getElementById("prmId").value.trim();
+  if (!id) return;
+  showMsg("prmMsg","⏳ Processing…","loading");
+  try {
+    const res  = await fetch("/admin/premium/"+action, {
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-admin-password":adminPassword},
+      body: JSON.stringify({ telegramId:id })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    showMsg("prmMsg","✅ "+(action==="add"?"Premium granted":"Premium removed")+" for ID "+id,"success");
+    document.getElementById("prmStatus").style.display = "none";
+    document.getElementById("prmAddBtn").style.display = "none";
+    document.getElementById("prmRemBtn").style.display = "none";
+    loadAllPremium();
+  } catch(e) { showMsg("prmMsg","❌ "+e.message,"error"); }
+}
+
+async function loadAllPremium() {
+  try {
+    const res  = await fetch("/admin/premium/check", {
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-admin-password":adminPassword},
+      body: JSON.stringify({ telegramId:"0" })
+    });
+    const data = await res.json();
+    const list = document.getElementById("prmList");
+    const users = data.users || [];
+    if (users.length===0) { list.innerHTML='<div style="color:var(--subtext);font-size:13px;padding:10px">No premium users yet</div>'; return; }
+    list.innerHTML = users.map(uid => `
+      <div class="prm-row">
+        <div class="prm-id">⭐ ${uid}</div>
+        <button class="prm-rem" onclick="quickRemove('${uid}')">Remove</button>
+      </div>`).join("");
+  } catch(e) {}
+}
+
+async function quickRemove(uid) {
+  if (!confirm("Remove premium from "+uid+"?")) return;
+  try {
+    await fetch("/admin/premium/remove", {
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-admin-password":adminPassword},
+      body: JSON.stringify({ telegramId:uid })
+    });
+    loadAllPremium();
+  } catch(e) {}
+}
+
+function showMsg(id, text, type) {
+  document.getElementById(id).innerHTML = text ? `<div class="msg ${type}">${text}</div>` : "";
+}
+function esc(s){ return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+document.getElementById("guardPw").addEventListener("keypress", e => { if(e.key==="Enter") unlock(); });
 </script>
-
 </body>
 </html>
