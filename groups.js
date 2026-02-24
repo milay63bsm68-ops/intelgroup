@@ -1117,8 +1117,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": true,
     "createdAt": 1771777410678,
-    "lastMessageAt": 1771919979546,
-    "lastMessage": "Dee: Hello guys",
+    "lastMessageAt": 1771923554634,
+    "lastMessage": "Harmayoh: Hey",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
@@ -1285,6 +1285,14 @@ window.GROUPS_DATA = {
         "senderName": "Dee",
         "text": "Hello guys",
         "timestamp": 1771919979546
+      },
+      {
+        "id": "e129866365789417",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "Harmayoh",
+        "text": "Hey",
+        "timestamp": 1771923554634
       }
     ]
   },
