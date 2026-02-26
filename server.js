@@ -1,9 +1,8 @@
 /**
  * ============================================================
- *  MAIN SERVER  —  intel-groups.onrender.com
+ *  MAIN SERVER  —  Intel Premium Groups
  *  Handles: groups, messages, premium UI flow, deposit notify
- *  Balance ops are delegated to the BALANCE SERVER at OLD_RENDER
- *  (https://promdashboard.onrender.com)
+ *  Balance ops are delegated to the BALANCE SERVER at BALANCE_SERVER_URL
  * ============================================================
  */
 
@@ -34,16 +33,16 @@ const {
   GITHUB_REPO,
   GROUPS_FILE,
   PREMIUM_FILE,
-  OLD_RENDER        // https://promdashboard.onrender.com
+  BALANCE_SERVER_URL   // Your balance server Railway URL e.g. https://your-balance-server.up.railway.app
 } = process.env;
 
 /* ════════════════════════════════════════════════════════════
-   BALANCE  —  all calls forwarded to OLD RENDER
+   BALANCE  —  all calls forwarded to balance server
 ════════════════════════════════════════════════════════════ */
 
 /** Get a user's NGN balance + usdRate from the balance server */
 async function getBalance(telegramId) {
-  const res  = await fetch(`${OLD_RENDER}/get-balance`, {
+  const res  = await fetch(`${BALANCE_SERVER_URL}/get-balance`, {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
     body:    JSON.stringify({ telegramId })
@@ -62,7 +61,7 @@ async function processPremiumPurchase({
   groupOwnerId, groupOwnerName, groupName,
   passcode
 }) {
-  const res  = await fetch(`${OLD_RENDER}/api/premium-purchase`, {
+  const res  = await fetch(`${BALANCE_SERVER_URL}/api/premium-purchase`, {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -100,7 +99,6 @@ async function sendTelegram(text, chatId) {
 async function sendTelegramPhoto(chatId, photoBase64, caption) {
   if (!BOT_TOKEN || !chatId) return;
   try {
-    // Build multipart/form-data so Telegram accepts the image as a file upload
     const imgBuffer = Buffer.from(photoBase64, "base64");
     const boundary  = "----TgBoundary" + Date.now();
 
@@ -180,26 +178,21 @@ async function writeGithubFile(filename, content, sha, message) {
  */
 function sanitizeAvatar(avatar) {
   if (!avatar) return null;
-  // Block raw base64 — would bloat groups.js
   if (typeof avatar === "string" && avatar.startsWith("data:image/")) {
     console.warn("Avatar base64 rejected — use a URL instead.");
     return null;
   }
-  // Already a JSON avatar object string  {"type":"emoji",...}  or  {"type":"url",...}
   if (typeof avatar === "string" && avatar.startsWith("{")) {
     try {
       const parsed = JSON.parse(avatar);
       if (parsed.type === "url" && typeof parsed.src === "string") {
-        // Just store the URL directly — simpler
         return parsed.src;
       }
       if (parsed.type === "emoji") {
-        // Keep emoji+color JSON as-is
         return avatar;
       }
     } catch { /* fall through */ }
   }
-  // Plain URL string (http/https)
   if (typeof avatar === "string" && /^https?:\/\/.+/.test(avatar)) {
     return avatar;
   }
@@ -270,7 +263,7 @@ app.post("/get-balance", async (req, res) => {
   const telegramId = req.body.telegramId ? String(req.body.telegramId) : null;
   if (!telegramId) return res.json({ ngn: 0, usd: 0, usdRate: 1600 });
   try {
-    const r    = await fetch(`${OLD_RENDER}/get-balance`, {
+    const r    = await fetch(`${BALANCE_SERVER_URL}/get-balance`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({ telegramId })
@@ -302,8 +295,7 @@ app.post("/generate-premium-passcode", async (req, res) => {
   if (!telegramId) return res.status(400).json({ error: "Missing Telegram ID" });
 
   try {
-    /* Delegate to balance server so it can validate the code on purchase */
-    const r    = await fetch(`${OLD_RENDER}/generate-passcode`, {
+    const r    = await fetch(`${BALANCE_SERVER_URL}/generate-passcode`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({ telegramId })
@@ -327,7 +319,6 @@ app.post("/api/buy-premium", async (req, res) => {
   if (!telegramId) return res.status(400).json({ error: "Missing Telegram ID" });
 
   try {
-    /* Resolve group owner info — owner ONLY earns if user buys inside their group */
     let groupOwnerId   = null;
     let groupOwnerName = null;
     let groupName      = null;
@@ -337,19 +328,15 @@ app.post("/api/buy-premium", async (req, res) => {
         const { groups } = await readGroups();
         const g = groups[groupId];
         if (g && g.ownerId && g.ownerId !== telegramId) {
-          // Valid: buyer is not the owner of this group
           groupOwnerId   = g.ownerId;
           groupOwnerName = g.ownerName || g.ownerId;
           groupName      = g.name || groupId;
         } else if (g && g.ownerId === telegramId) {
-          // Owner buying premium in their own group — no self-reward
           console.log(`Owner ${telegramId} buying premium in own group ${groupId} — no reward credited.`);
         }
       } catch (e) { console.error("Group lookup error:", e.message); }
     }
-    // If no groupId provided, owner earns nothing — purchase is still valid
 
-    /* ── Call balance server — does everything ── */
     const result = await processPremiumPurchase({
       telegramId,
       buyerName:    name,
@@ -360,7 +347,6 @@ app.post("/api/buy-premium", async (req, res) => {
       passcode
     });
 
-    /* ── Update group totalEarnings on GitHub ── */
     if (groupId && groupOwnerId) {
       try {
         const { groups, sha: gSha } = await readGroups();
@@ -371,7 +357,6 @@ app.post("/api/buy-premium", async (req, res) => {
       } catch (e) { console.error("Group earnings update error:", e.message); }
     }
 
-    /* ── Add to premium.js on GitHub ── */
     const { users, sha: pSha } = await readPremium();
     if (!users.includes(telegramId)) {
       users.push(telegramId);
@@ -432,7 +417,7 @@ app.post("/api/groups/create", async (req, res) => {
       description:   (description || "").slice(0, 255),
       ownerId:       telegramId,
       ownerName,
-      avatar:        sanitizeAvatar(avatar),   // ← safe: URL string or emoji JSON only
+      avatar:        sanitizeAvatar(avatar),
       isPrivate:     Boolean(isPrivate),
       isPremiumOnly: Boolean(isPremiumOnly),
       createdAt:     Date.now(),
