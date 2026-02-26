@@ -1528,5 +1528,25 @@ window.GROUPS_DATA = {
         "timestamp": 1771942224992
       }
     ]
+  },
+  "7D17E93896": {
+    "name": "Frozen account test",
+    "description": "This account is frozen",
+    "ownerId": "6940101627",
+    "ownerName": "Harmayoh",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"❄️\",\"color\":\"#795548\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1772094978264,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "6940101627": {
+        "name": "Harmayoh",
+        "joinedAt": 1772094978264
+      }
+    },
+    "messages": []
   }
 }
