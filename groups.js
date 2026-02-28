@@ -1651,8 +1651,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": true,
     "createdAt": 1772304263231,
-    "lastMessageAt": 1772304576053,
-    "lastMessage": "(✿◠‿◠♥️)(♥️◠‿◠✿) joined",
+    "lastMessageAt": 1772304582825,
+    "lastMessage": "(✿◠‿◠♥️)(♥️◠‿◠✿): Hello",
     "totalEarnings": 0,
     "members": {
       "8046980819": {
@@ -1671,6 +1671,14 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "(✿◠‿◠♥️)(♥️◠‿◠✿) joined the group",
         "timestamp": 1772304576053
+      },
+      {
+        "id": "6f210149429006ec",
+        "type": "text",
+        "senderId": "6976365864",
+        "senderName": "(✿◠‿◠♥️)(♥️◠‿◠✿)",
+        "text": "Hello",
+        "timestamp": 1772304582825
       }
     ]
   }
