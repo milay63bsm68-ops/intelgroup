@@ -1117,8 +1117,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": true,
     "createdAt": 1771777410678,
-    "lastMessageAt": 1772115276646,
-    "lastMessage": "Harmayoh: Group now working",
+    "lastMessageAt": 1772304187435,
+    "lastMessage": "TAZER🫀 joined",
     "totalEarnings": 0,
     "members": {
       "7866657321": {
@@ -1149,6 +1149,11 @@ window.GROUPS_DATA = {
         "name": "Ab",
         "username": "@Abvibes01",
         "joinedAt": 1771888297725
+      },
+      "8046980819": {
+        "name": "TAZER🫀",
+        "username": "",
+        "joinedAt": 1772304187435
       }
     },
     "messages": [
@@ -1309,6 +1314,12 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "Group now working",
         "timestamp": 1772115276646
+      },
+      {
+        "id": "bcdc0af88b47ff87",
+        "type": "system",
+        "text": "TAZER🫀 joined the group",
+        "timestamp": 1772304187435
       }
     ]
   },
