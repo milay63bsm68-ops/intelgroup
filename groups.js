@@ -713,8 +713,8 @@ window.GROUPS_DATA = {
     "isPrivate": true,
     "isPremiumOnly": false,
     "createdAt": 1771755809424,
-    "lastMessageAt": 1772304624374,
-    "lastMessage": "TAZER🫀: Am good and you",
+    "lastMessageAt": 1772304702583,
+    "lastMessage": "(✿◠‿◠♥️)(♥️◠‿◠✿): I'm fine",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -795,6 +795,14 @@ window.GROUPS_DATA = {
         "senderName": "TAZER🫀",
         "text": "Am good and you",
         "timestamp": 1772304624374
+      },
+      {
+        "id": "9762ce84848acf6f",
+        "type": "text",
+        "senderId": "6976365864",
+        "senderName": "(✿◠‿◠♥️)(♥️◠‿◠✿)",
+        "text": "I'm fine",
+        "timestamp": 1772304702583
       }
     ]
   },
