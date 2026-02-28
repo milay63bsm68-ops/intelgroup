@@ -713,8 +713,8 @@ window.GROUPS_DATA = {
     "isPrivate": true,
     "isPremiumOnly": false,
     "createdAt": 1771755809424,
-    "lastMessageAt": 1771899198233,
-    "lastMessage": "(✿◠‿◠♥️)(♥️◠‿◠✿) joined",
+    "lastMessageAt": 1772304381697,
+    "lastMessage": "TAZER🫀 joined",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -730,6 +730,11 @@ window.GROUPS_DATA = {
         "name": "(✿◠‿◠♥️)(♥️◠‿◠✿)",
         "username": "@averytradery",
         "joinedAt": 1771899198233
+      },
+      "8046980819": {
+        "name": "TAZER🫀",
+        "username": "",
+        "joinedAt": 1772304381696
       }
     },
     "messages": [
@@ -760,6 +765,12 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "(✿◠‿◠♥️)(♥️◠‿◠✿) joined the group",
         "timestamp": 1771899198233
+      },
+      {
+        "id": "9f25413e408bda52",
+        "type": "system",
+        "text": "TAZER🫀 joined the group",
+        "timestamp": 1772304381697
       }
     ]
   },
