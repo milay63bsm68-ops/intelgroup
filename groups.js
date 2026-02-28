@@ -1614,5 +1614,25 @@ window.GROUPS_DATA = {
         "timestamp": 1772304167837
       }
     ]
+  },
+  "F69D345587": {
+    "name": "Action group",
+    "description": "For progress and achievement",
+    "ownerId": "8046980819",
+    "ownerName": "TAZER🫀",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🚀\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": true,
+    "createdAt": 1772304263231,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "8046980819": {
+        "name": "TAZER🫀",
+        "joinedAt": 1772304263231
+      }
+    },
+    "messages": []
   }
 }
