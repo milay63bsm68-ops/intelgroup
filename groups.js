@@ -1391,8 +1391,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771781889209,
-    "lastMessageAt": 1771791929350,
-    "lastMessage": "ØLÄMÏLËKÄÑ DÇ joined",
+    "lastMessageAt": 1772819385332,
+    "lastMessage": "HARMAYOH: Hey",
     "totalEarnings": 0,
     "members": {
       "7497799470": {
@@ -1430,6 +1430,14 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "ØLÄMÏLËKÄÑ DÇ joined the group",
         "timestamp": 1771791929350
+      },
+      {
+        "id": "faa4446319bd8825",
+        "type": "text",
+        "senderId": "6940101627",
+        "senderName": "HARMAYOH",
+        "text": "Hey",
+        "timestamp": 1772819385332
       }
     ]
   },
