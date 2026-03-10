@@ -1792,5 +1792,25 @@ window.GROUPS_DATA = {
         "timestamp": 1772819348663
       }
     ]
+  },
+  "0671461CFE": {
+    "name": "Spammers and hackers",
+    "description": "Learn how to hack and spam",
+    "ownerId": "8307830690",
+    "ownerName": "Wayne",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"😀\",\"color\":\"#5288c1\"}",
+    "isPrivate": true,
+    "isPremiumOnly": true,
+    "createdAt": 1773148182299,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "8307830690": {
+        "name": "Wayne",
+        "joinedAt": 1773148182299
+      }
+    },
+    "messages": []
   }
 }
