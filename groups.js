@@ -1810,8 +1810,8 @@ window.GROUPS_DATA = {
     "isPrivate": true,
     "isPremiumOnly": true,
     "createdAt": 1773148182299,
-    "lastMessageAt": 1773155132359,
-    "lastMessage": "HARMAYOH: Hello here",
+    "lastMessageAt": 1773207513334,
+    "lastMessage": "Teodora🫠 joined",
     "totalEarnings": 0,
     "members": {
       "8307830690": {
@@ -1822,6 +1822,11 @@ window.GROUPS_DATA = {
         "name": "HARMAYOH",
         "username": "@harmayoh",
         "joinedAt": 1773155125274
+      },
+      "8049365806": {
+        "name": "Teodora🫠",
+        "username": "",
+        "joinedAt": 1773207513333
       }
     },
     "messages": [
@@ -1838,6 +1843,12 @@ window.GROUPS_DATA = {
         "senderName": "HARMAYOH",
         "text": "Hello here",
         "timestamp": 1773155132359
+      },
+      {
+        "id": "52242129f96ba86e",
+        "type": "system",
+        "text": "Teodora🫠 joined the group",
+        "timestamp": 1773207513334
       }
     ]
   }
