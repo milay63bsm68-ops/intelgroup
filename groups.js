@@ -1884,8 +1884,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1773423207133,
-    "lastMessageAt": null,
-    "lastMessage": null,
+    "lastMessageAt": 1773423257285,
+    "lastMessage": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾: How Una dey",
     "totalEarnings": 0,
     "members": {
       "7100459393": {
@@ -1893,6 +1893,15 @@ window.GROUPS_DATA = {
         "joinedAt": 1773423207133
       }
     },
-    "messages": []
+    "messages": [
+      {
+        "id": "1e6e8d02abd96062",
+        "type": "text",
+        "senderId": "7100459393",
+        "senderName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
+        "text": "How Una dey",
+        "timestamp": 1773423257285
+      }
+    ]
   }
 }
