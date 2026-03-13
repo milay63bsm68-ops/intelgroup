@@ -1901,15 +1901,6 @@ window.GROUPS_DATA = {
         "senderName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
         "text": "How Una dey",
         "timestamp": 1773423257285
-      },
-      {
-        "id": "8377a2bf1fe20549",
-        "type": "voice",
-        "senderId": "7100459393",
-        "senderName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
-        "duration": "0:02",
-        "audioUrl": "/api/audio/8377a2bf1fe20549",
-        "timestamp": 1773423268466
       }
     ]
   }
