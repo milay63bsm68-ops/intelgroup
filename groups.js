@@ -1884,7 +1884,7 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1773423207133,
-    "lastMessageAt": 1773423268466,
+    "lastMessageAt": 1773423290789,
     "lastMessage": "🎤 𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾: Voice note",
     "totalEarnings": 0,
     "members": {
@@ -1901,6 +1901,15 @@ window.GROUPS_DATA = {
         "senderName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
         "text": "How Una dey",
         "timestamp": 1773423257285
+      },
+      {
+        "id": "fc4639201a437241",
+        "type": "voice",
+        "senderId": "7100459393",
+        "senderName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
+        "duration": "0:06",
+        "audioUrl": "/api/audio/fc4639201a437241",
+        "timestamp": 1773423290789
       }
     ]
   }
