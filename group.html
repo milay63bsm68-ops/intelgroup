@@ -129,35 +129,49 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .pm-earn{font-size:12px;color:var(--subtext);text-align:center;margin-bottom:14px;}
 .mb-gold{background:linear-gradient(135deg,#f59e0b,#f97316);}
 
-/* ── EARN MONEY SECTION ── */
-.earn-section{
-  background:linear-gradient(135deg,#1a2e0a,#1f3a10);
-  border:1px solid #4db64444;border-radius:12px;
-  padding:14px;margin-bottom:10px;
+/* ── EARN BUTTON ── */
+.earn-btn{
+  position:relative;
+  color:#fcd34d !important;
 }
-.earn-section-title{
-  font-size:13px;font-weight:700;color:#86efac;
-  display:flex;align-items:center;gap:6px;margin-bottom:6px;
-}
-.earn-section-body{font-size:12px;color:#6aad80;line-height:1.7;}
-.earn-highlight{color:#4db6ac;font-weight:700;}
-.earn-badge{
-  display:inline-flex;align-items:center;gap:4px;
-  background:linear-gradient(135deg,#14532d,#166534);
-  border:1px solid #4db64466;border-radius:20px;
-  padding:3px 10px;font-size:11px;font-weight:700;color:#86efac;
-  margin-top:8px;
+.earn-btn::after{
+  content:'';position:absolute;top:6px;right:6px;
+  width:7px;height:7px;border-radius:50%;
+  background:#4db6ac;border:1.5px solid var(--surface);
 }
 
-/* ── EARN MONEY dot on edit button ── */
-.earn-dot-wrap{position:relative;display:inline-flex;}
-.earn-dot{
-  position:absolute;top:-2px;right:-2px;
-  background:#4db6ac;color:#0a1f12;
-  font-size:9px;font-weight:800;border-radius:8px;
-  padding:1px 4px;line-height:1.4;pointer-events:none;
-  white-space:nowrap;
+/* ── EARN MODAL CARDS ── */
+.earn-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:14px;padding:14px;margin-bottom:10px;
 }
+.earn-card-gold{
+  background:linear-gradient(135deg,#2a1f05,#3a2800);
+  border-color:#f59e0b44;
+}
+.earn-card-top{
+  display:flex;align-items:center;gap:10px;margin-bottom:8px;
+}
+.earn-card-icon{font-size:22px;flex-shrink:0;}
+.earn-card-label{font-size:13px;font-weight:700;color:var(--text);}
+.earn-card-body{font-size:12px;color:var(--subtext);line-height:1.7;}
+.earn-card-body strong{color:var(--text);}
+.earn-card-tip{
+  margin-top:8px;font-size:11px;font-weight:600;
+  color:#4db6ac;background:#0d2a1f;border-radius:8px;
+  padding:5px 10px;display:inline-block;
+}
+.earn-card-gold .earn-card-tip{color:#fcd34d;background:#2a1800;}
+
+/* ── EARN SUMMARY ROW ── */
+.earn-summary{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:12px 14px;margin:4px 0 14px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.earn-sum-item{display:flex;align-items:center;gap:10px;}
+.earn-sum-icon{font-size:18px;flex-shrink:0;}
+.earn-sum-text{font-size:12px;color:var(--subtext);line-height:1.5;}
 
 /* ── SHARE LINK ── */
 .share-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:10px 0;display:flex;align-items:center;gap:8px;}
@@ -272,10 +286,8 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="h-name" id="hName">Loading…</div>
     <div class="h-sub"  id="hSub">members</div>
   </div>
-  <div class="earn-dot-wrap" id="editBtnWrap" style="display:none">
-    <button class="h-btn" id="editBtn" onclick="openEdit()">⚙️</button>
-    <span class="earn-dot">💰</span>
-  </div>
+  <button class="h-btn" id="editBtn" style="display:none" onclick="openEdit()">⚙️</button>
+  <button class="h-btn earn-btn" id="earnBtn" style="display:none" onclick="openEarn()">💰</button>
   <button class="h-btn" onclick="openInfo()">ℹ️</button>
 </div>
 
@@ -339,14 +351,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
       </div>
       <label class="sw"><input type="checkbox" id="eIsPremiumOnly"><div class="sw-track"><div class="sw-thumb"></div></div></label>
     </div>
-    <div class="earn-section">
-      <div class="earn-section-title">💰 Earn from Premium Sales</div>
-      <div class="earn-section-body">
-        When you enable <span class="earn-highlight">⭐ Premium Only</span>, members must buy Premium to join your group.<br>
-        You earn a <span class="earn-highlight">commission on every sale</span> made through your group link.<br>
-        <span class="earn-badge">💵 Share your link → Earn money</span>
-      </div>
-    </div>
     <button class="modal-btn mb-save"   onclick="saveEdit()">Save Changes</button>
     <button class="modal-btn mb-danger" onclick="delGroup()">🗑️ Delete Group</button>
     <button class="modal-btn mb-cancel" onclick="closeModal('editModal')">Cancel</button>
@@ -397,6 +401,66 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div id="pmMsg" style="font-size:13px;margin-bottom:10px;min-height:18px;"></div>
     <button class="modal-btn mb-gold" onclick="buyPremium()">⭐ Buy Premium – ₦5,000</button>
     <button class="modal-btn mb-cancel" style="margin-top:6px;" onclick="closeModal('premiumModal')">Cancel</button>
+  </div>
+</div>
+
+<!-- EARN MODAL -->
+<div class="modal-bg" id="earnModal" onclick="closeModal('earnModal')">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div style="text-align:center;margin-bottom:18px;">
+      <div style="font-size:46px;margin-bottom:8px;">💰</div>
+      <div class="modal-title" style="font-size:17px;">How You Earn Money</div>
+      <div style="font-size:12px;color:var(--subtext);margin-top:4px;">As the group admin, you earn every time someone buys Premium</div>
+    </div>
+
+    <!-- Way 1 -->
+    <div class="earn-card">
+      <div class="earn-card-top">
+        <span class="earn-card-icon">🔗</span>
+        <div class="earn-card-label">Way 1 — Share Your Group Link</div>
+      </div>
+      <div class="earn-card-body">
+        Anyone who clicks your group invite link and buys Premium triggers your commission — <strong>no special settings needed.</strong> Just share your link and earn.
+      </div>
+      <div class="earn-card-tip">💡 Works even without Premium Only mode turned on</div>
+    </div>
+
+    <!-- Way 2 -->
+    <div class="earn-card earn-card-gold">
+      <div class="earn-card-top">
+        <span class="earn-card-icon">⭐</span>
+        <div class="earn-card-label">Way 2 — Turn On Premium Only</div>
+      </div>
+      <div class="earn-card-body">
+        Enable <strong>⭐ Premium Only</strong> in ⚙️ Settings so only premium members can join. Every new member <em>must</em> buy Premium to enter — maximising your earnings automatically.
+      </div>
+      <div class="earn-card-tip">🚀 Best for exclusive, high-value groups</div>
+    </div>
+
+    <!-- Summary row -->
+    <div class="earn-summary">
+      <div class="earn-sum-item">
+        <div class="earn-sum-icon">👥</div>
+        <div class="earn-sum-text">More members = more sales = more earnings</div>
+      </div>
+      <div class="earn-sum-item">
+        <div class="earn-sum-icon">💵</div>
+        <div class="earn-sum-text">Commission paid on every ₦5,000 purchase</div>
+      </div>
+      <div class="earn-sum-item">
+        <div class="earn-sum-icon">📤</div>
+        <div class="earn-sum-text">Share your link below to start earning now</div>
+      </div>
+    </div>
+
+    <!-- Group share link -->
+    <div style="font-size:11px;color:var(--subtext);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px;">🔗 Your Earning Link</div>
+    <div class="share-box">
+      <div class="share-url" id="earnShareUrl">—</div>
+      <button class="share-copy" onclick="copyEarnLink()">Copy</button>
+    </div>
+    <button class="modal-btn mb-share" style="margin-top:6px;" onclick="shareEarnLink()">📤 Share & Start Earning</button>
+    <button class="modal-btn mb-cancel" style="margin-top:8px;" onclick="closeModal('earnModal')">Close</button>
   </div>
 </div>
 
@@ -555,7 +619,10 @@ async function init() {
     document.getElementById("hName").textContent = groupData.name || "Group";
     const mc = Object.keys(groupData.members||{}).length;
     document.getElementById("hSub").textContent  = mc + " member" + (mc!==1?"s":"");
-    if (isOwner) document.getElementById("editBtnWrap").style.display = "inline-flex";
+    if (isOwner) {
+      document.getElementById("editBtn").style.display = "flex";
+      document.getElementById("earnBtn").style.display = "flex";
+    }
 
     if (!isJoined) { showJoinOverlay(); return; }
     if (groupData.isPremiumOnly && !isPremium && !isOwner) { showPremiumOverlay(); return; }
@@ -1013,6 +1080,32 @@ function shareGroupLink() {
     window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Join " + name + " on Intel Groups!")}`, "_blank");
   }
 }
+
+/* ════════════════════════════════════
+   EARN MODAL
+════════════════════════════════════ */
+function openEarn() {
+  const url = groupShareLink(groupId);
+  document.getElementById("earnShareUrl").textContent = url;
+  document.getElementById("earnModal").classList.add("open");
+}
+function copyEarnLink() {
+  const url = groupShareLink(groupId);
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(url).then(() => showTmp("✅ Earning link copied!","suc")).catch(() => fallbackCopyText(url));
+  } else { fallbackCopyText(url); }
+}
+function shareEarnLink() {
+  const url  = groupShareLink(groupId);
+  const name = groupData?.name || "my group";
+  const text = `💰 Join ${name} — buy Premium and unlock everything! ${url}`;
+  if (tg?.openTelegramLink) {
+    tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`);
+  } else {
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, "_blank");
+  }
+}
+
 async function leaveGroup() {
   if (!confirm("Leave this group?")) return;
   try {
