@@ -1884,8 +1884,8 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1773423207133,
-    "lastMessageAt": 1773424566274,
-    "lastMessage": "m: Hello",
+    "lastMessageAt": 1773424624809,
+    "lastMessage": "HARMAYOH joined",
     "totalEarnings": 0,
     "members": {
       "7100459393": {
@@ -1896,6 +1896,11 @@ window.GROUPS_DATA = {
         "name": "m",
         "username": "@Minvyk",
         "joinedAt": 1773424549459
+      },
+      "6940101627": {
+        "name": "HARMAYOH",
+        "username": "@harmayoh",
+        "joinedAt": 1773424624808
       }
     },
     "messages": [
@@ -1920,6 +1925,12 @@ window.GROUPS_DATA = {
         "senderName": "m",
         "text": "Hello",
         "timestamp": 1773424566274
+      },
+      {
+        "id": "91371cfd253cfc35",
+        "type": "system",
+        "text": "HARMAYOH joined the group",
+        "timestamp": 1773424624809
       }
     ]
   }
