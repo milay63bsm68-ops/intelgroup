@@ -1874,5 +1874,25 @@ window.GROUPS_DATA = {
         "timestamp": 1773207513334
       }
     ]
+  },
+  "0DF9B6E04A": {
+    "name": "Solution X9",
+    "description": "Your tech space for free tools and updates, this is a community where we share update",
+    "ownerId": "7100459393",
+    "ownerName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
+    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🚀\",\"color\":\"#5288c1\"}",
+    "isPrivate": false,
+    "isPremiumOnly": false,
+    "createdAt": 1773423207133,
+    "lastMessageAt": null,
+    "lastMessage": null,
+    "totalEarnings": 0,
+    "members": {
+      "7100459393": {
+        "name": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
+        "joinedAt": 1773423207133
+      }
+    },
+    "messages": []
   }
 }
