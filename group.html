@@ -129,6 +129,36 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
 .pm-earn{font-size:12px;color:var(--subtext);text-align:center;margin-bottom:14px;}
 .mb-gold{background:linear-gradient(135deg,#f59e0b,#f97316);}
 
+/* ── EARN MONEY SECTION ── */
+.earn-section{
+  background:linear-gradient(135deg,#1a2e0a,#1f3a10);
+  border:1px solid #4db64444;border-radius:12px;
+  padding:14px;margin-bottom:10px;
+}
+.earn-section-title{
+  font-size:13px;font-weight:700;color:#86efac;
+  display:flex;align-items:center;gap:6px;margin-bottom:6px;
+}
+.earn-section-body{font-size:12px;color:#6aad80;line-height:1.7;}
+.earn-highlight{color:#4db6ac;font-weight:700;}
+.earn-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,#14532d,#166534);
+  border:1px solid #4db64466;border-radius:20px;
+  padding:3px 10px;font-size:11px;font-weight:700;color:#86efac;
+  margin-top:8px;
+}
+
+/* ── EARN MONEY dot on edit button ── */
+.earn-dot-wrap{position:relative;display:inline-flex;}
+.earn-dot{
+  position:absolute;top:-2px;right:-2px;
+  background:#4db6ac;color:#0a1f12;
+  font-size:9px;font-weight:800;border-radius:8px;
+  padding:1px 4px;line-height:1.4;pointer-events:none;
+  white-space:nowrap;
+}
+
 /* ── SHARE LINK ── */
 .share-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:10px 0;display:flex;align-items:center;gap:8px;}
 .share-url{flex:1;font-size:11px;color:var(--subtext);word-break:break-all;line-height:1.4;}
@@ -242,7 +272,10 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
     <div class="h-name" id="hName">Loading…</div>
     <div class="h-sub"  id="hSub">members</div>
   </div>
-  <button class="h-btn" id="editBtn" style="display:none" onclick="openEdit()">⚙️</button>
+  <div class="earn-dot-wrap" id="editBtnWrap" style="display:none">
+    <button class="h-btn" id="editBtn" onclick="openEdit()">⚙️</button>
+    <span class="earn-dot">💰</span>
+  </div>
   <button class="h-btn" onclick="openInfo()">ℹ️</button>
 </div>
 
@@ -305,6 +338,14 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
         <div class="toggle-sub">Only premium users can join</div>
       </div>
       <label class="sw"><input type="checkbox" id="eIsPremiumOnly"><div class="sw-track"><div class="sw-thumb"></div></div></label>
+    </div>
+    <div class="earn-section">
+      <div class="earn-section-title">💰 Earn from Premium Sales</div>
+      <div class="earn-section-body">
+        When you enable <span class="earn-highlight">⭐ Premium Only</span>, members must buy Premium to join your group.<br>
+        You earn a <span class="earn-highlight">commission on every sale</span> made through your group link.<br>
+        <span class="earn-badge">💵 Share your link → Earn money</span>
+      </div>
     </div>
     <button class="modal-btn mb-save"   onclick="saveEdit()">Save Changes</button>
     <button class="modal-btn mb-danger" onclick="delGroup()">🗑️ Delete Group</button>
@@ -514,7 +555,7 @@ async function init() {
     document.getElementById("hName").textContent = groupData.name || "Group";
     const mc = Object.keys(groupData.members||{}).length;
     document.getElementById("hSub").textContent  = mc + " member" + (mc!==1?"s":"");
-    if (isOwner) document.getElementById("editBtn").style.display = "flex";
+    if (isOwner) document.getElementById("editBtnWrap").style.display = "inline-flex";
 
     if (!isJoined) { showJoinOverlay(); return; }
     if (groupData.isPremiumOnly && !isPremium && !isOwner) { showPremiumOverlay(); return; }
