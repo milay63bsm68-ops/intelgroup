@@ -1884,13 +1884,18 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1773423207133,
-    "lastMessageAt": 1773423290789,
-    "lastMessage": "🎤 𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾: Voice note",
+    "lastMessageAt": 1773424549460,
+    "lastMessage": "m joined",
     "totalEarnings": 0,
     "members": {
       "7100459393": {
         "name": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
         "joinedAt": 1773423207133
+      },
+      "7497799470": {
+        "name": "m",
+        "username": "@Minvyk",
+        "joinedAt": 1773424549459
       }
     },
     "messages": [
@@ -1901,6 +1906,12 @@ window.GROUPS_DATA = {
         "senderName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
         "text": "How Una dey",
         "timestamp": 1773423257285
+      },
+      {
+        "id": "b03f05fc999d3ed3",
+        "type": "system",
+        "text": "m joined the group",
+        "timestamp": 1773424549460
       }
     ]
   }
