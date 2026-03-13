@@ -276,11 +276,6 @@ window.GROUPS_DATA = {
         "name": "m",
         "username": "@Minvyk",
         "joinedAt": 1771715083684
-      },
-      "7100459393": {
-        "name": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
-        "username": "@Solution_X9",
-        "joinedAt": 1773423053636
       }
     },
     "messages": [
@@ -332,6 +327,12 @@ window.GROUPS_DATA = {
         "type": "system",
         "text": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾ joined the group",
         "timestamp": 1773423053637
+      },
+      {
+        "id": "c1d596ada30fc137",
+        "type": "system",
+        "text": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾ left the group",
+        "timestamp": 1773423142318
       }
     ]
   },
