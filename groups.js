@@ -1895,7 +1895,7 @@ window.GROUPS_DATA = {
     ]
   },
   "0DF9B6E04A": {
-    "name": "Solution X9",
+    "name": "Solution X9 Tools & Updates",
     "description": "Your tech space for free tools and updates, this is a community where we share update",
     "ownerId": "7100459393",
     "ownerName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
