@@ -1899,7 +1899,7 @@ window.GROUPS_DATA = {
     "description": "Your tech space for free tools and updates, this is a community where we share update",
     "ownerId": "7100459393",
     "ownerName": "𝙈𝙧 𝙎𝙤𝙡𝙪𝙩𝙞𝙤𝙣 𝐗❾",
-    "avatar": "{\"type\":\"emoji\",\"emoji\":\"🚀\",\"color\":\"#5288c1\"}",
+    "avatar": "https://mrsolution.com.ng/images/SOLUTION.webp",
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1773423207133,
