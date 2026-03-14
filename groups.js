@@ -1065,10 +1065,15 @@ window.GROUPS_DATA = {
     "isPrivate": false,
     "isPremiumOnly": false,
     "createdAt": 1771767521549,
-    "lastMessageAt": 1771860925206,
-    "lastMessage": "Harmayoh: Hello here",
+    "lastMessageAt": 1773482567216,
+    "lastMessage": "Janice joined",
     "totalEarnings": 0,
     "members": {
+      "1805846343": {
+        "name": "Janice",
+        "username": "@Account_auditor12",
+        "joinedAt": 1773482567213
+      },
       "8097634090": {
         "name": "Cloud",
         "joinedAt": 1771767521549
@@ -1247,6 +1252,12 @@ window.GROUPS_DATA = {
         "senderName": "Harmayoh",
         "text": "Hello here",
         "timestamp": 1771860925206
+      },
+      {
+        "id": "0211444f71b0e22a",
+        "type": "system",
+        "text": "Janice joined the group",
+        "timestamp": 1773482567216
       }
     ]
   },
